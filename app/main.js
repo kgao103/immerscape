@@ -63,11 +63,13 @@ Leap.loop({
       isGrabbing = false;
 
       cursorObject.setProperties({ backgroundColor: "pink" });
-      wall2.get("items").forEach((item) => {
-        if (item.isHovered(cursorPosition)) {
-          cursorObject.setProperties({ backgroundColor: "green" });
-        }
-      });
+      getWall(currentWall)
+        .get("items")
+        .forEach((item) => {
+          if (item.isHovered(cursorPosition)) {
+            cursorObject.setProperties({ backgroundColor: "green" });
+          }
+        });
 
       if (hand.grabStrength > 0.5) {
         isGrabbing = true;

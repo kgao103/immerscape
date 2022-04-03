@@ -197,6 +197,18 @@ wall4 = new View({
   items: [dresser],
 });
 
+function getWall(wallNumber) {
+  if (wallNumber == 1) {
+    return wall1;
+  } else if (wallNumber == 2) {
+    return wall2;
+  } else if (wallNumber == 3) {
+    return wall3;
+  } else {
+    return wall4;
+  }
+}
+
 var Ship = Backbone.Model.extend({
   defaults: {
     length: 0,
