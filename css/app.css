@@ -14,3 +14,8 @@ h3 {
   outline: 50px red;
   background-color: pink;
 }
+
+.background {
+  height: 100%;
+  width: 100%;
+}

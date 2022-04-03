@@ -118,8 +118,9 @@ var setupUserInterface = function () {
 
   function drawBackground() {
     var itemView = new ImageSurface({
-      size: [1000, 500],
+      size: [window.innerWidth, window.innerHeight],
       content: "img/blue_wall.png",
+      classes: ["background"],
     });
 
     mainContext.add(itemView);
