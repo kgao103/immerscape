@@ -54,87 +54,17 @@ Leap.loop({
 
       // First, determine if grabbing pose or not
       isGrabbing = false;
-
-      var shipAndOffset = getIntersectingShipAndOffset(cursorPosition);
+      
+      cursorObject.setProperties({backgroundColor: "pink"});
+      wall2.get('items').forEach((item) => {
+        if (item.isHovered(cursorPosition)) {
+          cursorObject.setProperties({backgroundColor: "green"});   
+        }
+      })
 
       if (hand.grabStrength > 0.5) {
         isGrabbing = true;
         console.log("isGrabbing");
-      }
-
-      // Grabbing, but no selected ship yet. Look for one.
-      // Update grabbedShip/grabbedOffset if the user is hovering over a ship
-      if (isGrabbing) {
-        cursorObject.setProperties({backgroundColor: "green"});
-      } else {
-        cursorObject.setProperties({backgroundColor: "pink"});
-      }
-
-      // Has selected a ship and is still holding it
-      // Move the ship
-      if (grabbedShip && isGrabbing) {
-        grabbedShip.setScreenPosition([
-          cursorPosition[0] - grabbedOffset[0],
-          cursorPosition[1] - grabbedOffset[1],
-        ]);
-        grabbedShip.setScreenRotation(-3 * hand.roll()); // todo: play with roll value , smoothing function
-      }
-
-      // Finished moving a ship. Release it, and try placing it.
-      // Try placing the ship on the board and release the ship
-      else if (grabbedShip && !isGrabbing) {
-        placeShip(grabbedShip);
-        grabbedShip = false;
-      }
-    }
-
-    // PLAYING or END GAME so draw the board and ships (if player's board)
-    // Note: Don't have to touch this code
-    else {
-      if (gameState.get("state") == "playing") {
-        background.setContent(
-          "<h1>battleship</h1><h3 style='color: #7CD3A2;'>game on</h3>"
-        );
-        turnFeedback.setContent(gameState.getTurnHTML());
-      } else if (gameState.get("state") == "end") {
-        var endLabel =
-          gameState.get("winner") == "player" ? "you won!" : "game over";
-        background.setContent(
-          "<h1>battleship</h1><h3 style='color: #7CD3A2;'>" + endLabel + "</h3>"
-        );
-        turnFeedback.setContent("");
-      }
-
-      var board = gameState.get("turn") == "player" ? cpuBoard : playerBoard;
-      // Render past shots
-      board.get("shots").forEach(function (shot) {
-        var position = shot.get("position");
-        var tileColor = shot.get("isHit") ? Colors.RED : Colors.YELLOW;
-        highlightTile(position, tileColor);
-      });
-
-      // Render the ships
-      playerBoard.get("ships").forEach(function (ship) {
-        if (gameState.get("turn") == "cpu") {
-          var position = ship.get("position");
-          var screenPosition = gridOrigin.slice(0);
-          screenPosition[0] += position.col * TILESIZE;
-          screenPosition[1] += position.row * TILESIZE;
-          ship.setScreenPosition(screenPosition);
-          if (ship.get("isVertical")) ship.setScreenRotation(Math.PI / 2);
-        } else {
-          ship.setScreenPosition([-500, -500]);
-        }
-      });
-
-      // If playing and CPU's turn, generate a shot
-      if (
-        gameState.get("state") == "playing" &&
-        gameState.isCpuTurn() &&
-        !gameState.get("waiting")
-      ) {
-        gameState.set("waiting", true);
-        generateCpuShot();
       }
     }
   },

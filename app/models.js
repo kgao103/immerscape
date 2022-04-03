@@ -94,6 +94,19 @@ var Item = Backbone.Model.extend({
   setSize: function (size) {
     this.set("size", size);
   },
+
+  isHovered: function (cursorPosition) {
+    let position = this.get('position');
+    let size = this.get('size');
+    let minX = position[0];
+    let maxX = position[0] + size[0];
+    let minY = position[1];
+    let maxY = position[1] + size[1];  
+    let withinX = (minX <= cursorPosition[0] && cursorPosition[0] <= maxX);
+    let withinY = (minY <= cursorPosition[1] && cursorPosition[1] <= maxY);
+    let result = withinX && withinY;    
+    return result;
+  }
 });
 var ItemSet = Backbone.Collection.extend({ model: Item });
 
