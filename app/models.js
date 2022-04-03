@@ -102,7 +102,6 @@ var ShotSet = Backbone.Collection.extend({ model: Shot });
 var Item = Backbone.Model.extend({
   defaults: {
     length: 0,
-    isDeployed: false,
     position: { row: 0, col: 0 },
     screenPosition: [0, 0],
     startPosition: [0, 0],
@@ -122,7 +121,7 @@ var Item = Backbone.Model.extend({
   },
 
   resetShip: function () {
-    this.set("screenPossition", this.get("startPosition").slice(0));
+    this.set("screenPosition", this.get("startPosition").slice(0));
     this.set("screenRotation", 0);
     this.set("isVertical", false);
   },
@@ -132,6 +131,7 @@ var Item = Backbone.Model.extend({
     return origin;
   },
 });
+var ItemSet = Backbone.Collection.extend({ model: Item });
 
 
 var Ship = Backbone.Model.extend({

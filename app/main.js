@@ -66,12 +66,15 @@ Leap.loop({
 
       // Grabbing, but no selected ship yet. Look for one.
       // Update grabbedShip/grabbedOffset if the user is hovering over a ship
-      if (!grabbedShip && isGrabbing) {
+      if (isGrabbing) {
+        cursorObject.setProperties({backgroundColor: "green"});
+      } else {
+        cursorObject.setProperties({backgroundColor: "pink"});
       }
 
       // Has selected a ship and is still holding it
       // Move the ship
-      else if (grabbedShip && isGrabbing) {
+      if (grabbedShip && isGrabbing) {
         grabbedShip.setScreenPosition([
           cursorPosition[0] - grabbedOffset[0],
           cursorPosition[1] - grabbedOffset[1],

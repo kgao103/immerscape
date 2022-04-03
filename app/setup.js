@@ -12,7 +12,7 @@ var tiles = [];
 var tileModifiers = [];
 var gridOrigin = [350, 35];
 
-var background, turnFeedback, otherFeedback;
+var background, turnFeedback, otherFeedback, cursorObject;
 
 // USER INTERFACE SETUP
 var setupUserInterface = function () {
@@ -186,6 +186,8 @@ var setupUserInterface = function () {
       borderRadius: CURSORSIZE / 2 + "px",
       pointerEvents: "none",
       zIndex: 1,
+      backgroundColor: "pink",
+      opacity: 0.8,
     },
   });
   var cursorOriginModifier = new StateModifier({ origin: [0.5, 0.5] });
@@ -196,4 +198,5 @@ var setupUserInterface = function () {
     }.bind(cursor),
   });
   mainContext.add(cursorOriginModifier).add(cursorModifier).add(cursorSurface);
+  cursorObject = cursorSurface;
 };
