@@ -12,7 +12,7 @@ var tiles = [];
 var tileModifiers = [];
 var gridOrigin = [350, 35];
 
-var background, turnFeedback, otherFeedback;
+var background, turnFeedback, otherFeedback, cursorObject;
 
 // USER INTERFACE SETUP
 var setupUserInterface = function () {
@@ -141,48 +141,25 @@ var setupUserInterface = function () {
     mainContext.add(itemTranslateModifier).add(itemView);
   }
 
+  function drawItem(item) {
+    drawImage(item.get("source"), item.get("size"), item.get("position"));
+  }
+
+  function drawRoom(room) {
+    drawBackground(room.get("background"));
+    room.get("items").forEach((item) => {
+      drawItem(item);
+    });
+  }
+
   function drawWall1() {
-    drawBackground("img/blue_wall.png");
-    drawImage(
-      "img/mousehole_sad.png",
-      [100, 100],
-      [window.innerWidth * 0.5, window.innerHeight * 0.605]
-    );
-
-    drawImage(
-      "img/door.png",
-      [200, 400],
-      [window.innerWidth * 0.25, window.innerHeight * 0.18]
-    );
-
-    drawImage(
-      "img/clock.png",
-      [100, 100],
-      [window.innerWidth * 0.6, window.innerHeight * 0.22]
-    );
+    drawRoom(wall1);
   }
 
   drawWall1();
 
   function drawWall2() {
-    drawBackground("img/pink_wall.png");
-    drawImage(
-      "img/fridge_closed.png",
-      [220, 220],
-      [window.innerWidth * 0.65, window.innerHeight * 0.55]
-    );
-
-    drawImage(
-      "img/lamp.png",
-      [100, 350],
-      [window.innerWidth * 0.2, window.innerHeight * 0.3]
-    );
-
-    drawImage(
-      "img/painting.png",
-      [180, 240],
-      [window.innerWidth * 0.4, window.innerHeight * 0.22]
-    );
+    drawRoom(wall2);
   }
 
   drawWall2();
@@ -260,6 +237,8 @@ var setupUserInterface = function () {
       borderRadius: CURSORSIZE / 2 + "px",
       pointerEvents: "none",
       zIndex: 1,
+      backgroundColor: "pink",
+      opacity: 0.8,
     },
   });
   var cursorOriginModifier = new StateModifier({ origin: [0.5, 0.5] });
@@ -270,4 +249,5 @@ var setupUserInterface = function () {
     }.bind(cursor),
   });
   mainContext.add(cursorOriginModifier).add(cursorModifier).add(cursorSurface);
+  cursorObject = cursorSurface;
 };

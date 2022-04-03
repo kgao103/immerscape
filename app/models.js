@@ -27,17 +27,6 @@ var GameState = Backbone.Model.extend({
 
   initialize: function () {
     _.bindAll(this, "waitingForPlayer", "nextTurn");
-    var shotSequence = [];
-    for (var row = 0; row < NUMTILES; row++) {
-      for (var col = 0; col < NUMTILES; col++) {
-        shotSequence.push({ row: row, col: col });
-      }
-    }
-    shuffle(shotSequence);
-    var shots = shotSequence.map(function (pos) {
-      return new Shot({ position: pos });
-    });
-    this.set("cpuShots", new ShotSet(shots));
   },
 
   waitingForPlayer: function () {
@@ -73,10 +62,6 @@ var GameState = Backbone.Model.extend({
     return this.get("turn") == "player";
   },
 
-  getCpuShot: function () {
-    return this.get("cpuShots").shift();
-  },
-
   getTurnHTML: function () {
     var turnName = this.isPlayerTurn() ? "your" : "CPU";
     var boardName = this.isPlayerTurn() ? "CPU" : "your";
@@ -91,48 +76,92 @@ var GameState = Backbone.Model.extend({
   },
 });
 
-var Shot = Backbone.Model.extend({
-  defaults: {
-    position: { row: 0, col: 0 },
-    isHit: false,
-  },
-});
-var ShotSet = Backbone.Collection.extend({ model: Shot });
-
 var Item = Backbone.Model.extend({
   defaults: {
-    length: 0,
-    isDeployed: false,
-    position: { row: 0, col: 0 },
-    screenPosition: [0, 0],
-    startPosition: [0, 0],
-    health: 0,
+    source: "",
+    size: [0, 0],
+    position: [0, 0],
   },
 
   initialize: function () {
     this.set("health", this.get("length"));
   },
 
-  setScreenPosition: function (position) {
-    this.set("screenPosition", position.slice(0));
-  },
-
-  setBoardPosition: function (position) {
+  setPosition: function (position) {
     this.set("position", position);
   },
 
-  resetShip: function () {
-    this.set("screenPossition", this.get("startPosition").slice(0));
-    this.set("screenRotation", 0);
-    this.set("isVertical", false);
+  setSize: function (size) {
+    this.set("size", size);
   },
 
-  getScreenOrigin: function () {
-    var origin = this.get("screenPosition").slice(0);
-    return origin;
-  },
+  isHovered: function (cursorPosition) {
+    let position = this.get('position');
+    let size = this.get('size');
+    let minX = position[0];
+    let maxX = position[0] + size[0];
+    let minY = position[1];
+    let maxY = position[1] + size[1];  
+    let withinX = (minX <= cursorPosition[0] && cursorPosition[0] <= maxX);
+    let withinY = (minY <= cursorPosition[1] && cursorPosition[1] <= maxY);
+    let result = withinX && withinY;    
+    return result;
+  }
+});
+var ItemSet = Backbone.Collection.extend({ model: Item });
+
+mousehole_sad = new Item({
+  source: "img/mousehole_sad.png",
+  size: [100, 100],
+  position: [window.innerWidth * 0.5, window.innerHeight * 0.605],
 });
 
+door = new Item({
+  source: "img/door.png",
+  size: [200, 400],
+  position: [window.innerWidth * 0.25, window.innerHeight * 0.18],
+});
+
+clock = new Item({
+  source: "img/clock.png",
+  size: [100, 100],
+  position: [window.innerWidth * 0.6, window.innerHeight * 0.22]
+});
+
+fridge_closed = new Item({
+  source: "img/fridge_closed.png",
+  size: [220, 220],
+  position: [window.innerWidth * 0.65, window.innerHeight * 0.55],
+});
+
+lamp = new Item({
+  source: "img/lamp.png",
+  size: [280, 350],
+  position: [window.innerWidth * 0.15, window.innerHeight * 0.3]
+});
+
+painting = new Item({
+  source: "img/painting.png",
+  size: [180, 240],
+  position: [window.innerWidth * 0.4, window.innerHeight * 0.22]
+});
+
+var Room = Backbone.Model.extend({
+  defaults: {
+    background: "",
+    items: [],
+  }
+})
+
+wall1 = new Room({
+  background: "img/blue_wall.png",
+  items: [mousehole_sad, door, clock]
+})
+
+wall2 = new Room({
+  background: "img/pink_wall.png",
+  items: [fridge_closed, lamp, painting]
+})
 
 var Ship = Backbone.Model.extend({
   defaults: {
@@ -210,121 +239,3 @@ var Ship = Backbone.Model.extend({
   },
 });
 var ShipSet = Backbone.Collection.extend({ model: Ship });
-
-var Board = Backbone.Model.extend({
-  initialize: function () {
-    this.set("shots", new ShotSet());
-
-    var ships = new ShipSet();
-    var shipLengths = {
-      battleship: 3,
-      //destroyer: 3,
-      patrolBoat: 2,
-    };
-
-    Object.keys(shipLengths).forEach(function (shipType, i) {
-      var ship = new Ship({
-        type: shipType,
-        length: shipLengths[shipType],
-        screenPosition: [0, (i + 1) * 100],
-        startPosition: [0, (i + 1) * 100],
-      });
-      ships.add(ship);
-    });
-    this.set("ships", ships);
-
-    if (this.get("autoDeploy")) this.autoDeploy();
-  },
-
-  deployShip: function (ship) {
-    if (this.outOfBounds(ship)) return false;
-
-    var overlap = false;
-    this.get("ships").forEach(function (otherShip) {
-      if (
-        ship.get("type") != otherShip.get("type") &&
-        otherShip.get("isDeployed")
-      )
-        overlap = otherShip.overlaps(ship);
-    });
-
-    // No overlaps and not out of bounds, so deploy
-    if (!overlap) ship.set("isDeployed", true);
-
-    return !overlap;
-  },
-
-  outOfBounds: function (ship) {
-    var endpoints = ship.getEndpoints();
-    var start = endpoints.start;
-    var end = endpoints.end;
-    return (
-      start.row < 0 ||
-      start.row >= NUMTILES ||
-      start.col < 0 ||
-      start.col >= NUMTILES ||
-      end.row < 0 ||
-      end.row >= NUMTILES ||
-      end.col < 0 ||
-      end.col >= NUMTILES
-    );
-  },
-
-  autoDeploy: function () {
-    var self = this;
-    var offset = this.get("name") == "cpu" ? 1 : 0;
-    this.get("ships").forEach(function (ship, i) {
-      if (!ship.get("isDeployed")) {
-        ship.set("position", { row: 2 * i + offset, col: 0 });
-        ship.set("isDeployed", true);
-      }
-    });
-  },
-
-  resetBoard: function () {
-    this.initialize();
-  },
-
-  fireShot: function (shot) {
-    var position = shot.get("position");
-
-    var shotStatus = true;
-    // Check if already shot here
-    this.get("shots").forEach(function (shot) {
-      var otherPosition = shot.get("position");
-      if (
-        otherPosition.row == position.row &&
-        otherPosition.col == position.col
-      )
-        shotStatus = false;
-    });
-    if (!shotStatus) return false;
-
-    // Otherwise, see if it's a hit
-    var isGameOver = true;
-    var sunkShip = null;
-    this.get("ships").forEach(function (ship) {
-      var endpoints = ship.getEndpoints();
-      if (
-        endpoints.start.row <= position.row &&
-        endpoints.end.row >= position.row &&
-        endpoints.start.col <= position.col &&
-        endpoints.end.col >= position.col
-      ) {
-        ship.set("health", ship.get("health") - 1);
-        if (ship.get("health") == 0) sunkShip = ship;
-
-        shot.set("isHit", true);
-      }
-
-      if (ship.get("health") > 0) isGameOver = false;
-    });
-
-    var result = { shot: shot, isGameOver: isGameOver };
-    if (sunkShip != null) result.sunkShip = sunkShip;
-
-    this.get("shots").add(shot);
-
-    return result;
-  },
-});
