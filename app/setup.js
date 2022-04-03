@@ -104,6 +104,24 @@ var setupUserInterface = function() {
     mainContext.add(labelModifier).add(label);
   });
 
+  function drawImage() {
+    var itemView = new ImageSurface({
+      size: [100, 100],
+      content: 'img/key.png',
+    });
+
+    var itemTranslateModifier = new Modifier({
+      transform : function(){
+        return Transform.translate(100, 100, 0);
+      }
+    });
+
+    mainContext.add(itemTranslateModifier).add(itemView);
+  }
+
+  drawImage();
+
+  /*
   // Draw the player ships
   playerBoard.get('ships').forEach(function(ship) {
     var shipView = new ImageSurface({
@@ -133,12 +151,13 @@ var setupUserInterface = function() {
     mainContext.add(shipTranslateModifier).add(shipRotateModifier).add(shipView);
     ship.set('view', shipView);
   });
+  */
 
   // Draw the cursor
   var cursorSurface = new Surface({
     size : [CURSORSIZE, CURSORSIZE],
+    classes: ['cursor'],
     properties : {
-        backgroundColor: 'white',
         borderRadius: CURSORSIZE/2 + 'px',
         pointerEvents : 'none',
         zIndex: 1

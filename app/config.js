@@ -12,7 +12,7 @@ var COLNAMES = ["1", "2", "3", "4", "5", "6", "7", "8"];
 var BOARDSIZE = 550;
 var NUMTILES = 5;
 var TILESIZE = Math.ceil(BOARDSIZE / NUMTILES);
-var CURSORSIZE = 20;
+var CURSORSIZE = 50;
 var TURNDELAY = 2500;
 
 var VOICEINDEX = 17; // UK British Female

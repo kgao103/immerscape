@@ -99,6 +99,41 @@ var Shot = Backbone.Model.extend({
 });
 var ShotSet = Backbone.Collection.extend({ model: Shot });
 
+var Item = Backbone.Model.extend({
+  defaults: {
+    length: 0,
+    isDeployed: false,
+    position: { row: 0, col: 0 },
+    screenPosition: [0, 0],
+    startPosition: [0, 0],
+    health: 0,
+  },
+
+  initialize: function () {
+    this.set("health", this.get("length"));
+  },
+
+  setScreenPosition: function (position) {
+    this.set("screenPosition", position.slice(0));
+  },
+
+  setBoardPosition: function (position) {
+    this.set("position", position);
+  },
+
+  resetShip: function () {
+    this.set("screenPossition", this.get("startPosition").slice(0));
+    this.set("screenRotation", 0);
+    this.set("isVertical", false);
+  },
+
+  getScreenOrigin: function () {
+    var origin = this.get("screenPosition").slice(0);
+    return origin;
+  },
+});
+
+
 var Ship = Backbone.Model.extend({
   defaults: {
     length: 0,

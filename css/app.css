@@ -9,3 +9,8 @@ h3 {
   margin-left: 25px;
   font-family: "Trebuchet MS";
 }
+
+.cursor {
+  outline: 50px red;
+  background-color: pink;
+}
