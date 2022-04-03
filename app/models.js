@@ -96,17 +96,17 @@ var Item = Backbone.Model.extend({
   },
 
   isHovered: function (cursorPosition) {
-    let position = this.get('position');
-    let size = this.get('size');
+    let position = this.get("position");
+    let size = this.get("size");
     let minX = position[0];
     let maxX = position[0] + size[0];
     let minY = position[1];
-    let maxY = position[1] + size[1];  
-    let withinX = (minX <= cursorPosition[0] && cursorPosition[0] <= maxX);
-    let withinY = (minY <= cursorPosition[1] && cursorPosition[1] <= maxY);
-    let result = withinX && withinY;    
+    let maxY = position[1] + size[1];
+    let withinX = minX <= cursorPosition[0] && cursorPosition[0] <= maxX;
+    let withinY = minY <= cursorPosition[1] && cursorPosition[1] <= maxY;
+    let result = withinX && withinY;
     return result;
-  }
+  },
 });
 var ItemSet = Backbone.Collection.extend({ model: Item });
 
@@ -125,7 +125,7 @@ door = new Item({
 clock = new Item({
   source: "img/clock.png",
   size: [100, 100],
-  position: [window.innerWidth * 0.6, window.innerHeight * 0.22]
+  position: [window.innerWidth * 0.6, window.innerHeight * 0.22],
 });
 
 fridge_closed = new Item({
@@ -136,32 +136,32 @@ fridge_closed = new Item({
 
 lamp = new Item({
   source: "img/lamp.png",
-  size: [280, 350],
-  position: [window.innerWidth * 0.15, window.innerHeight * 0.3]
+  size: [100, 350],
+  position: [window.innerWidth * 0.2, window.innerHeight * 0.3],
 });
 
 painting = new Item({
   source: "img/painting.png",
   size: [180, 240],
-  position: [window.innerWidth * 0.4, window.innerHeight * 0.22]
+  position: [window.innerWidth * 0.4, window.innerHeight * 0.22],
 });
 
 var Room = Backbone.Model.extend({
   defaults: {
     background: "",
     items: [],
-  }
-})
+  },
+});
 
 wall1 = new Room({
   background: "img/blue_wall.png",
-  items: [mousehole_sad, door, clock]
-})
+  items: [mousehole_sad, door, clock],
+});
 
 wall2 = new Room({
   background: "img/pink_wall.png",
-  items: [fridge_closed, lamp, painting]
-})
+  items: [fridge_closed, lamp, painting],
+});
 
 var Ship = Backbone.Model.extend({
   defaults: {
