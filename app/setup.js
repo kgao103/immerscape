@@ -104,6 +104,17 @@ var setupUserInterface = function() {
     mainContext.add(labelModifier).add(label);
   });
 
+  function drawBackground() {
+    var itemView = new ImageSurface({
+      size: [1000, 500],
+      content: 'img/blue_wall.png',
+    });
+
+    mainContext.add(itemView);
+  }
+
+  drawBackground();
+
   function drawImage() {
     var itemView = new ImageSurface({
       size: [100, 100],
