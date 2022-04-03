@@ -171,6 +171,48 @@ var setupUserInterface = function () {
 
   drawWall1();
 
+  function drawWall2() {
+    drawRoom(wall2);
+  }
+
+  drawWall2();
+  // goToWall2();
+
+  function drawWall3() {
+    drawRoom(wall3);
+  }
+
+  function drawWall4() {
+    drawRoom(wall4);
+  }
+
+  drawWall2();
+
+  var INVENTORY_SIZE = 5;
+  var SLOT_SIZE = 100;
+  var SLOT_SPACING = 10;
+  var TOTAL_WIDTH =
+    SLOT_SIZE * INVENTORY_SIZE + SLOT_SPACING * (INVENTORY_SIZE - 1);
+  for (var i = 0; i < INVENTORY_SIZE; i++) {
+    var tileView = new Surface({
+      size: [SLOT_SIZE, SLOT_SIZE],
+      properties: {
+        backgroundColor: "white",
+        border: "solid 1px black",
+      },
+    });
+
+    var tileTranslateModifier = new Modifier({
+      transform: Transform.translate(
+        (window.innerWidth - TOTAL_WIDTH) / 2 + (SLOT_SIZE + SLOT_SPACING) * i,
+        window.innerHeight - SLOT_SIZE - 10,
+        0
+      ),
+    });
+
+    mainContext.add(tileTranslateModifier).add(tileView);
+  }
+
   /*
   // Draw the player ships
   playerBoard.get('ships').forEach(function(ship) {
