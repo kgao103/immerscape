@@ -45,27 +45,27 @@ function drawItem(item) {
   drawImage(item.get("source"), item.get("size"), item.get("position"));
 }
 
-function drawRoom(room) {
-  drawBackground(room.get("background"));
-  room.get("items").forEach((item) => {
+function drawView(view) {
+  drawBackground(view.get("background"));
+  view.get("items").forEach((item) => {
     drawItem(item);
   });
 }
 
 function drawWall1() {
-  drawRoom(wall1);
+  drawView(wall1);
 }
 
 function drawWall2() {
-  drawRoom(wall2);
+  drawView(wall2);
 }
 
 function drawWall3() {
-  drawRoom(wall3);
+  drawView(wall3);
 }
 
 function drawWall4() {
-  drawRoom(wall4);
+  drawView(wall4);
 }
 
 // USER INTERFACE SETUP
@@ -172,18 +172,18 @@ var setupUserInterface = function () {
   drawWall1();
 
   function drawWall2() {
-    drawRoom(wall2);
+    drawView(wall2);
   }
 
   drawWall2();
   // goToWall2();
 
   function drawWall3() {
-    drawRoom(wall3);
+    drawView(wall3);
   }
 
   function drawWall4() {
-    drawRoom(wall4);
+    drawView(wall4);
   }
 
   drawWall2();

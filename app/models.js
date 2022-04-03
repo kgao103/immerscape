@@ -170,33 +170,32 @@ dresser = new Item({
   position: [window.innerWidth * 0.4, window.innerHeight * 0.38],
 });
 
-var Room = Backbone.Model.extend({
+var View = Backbone.Model.extend({
   defaults: {
     background: "",
     items: [],
   },
 });
 
-wall1 = new Room({
+wall1 = new View({
   background: "img/blue_wall.png",
   items: [mousehole_sad, door, clock],
 });
 
-wall2 = new Room({
+wall2 = new View({
   background: "img/pink_wall.png",
   items: [fridge_closed, lamp, painting],
 });
 
-wall3 = new Room ({
+wall3 = new View({
   background: "img/green_wall.png",
   items: [bedtable, bed, painting2],
-})
+});
 
-wall4 = new Room ({
+wall4 = new View({
   background: "img/purple_wall.png",
   items: [dresser],
-})
-
+});
 
 var Ship = Backbone.Model.extend({
   defaults: {
