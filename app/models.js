@@ -146,6 +146,30 @@ painting = new Item({
   position: [window.innerWidth * 0.4, window.innerHeight * 0.22],
 });
 
+bedtable = new Item({
+  source: "img/bedtable.png",
+  size: [window.innerWidth * 0.12, window.innerWidth * 0.12],
+  position: [window.innerWidth * 0.3, window.innerHeight * 0.6],
+});
+
+bed = new Item({
+  source: "img/bed.png",
+  size: [500, 300],
+  position: [window.innerWidth * 0.4, window.innerHeight * 0.5],
+});
+
+painting2 = new Item({
+  source: "img/painting2.jpeg",
+  size: [window.innerWidth * 0.12, window.innerWidth * 0.15],
+  position: [window.innerWidth * 0.3, window.innerHeight * 0.2],
+});
+
+dresser = new Item({
+  source: "img/dresser.png",
+  size: [window.innerWidth * 0.4, window.innerWidth * 0.25],
+  position: [window.innerWidth * 0.4, window.innerHeight * 0.38],
+});
+
 var Room = Backbone.Model.extend({
   defaults: {
     background: "",
@@ -162,6 +186,17 @@ wall2 = new Room({
   background: "img/pink_wall.png",
   items: [fridge_closed, lamp, painting],
 });
+
+wall3 = new Room ({
+  background: "img/green_wall.png",
+  items: [bedtable, bed, painting2],
+})
+
+wall4 = new Room ({
+  background: "img/purple_wall.png",
+  items: [dresser],
+})
+
 
 var Ship = Backbone.Model.extend({
   defaults: {
