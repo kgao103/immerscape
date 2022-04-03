@@ -61,13 +61,13 @@ Leap.loop({
 
       // First, determine if grabbing pose or not
       isGrabbing = false;
-      
-      cursorObject.setProperties({backgroundColor: "pink"});
-      wall2.get('items').forEach((item) => {
+
+      cursorObject.setProperties({ backgroundColor: "pink" });
+      wall2.get("items").forEach((item) => {
         if (item.isHovered(cursorPosition)) {
-          cursorObject.setProperties({backgroundColor: "green"});   
+          cursorObject.setProperties({ backgroundColor: "green" });
         }
-      })
+      });
 
       if (hand.grabStrength > 0.5) {
         isGrabbing = true;
@@ -109,6 +109,8 @@ var processSpeech = function (transcript) {
       processed = true;
       zoomInObject(hoveringObject);
     }
+
+    console.log("currentWall: ", currentWall);
 
     // 4.3, Starting the game with speech
     // Detect the 'start' command, and start the game if it was said
