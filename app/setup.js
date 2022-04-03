@@ -116,17 +116,15 @@ var setupUserInterface = function () {
     mainContext.add(labelModifier).add(label);
   });
 
-  function drawBackground() {
+  function drawBackground(imagePath) {
     var itemView = new ImageSurface({
       size: [window.innerWidth, window.innerHeight],
-      content: "img/blue_wall.png",
+      content: imagePath,
       classes: ["background"],
     });
 
     mainContext.add(itemView);
   }
-
-  drawBackground();
 
   function drawImage(image, size, position) {
     var itemView = new ImageSurface({
@@ -143,8 +141,51 @@ var setupUserInterface = function () {
     mainContext.add(itemTranslateModifier).add(itemView);
   }
 
-  drawImage("img/key.png", [100, 100], [100, 100]);
-  drawImage("img/mousehole_sad.png", [100, 100], [200, 200]);
+  function drawWall1() {
+    drawBackground("img/blue_wall.png");
+    drawImage(
+      "img/mousehole_sad.png",
+      [100, 100],
+      [window.innerWidth * 0.5, window.innerHeight * 0.605]
+    );
+
+    drawImage(
+      "img/door.png",
+      [200, 400],
+      [window.innerWidth * 0.25, window.innerHeight * 0.18]
+    );
+
+    drawImage(
+      "img/clock.png",
+      [100, 100],
+      [window.innerWidth * 0.6, window.innerHeight * 0.22]
+    );
+  }
+
+  drawWall1();
+
+  function drawWall2() {
+    drawBackground("img/pink_wall.png");
+    drawImage(
+      "img/fridge_closed.png",
+      [220, 220],
+      [window.innerWidth * 0.65, window.innerHeight * 0.55]
+    );
+
+    drawImage(
+      "img/lamp.png",
+      [280, 350],
+      [window.innerWidth * 0.15, window.innerHeight * 0.3]
+    );
+
+    drawImage(
+      "img/painting.png",
+      [180, 240],
+      [window.innerWidth * 0.4, window.innerHeight * 0.22]
+    );
+  }
+
+  drawWall2();
 
   /*
   // Draw the player ships
