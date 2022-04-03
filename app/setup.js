@@ -118,7 +118,7 @@ var setupUserInterface = function () {
 
   function drawBackground(imagePath) {
     var itemView = new ImageSurface({
-      size: [window.innerWidth, window.innerHeight],
+      size: [window.innerWidth, window.innerHeight * 0.9],
       content: imagePath,
       classes: ["background"],
     });
