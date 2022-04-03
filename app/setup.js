@@ -14,9 +14,62 @@ var gridOrigin = [350, 35];
 
 var background, turnFeedback, otherFeedback, cursorObject;
 
+var mainContext = Engine.createContext();
+
+function drawBackground(imagePath) {
+  var itemView = new ImageSurface({
+    size: [window.innerWidth, window.innerHeight],
+    content: imagePath,
+    classes: ["background"],
+  });
+
+  mainContext.add(itemView);
+}
+
+function drawImage(image, size, position) {
+  var itemView = new ImageSurface({
+    size: size,
+    content: image,
+  });
+
+  var itemTranslateModifier = new Modifier({
+    transform: function () {
+      return Transform.translate(position[0], position[1], 0);
+    },
+  });
+
+  mainContext.add(itemTranslateModifier).add(itemView);
+}
+
+function drawItem(item) {
+  drawImage(item.get("source"), item.get("size"), item.get("position"));
+}
+
+function drawView(view) {
+  drawBackground(view.get("background"));
+  view.get("items").forEach((item) => {
+    drawItem(item);
+  });
+}
+
+function drawWall1() {
+  drawView(wall1);
+}
+
+function drawWall2() {
+  drawView(wall2);
+}
+
+function drawWall3() {
+  drawView(wall3);
+}
+
+function drawWall4() {
+  drawView(wall4);
+}
+
 // USER INTERFACE SETUP
 var setupUserInterface = function () {
-  var mainContext = Engine.createContext();
   background = new Surface({
     content: "<h1>battleship</h1>",
     properties: {
@@ -116,61 +169,21 @@ var setupUserInterface = function () {
     mainContext.add(labelModifier).add(label);
   });
 
-  function drawBackground(imagePath) {
-    var itemView = new ImageSurface({
-      size: [window.innerWidth, window.innerHeight * 0.9],
-      content: imagePath,
-      classes: ["background"],
-    });
-
-    mainContext.add(itemView);
-  }
-
-  function drawImage(image, size, position) {
-    var itemView = new ImageSurface({
-      size: size,
-      content: image,
-    });
-
-    var itemTranslateModifier = new Modifier({
-      transform: function () {
-        return Transform.translate(position[0], position[1], 0);
-      },
-    });
-
-    mainContext.add(itemTranslateModifier).add(itemView);
-  }
-
-  function drawItem(item) {
-    drawImage(item.get("source"), item.get("size"), item.get("position"));
-  }
-
-  function drawRoom(room) {
-    drawBackground(room.get("background"));
-    room.get("items").forEach((item) => {
-      drawItem(item);
-    });
-  }
-
-  function drawWall1() {
-    drawRoom(wall1);
-  }
-
   drawWall1();
 
   function drawWall2() {
-    drawRoom(wall2);
+    drawView(wall2);
   }
 
   drawWall2();
   // goToWall2();
 
   function drawWall3() {
-    drawRoom(wall3);
+    drawView(wall3);
   }
 
   function drawWall4() {
-    drawRoom(wall4);
+    drawView(wall4);
   }
 
   drawWall2();
@@ -178,8 +191,9 @@ var setupUserInterface = function () {
   var INVENTORY_SIZE = 5;
   var SLOT_SIZE = 100;
   var SLOT_SPACING = 10;
-  var TOTAL_WIDTH = (SLOT_SIZE * INVENTORY_SIZE + SLOT_SPACING * (INVENTORY_SIZE - 1));
-  for (var i=0; i<INVENTORY_SIZE; i++) {
+  var TOTAL_WIDTH =
+    SLOT_SIZE * INVENTORY_SIZE + SLOT_SPACING * (INVENTORY_SIZE - 1);
+  for (var i = 0; i < INVENTORY_SIZE; i++) {
     var tileView = new Surface({
       size: [SLOT_SIZE, SLOT_SIZE],
       properties: {
@@ -190,9 +204,9 @@ var setupUserInterface = function () {
 
     var tileTranslateModifier = new Modifier({
       transform: Transform.translate(
-        (window.innerWidth - TOTAL_WIDTH)/2 + (SLOT_SIZE + SLOT_SPACING) * i, 
+        (window.innerWidth - TOTAL_WIDTH) / 2 + (SLOT_SIZE + SLOT_SPACING) * i,
         window.innerHeight - SLOT_SIZE - 10,
-        0,
+        0
       ),
     });
 
