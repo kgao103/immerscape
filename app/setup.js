@@ -141,48 +141,28 @@ var setupUserInterface = function () {
     mainContext.add(itemTranslateModifier).add(itemView);
   }
 
+  function drawItem(item) {
+    drawImage(
+      item.get('source'),
+      item.get('size'),
+      item.get('position'),
+    )
+  }
+
   function drawWall1() {
     drawBackground("img/blue_wall.png");
-    drawImage(
-      "img/mousehole_sad.png",
-      [100, 100],
-      [window.innerWidth * 0.5, window.innerHeight * 0.605]
-    );
-
-    drawImage(
-      "img/door.png",
-      [200, 400],
-      [window.innerWidth * 0.25, window.innerHeight * 0.18]
-    );
-
-    drawImage(
-      "img/clock.png",
-      [100, 100],
-      [window.innerWidth * 0.6, window.innerHeight * 0.22]
-    );
+    drawItem(mousehole_sad);
+    drawItem(door);
+    drawItem(clock);
   }
 
   drawWall1();
 
   function drawWall2() {
     drawBackground("img/pink_wall.png");
-    drawImage(
-      "img/fridge_closed.png",
-      [220, 220],
-      [window.innerWidth * 0.65, window.innerHeight * 0.55]
-    );
-
-    drawImage(
-      "img/lamp.png",
-      [280, 350],
-      [window.innerWidth * 0.15, window.innerHeight * 0.3]
-    );
-
-    drawImage(
-      "img/painting.png",
-      [180, 240],
-      [window.innerWidth * 0.4, window.innerHeight * 0.22]
-    );
+    drawItem(fridge_closed);
+    drawItem(lamp);
+    drawItem(painting);
   }
 
   drawWall2();

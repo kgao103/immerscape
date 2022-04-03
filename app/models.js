@@ -101,38 +101,60 @@ var ShotSet = Backbone.Collection.extend({ model: Shot });
 
 var Item = Backbone.Model.extend({
   defaults: {
-    length: 0,
-    position: { row: 0, col: 0 },
-    screenPosition: [0, 0],
-    startPosition: [0, 0],
-    health: 0,
+    source: "",
+    size: [0, 0],
+    position: [0, 0],
   },
 
   initialize: function () {
     this.set("health", this.get("length"));
   },
 
-  setScreenPosition: function (position) {
-    this.set("screenPosition", position.slice(0));
-  },
-
-  setBoardPosition: function (position) {
+  setPosition: function (position) {
     this.set("position", position);
   },
 
-  resetShip: function () {
-    this.set("screenPosition", this.get("startPosition").slice(0));
-    this.set("screenRotation", 0);
-    this.set("isVertical", false);
-  },
-
-  getScreenOrigin: function () {
-    var origin = this.get("screenPosition").slice(0);
-    return origin;
+  setSize: function (size) {
+    this.set("size", size);
   },
 });
 var ItemSet = Backbone.Collection.extend({ model: Item });
 
+mousehole_sad = new Item({
+  source: "img/mousehole_sad.png",
+  size: [100, 100],
+  position: [window.innerWidth * 0.5, window.innerHeight * 0.605],
+});
+
+door = new Item({
+  source: "img/door.png",
+  size: [200, 400],
+  position: [window.innerWidth * 0.25, window.innerHeight * 0.18],
+});
+
+clock = new Item({
+  source: "img/clock.png",
+  size: [100, 100],
+  position: [window.innerWidth * 0.6, window.innerHeight * 0.22]
+});
+
+fridge_closed = new Item({
+  source: "img/fridge_closed.png",
+  size: [220, 220],
+  position: [window.innerWidth * 0.65, window.innerHeight * 0.55],
+});
+
+lamp = new Item({
+  source: "img/lamp.png",
+  size: [280, 350],
+  position: [window.innerWidth * 0.15, window.innerHeight * 0.3]
+});
+
+painting = new Item({
+  source: "img/painting.png",
+  size: [180, 240],
+  position: [window.innerWidth * 0.4, window.innerHeight * 0.22]
+});
 
 var Ship = Backbone.Model.extend({
   defaults: {
