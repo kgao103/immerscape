@@ -1,8 +1,6 @@
 // GAME SETUP
 var initialState = SKIPSETUP ? "playing" : "setup";
 var gameState = new GameState({ state: initialState });
-var cpuBoard = new Board({ autoDeploy: true, name: "cpu" });
-var playerBoard = new Board({ autoDeploy: SKIPSETUP, name: "player" });
 var cursor = new Cursor();
 var hitSound = new Audio("sound/explosion.wav");
 var winSound = new Audio("sound/win.wav");

@@ -149,20 +149,21 @@ var setupUserInterface = function () {
     )
   }
 
+  function drawRoom(room) {
+    drawBackground(room.get('background'));
+    room.get('items').forEach((item) => {
+      drawItem(item);
+    })
+  }
+
   function drawWall1() {
-    drawBackground("img/blue_wall.png");
-    drawItem(mousehole_sad);
-    drawItem(door);
-    drawItem(clock);
+    drawRoom(wall1);
   }
 
   drawWall1();
 
   function drawWall2() {
-    drawBackground("img/pink_wall.png");
-    drawItem(fridge_closed);
-    drawItem(lamp);
-    drawItem(painting);
+    drawRoom(wall2);
   }
 
   drawWall2();
