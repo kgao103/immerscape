@@ -174,14 +174,47 @@ var setupUserInterface = function () {
 
     drawImage(
       "img/lamp.png",
-      [280, 350],
-      [window.innerWidth * 0.15, window.innerHeight * 0.3]
+      [100, 350],
+      [window.innerWidth * 0.2, window.innerHeight * 0.3]
     );
 
     drawImage(
       "img/painting.png",
       [180, 240],
       [window.innerWidth * 0.4, window.innerHeight * 0.22]
+    );
+  }
+
+  drawWall2();
+  // goToWall2();
+
+  function drawWall3() {
+    drawBackground("img/green_wall.png");
+    drawImage(
+      "img/bedtable.png",
+      [window.innerWidth * 0.12, window.innerWidth * 0.12],
+      [window.innerWidth * 0.3, window.innerHeight * 0.6]
+    );
+
+    drawImage(
+      "img/bed.png",
+      [500, 300],
+      [window.innerWidth * 0.4, window.innerHeight * 0.5]
+    );
+
+    drawImage(
+      "img/painting2.jpeg",
+      [window.innerWidth * 0.12, window.innerWidth * 0.15],
+      [window.innerWidth * 0.3, window.innerHeight * 0.2]
+    );
+  }
+
+  function drawWall4() {
+    drawBackground("img/purple_wall.png");
+    drawImage(
+      "img/dresser.png",
+      [window.innerWidth * 0.4, window.innerWidth * 0.25],
+      [window.innerWidth * 0.4, window.innerHeight * 0.38]
     );
   }
 

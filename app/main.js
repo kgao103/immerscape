@@ -23,6 +23,13 @@ var grabbedOffset = [0, 0];
 // isGrabbing: Is the player's hand currently in a grabbing pose
 var isGrabbing = false;
 
+// global variables for our game
+var currentWall = 1;
+var isZoomedIn = false;
+
+var isHovering = false; // if hovering over some object
+var hoveringObject = null; // object hovering over
+
 // MAIN GAME LOOP
 // Called every time the Leap provides a new frame of data
 Leap.loop({
@@ -155,15 +162,31 @@ var processSpeech = function (transcript) {
   };
 
   var processed = false;
-  if (gameState.get("state") == "setup") {
+  if (!isZoomedIn) {
+    if (userSaid(transcript, ["left"])) {
+      currentWall = currentWall == 1 ? 4 : currentWall - 1;
+      processed = true;
+      goToWall(currentWall);
+    }
+    if (userSaid(transcript, ["right"])) {
+      currentWall = currentWall == 4 ? 1 : currentWall + 1;
+      processed = true;
+      goToWall(currentWall);
+    }
+    if (userSaid(transcript, ["look"]) && isHovering) {
+      isZoomedIn = true;
+      processed = true;
+      zoomInObject(hoveringObject);
+    }
+
     // 4.3, Starting the game with speech
     // Detect the 'start' command, and start the game if it was said
-    if (userSaid(transcript, ["start", "Start"])) {
-      gameState.startGame();
-      console.log("game started");
-      generateSpeech("Game started. Let's go.");
-      processed = true;
-    }
+    // if (userSaid(transcript, ["start", "Start"])) {
+    //   gameState.startGame();
+    //   console.log("game started");
+    //   generateSpeech("Game started. Let's go.");
+    //   processed = true;
+    // }
   } else if (gameState.get("state") == "playing") {
     if (gameState.isPlayerTurn()) {
       // 4.4, Player's turn
@@ -425,3 +448,25 @@ var registerCpuShot = function (playerResponse) {
     nextTurn();
   }
 };
+
+function goToWall(wallNumber) {
+  if (wallNumber == 1) {
+    drawWall1();
+  } else if (wallNumber == 2) {
+    drawWall2();
+  } else if (wallNumber == 3) {
+    drawWall3();
+  } else {
+    drawWall4();
+  }
+}
+
+function zoomInObject(object) {
+  var x = object.get("position").x;
+  var y = object.get("position").y;
+  var z = object.get("position").z;
+  var scale = object.get("scale");
+  var newScale = scale * 1.5;
+  object.set("scale", newScale);
+  object.set("position", { x: x, y: y, z: z });
+}
