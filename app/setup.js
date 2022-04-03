@@ -14,9 +14,62 @@ var gridOrigin = [350, 35];
 
 var background, turnFeedback, otherFeedback, cursorObject;
 
+var mainContext = Engine.createContext();
+
+function drawBackground(imagePath) {
+  var itemView = new ImageSurface({
+    size: [window.innerWidth, window.innerHeight],
+    content: imagePath,
+    classes: ["background"],
+  });
+
+  mainContext.add(itemView);
+}
+
+function drawImage(image, size, position) {
+  var itemView = new ImageSurface({
+    size: size,
+    content: image,
+  });
+
+  var itemTranslateModifier = new Modifier({
+    transform: function () {
+      return Transform.translate(position[0], position[1], 0);
+    },
+  });
+
+  mainContext.add(itemTranslateModifier).add(itemView);
+}
+
+function drawItem(item) {
+  drawImage(item.get("source"), item.get("size"), item.get("position"));
+}
+
+function drawRoom(room) {
+  drawBackground(room.get("background"));
+  room.get("items").forEach((item) => {
+    drawItem(item);
+  });
+}
+
+function drawWall1() {
+  drawRoom(wall1);
+}
+
+function drawWall2() {
+  drawRoom(wall2);
+}
+
+function drawWall3() {
+  drawRoom(wall3);
+}
+
+function drawWall4() {
+  drawRoom(wall4);
+}
+
 // USER INTERFACE SETUP
 var setupUserInterface = function () {
-  var mainContext = Engine.createContext();
   background = new Surface({
     content: "<h1>battleship</h1>",
     properties: {
@@ -116,64 +169,7 @@ var setupUserInterface = function () {
     mainContext.add(labelModifier).add(label);
   });
 
-  function drawBackground(imagePath) {
-    var itemView = new ImageSurface({
-      size: [window.innerWidth, window.innerHeight * 0.9],
-      content: imagePath,
-      classes: ["background"],
-    });
-
-    mainContext.add(itemView);
-  }
-
-  function drawImage(image, size, position) {
-    var itemView = new ImageSurface({
-      size: size,
-      content: image,
-    });
-
-    var itemTranslateModifier = new Modifier({
-      transform: function () {
-        return Transform.translate(position[0], position[1], 0);
-      },
-    });
-
-    mainContext.add(itemTranslateModifier).add(itemView);
-  }
-
-  function drawItem(item) {
-    drawImage(item.get("source"), item.get("size"), item.get("position"));
-  }
-
-  function drawRoom(room) {
-    drawBackground(room.get("background"));
-    room.get("items").forEach((item) => {
-      drawItem(item);
-    });
-  }
-
-  function drawWall1() {
-    drawRoom(wall1);
-  }
-
   drawWall1();
-
-  function drawWall2() {
-    drawRoom(wall2);
-  }
-
-  drawWall2();
-  // goToWall2();
-
-  function drawWall3() {
-    drawRoom(wall3);
-  }
-
-  function drawWall4() {
-    drawRoom(wall4);
-  }
-
-  drawWall2();
 
   /*
   // Draw the player ships
