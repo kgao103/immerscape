@@ -192,3 +192,41 @@ wall4 = new View({
   background: "img/purple_wall.png",
   items: [dresser, mashedPotatoes],
 });
+
+var Room = Backbone.Model.extend({
+  defaults: {
+    currentView: "",
+    views: {},
+    transitions: {},
+  },
+
+  transition: function (type) {
+    if (this.get("currentView") in transitions[type]) {
+      this.set("currentView", transitions[type][this.get("currentView")]);
+    }
+  },
+});
+
+room = new Room({
+  currentView: "wall1",
+  views: {
+    wall1: wall1,
+    wall2: wall2,
+    wall3: wall3,
+    wall4: wall4,
+  },
+  transitions: {
+    left: {
+      wall1: "wall4",
+      wall2: "wall1",
+      wall3: "wall2",
+      wall4: "wall3",
+    },
+    right: {
+      wall1: "wall2",
+      wall2: "wall3",
+      wall3: "wall4",
+      wall4: "wall1",
+    },
+  },
+});
