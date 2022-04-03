@@ -15,14 +15,14 @@ var gridOrigin = [350, 35];
 var background, turnFeedback, otherFeedback;
 
 // USER INTERFACE SETUP
-var setupUserInterface = function() {
+var setupUserInterface = function () {
   var mainContext = Engine.createContext();
   background = new Surface({
     content: "<h1>battleship</h1>",
     properties: {
       backgroundColor: "rgb(34, 34, 34)",
-      color: "white"
-    }
+      color: "white",
+    },
   });
   mainContext.add(background);
   turnFeedback = new Surface({
@@ -30,76 +30,88 @@ var setupUserInterface = function() {
     size: [undefined, 150],
     properties: {
       backgroundColor: "rgb(34, 34, 34)",
-      color: "white"
-    }
+      color: "white",
+    },
   });
   var turnModifier = new StateModifier({
     origin: [0.0, 0.0],
-    align: [0.0, 0.4] 
-  })
+    align: [0.0, 0.4],
+  });
   mainContext.add(turnModifier).add(turnFeedback);
   otherFeedback = new Surface({
     content: "",
     size: [undefined, 50],
     properties: {
       backgroundColor: "rgb(34, 34, 34)",
-      color: "white"
-    }
+      color: "white",
+    },
   });
   var otherModifier = new StateModifier({
     origin: [0.0, 1.0],
-    align: [0.0, 1.0]
-  })
+    align: [0.0, 1.0],
+  });
   mainContext.add(otherModifier).add(otherFeedback);
 
   // Draw the board
   for (var row = 0; row < NUMTILES; row++) {
     for (var col = 0; col < NUMTILES; col++) {
       var tile = new Surface({
-          size: [TILESIZE, TILESIZE],
-          properties: {
-              backgroundColor: Colors.GREY,
-              color: "white",
-              border: "solid 1px black"
-          },
+        size: [TILESIZE, TILESIZE],
+        properties: {
+          backgroundColor: Colors.GREY,
+          color: "white",
+          border: "solid 1px black",
+        },
       });
       var transformModifier = new StateModifier({
-        transform: Transform.translate(gridOrigin[0] + col*TILESIZE, gridOrigin[1] + row*TILESIZE, 0)
+        transform: Transform.translate(
+          gridOrigin[0] + col * TILESIZE,
+          gridOrigin[1] + row * TILESIZE,
+          0
+        ),
       });
       var tileModifier = new Modifier({
-        opacity: 1.0
+        opacity: 1.0,
       });
       mainContext.add(transformModifier).add(tileModifier).add(tile);
       tiles.push(tile);
       tileModifiers.push(tileModifier);
     }
   }
-  ROWNAMES.slice(0,NUMTILES).forEach(function(rowName, row) {
+  ROWNAMES.slice(0, NUMTILES).forEach(function (rowName, row) {
     var label = new Surface({
-        content: rowName,
-        size: [TILESIZE, TILESIZE],
-        properties: {
-          textAlign: "center",
-          color: "white",
-          lineHeight: TILESIZE / 15
-        },
+      content: rowName,
+      size: [TILESIZE, TILESIZE],
+      properties: {
+        textAlign: "center",
+        color: "white",
+        lineHeight: TILESIZE / 15,
+      },
     });
     var labelModifier = new StateModifier({
-      transform: Transform.translate(gridOrigin[0] - 80, gridOrigin[1] + row*TILESIZE, 0)
+      transform: Transform.translate(
+        gridOrigin[0] - 80,
+        gridOrigin[1] + row * TILESIZE,
+        0
+      ),
     });
     mainContext.add(labelModifier).add(label);
   });
-  COLNAMES.slice(0,NUMTILES).forEach(function(colName, col) {
+  COLNAMES.slice(0, NUMTILES).forEach(function (colName, col) {
     var label = new Surface({
-        content: colName,
-        size: [TILESIZE, TILESIZE],
-        properties: {
-          textAlign: "center",
-          color: "white"
-        },
+      content: colName,
+      size: [TILESIZE, TILESIZE],
+      properties: {
+        textAlign: "center",
+        color: "white",
+      },
     });
     var labelModifier = new StateModifier({
-      transform: Transform.translate(gridOrigin[0] + col*TILESIZE, gridOrigin[1] - 25, 0)
+      transform: Transform.translate(
+        gridOrigin[0] + col * TILESIZE,
+        gridOrigin[1] - 25,
+        0
+      ),
     });
     mainContext.add(labelModifier).add(label);
   });
@@ -107,7 +119,7 @@ var setupUserInterface = function() {
   function drawBackground() {
     var itemView = new ImageSurface({
       size: [1000, 500],
-      content: 'img/blue_wall.png',
+      content: "img/blue_wall.png",
     });
 
     mainContext.add(itemView);
@@ -115,22 +127,23 @@ var setupUserInterface = function() {
 
   drawBackground();
 
-  function drawImage() {
+  function drawImage(image, size, position) {
     var itemView = new ImageSurface({
-      size: [100, 100],
-      content: 'img/key.png',
+      size: size,
+      content: image,
     });
 
     var itemTranslateModifier = new Modifier({
-      transform : function(){
-        return Transform.translate(100, 100, 0);
-      }
+      transform: function () {
+        return Transform.translate(position[0], position[1], 0);
+      },
     });
 
     mainContext.add(itemTranslateModifier).add(itemView);
   }
 
-  drawImage();
+  drawImage("img/key.png", [100, 100], [100, 100]);
+  drawImage("img/mousehole_sad.png", [100, 100], [200, 200]);
 
   /*
   // Draw the player ships
@@ -166,21 +179,20 @@ var setupUserInterface = function() {
 
   // Draw the cursor
   var cursorSurface = new Surface({
-    size : [CURSORSIZE, CURSORSIZE],
-    classes: ['cursor'],
-    properties : {
-        borderRadius: CURSORSIZE/2 + 'px',
-        pointerEvents : 'none',
-        zIndex: 1
-    }
+    size: [CURSORSIZE, CURSORSIZE],
+    classes: ["cursor"],
+    properties: {
+      borderRadius: CURSORSIZE / 2 + "px",
+      pointerEvents: "none",
+      zIndex: 1,
+    },
   });
-  var cursorOriginModifier = new StateModifier({origin: [0.5, 0.5]});
+  var cursorOriginModifier = new StateModifier({ origin: [0.5, 0.5] });
   var cursorModifier = new Modifier({
-    transform : function(){
-      var cursorPosition = this.get('screenPosition');
+    transform: function () {
+      var cursorPosition = this.get("screenPosition");
       return Transform.translate(cursorPosition[0], cursorPosition[1], 0);
-    }.bind(cursor)
+    }.bind(cursor),
   });
   mainContext.add(cursorOriginModifier).add(cursorModifier).add(cursorSurface);
-
 };
