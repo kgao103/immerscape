@@ -71,6 +71,8 @@ var Item = Backbone.Model.extend({
     source: "",
     size: [0, 0],
     position: [0, 0],
+    grabbable: false,
+    name: "",
   },
 
   initialize: function () {
@@ -164,6 +166,23 @@ mashedPotatoes = new Item({
   source: "img/mashed_potatoes.png",
   size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
   position: [window.innerWidth * 0.45, window.innerHeight * 0.3],
+  grabbable: true,
+  name: "mashed potatoes",
+});
+
+cheese = new Item({
+  source: "img/cheese.png",
+  size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
+  position: [window.innerWidth * 0.45, window.innerHeight * 0.3],
+  grabbable: true,
+  name: "cheese",
+});
+
+key = new Item({
+  source: "img/key.png",
+  size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
+  position: [window.innerWidth * 0.45, window.innerHeight * 0.3],
+  grabbable: true,
 });
 
 var View = Backbone.Model.extend({

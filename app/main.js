@@ -27,6 +27,7 @@ var isZoomedIn = false;
 
 var isHovering = false; // if hovering over some object
 var hoveringObject = null; // object hovering over
+var inventoryObjects = [];
 
 // MAIN GAME LOOP
 // Called every time the Leap provides a new frame of data
@@ -106,10 +107,34 @@ var processSpeech = function (transcript) {
       processed = true;
       goToWall(currentWall);
     }
-    if (userSaid(transcript, ["look"]) && isHovering) {
+    var hoveredItem = getHoveredItem();
+    if (userSaid(transcript, ["look"]) && hoveredItem) {
       isZoomedIn = true;
       processed = true;
-      zoomInObject(hoveringObject);
+      zoomInObject(hoveredItem);
+    }
+    if (userSaid(transcript, ["zoom out"]) && isZoomedIn) {
+      isZoomedIn = false;
+      processed = true;
+      goToWall(currentWall);
+    }
+    if (
+      userSaid(transcript, ["grab"]) &&
+      hoveredItem &&
+      hoveredItem.grabbable
+    ) {
+      isZoomedIn = true;
+      processed = true;
+      inventoryObjects.push(hoveredItem);
+      zoomInObject(hoveredItem);
+    }
+    if (
+      hoveredItem &&
+      userSaid(transcript, ["use one", "use two", "use three", "use four"])
+    ) {
+      processed = true;
+      useObjectOnItem(inventoryObjects[0], hoveredItem);
+      arrayRemoveItem(inventoryObjects, inventoryObjects[0]);
     }
 
     console.log("currentWall: ", currentWall);
@@ -404,4 +429,20 @@ function zoomInObject(object) {
   var newScale = scale * 1.5;
   object.set("scale", newScale);
   object.set("position", { x: x, y: y, z: z });
+}
+
+function getHoveredItem() {
+  for (item in getWall(currentWall).items) {
+    if (item.isHovered) {
+      return item;
+    }
+  }
+  return false;
+}
+
+function arrayRemoveItem(array, item) {
+  var index = array.indexOf(item);
+  if (index > -1) {
+    array.splice(index, 1);
+  }
 }
