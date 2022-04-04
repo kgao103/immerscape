@@ -54,18 +54,51 @@ function drawView(view) {
 
 function drawWall1() {
   drawView(wall1);
+  drawInventory();
 }
 
 function drawWall2() {
   drawView(wall2);
+  drawInventory();
 }
 
 function drawWall3() {
   drawView(wall3);
+  drawInventory();
 }
 
 function drawWall4() {
   drawView(wall4);
+  console.log("before drawing inventory");
+  drawInventory();
+}
+
+function drawInventory() {
+  console.log("drawing inventory");
+  var INVENTORY_SIZE = 5;
+  var SLOT_SIZE = 100;
+  var SLOT_SPACING = 10;
+  var TOTAL_WIDTH =
+    SLOT_SIZE * INVENTORY_SIZE + SLOT_SPACING * (INVENTORY_SIZE - 1);
+  for (var i = 0; i < INVENTORY_SIZE; i++) {
+    var tileView = new Surface({
+      size: [SLOT_SIZE, SLOT_SIZE],
+      properties: {
+        backgroundColor: "#ccffff",
+        border: "solid 1px #ccffff",
+      },
+    });
+
+    var tileTranslateModifier = new Modifier({
+      transform: Transform.translate(
+        (window.innerWidth - TOTAL_WIDTH) / 2 + (SLOT_SIZE + SLOT_SPACING) * i,
+        window.innerHeight - SLOT_SIZE - 10,
+        0
+      ),
+    });
+
+    mainContext.add(tileTranslateModifier).add(tileView);
+  }
 }
 
 // USER INTERFACE SETUP
@@ -182,31 +215,7 @@ var setupUserInterface = function () {
   }
 
   drawWall1();
-
-  var INVENTORY_SIZE = 5;
-  var SLOT_SIZE = 100;
-  var SLOT_SPACING = 10;
-  var TOTAL_WIDTH =
-    SLOT_SIZE * INVENTORY_SIZE + SLOT_SPACING * (INVENTORY_SIZE - 1);
-  for (var i = 0; i < INVENTORY_SIZE; i++) {
-    var tileView = new Surface({
-      size: [SLOT_SIZE, SLOT_SIZE],
-      properties: {
-        backgroundColor: "white",
-        border: "solid 1px black",
-      },
-    });
-
-    var tileTranslateModifier = new Modifier({
-      transform: Transform.translate(
-        (window.innerWidth - TOTAL_WIDTH) / 2 + (SLOT_SIZE + SLOT_SPACING) * i,
-        window.innerHeight - SLOT_SIZE - 10,
-        0
-      ),
-    });
-
-    mainContext.add(tileTranslateModifier).add(tileView);
-  }
+  drawInventory();
 
   /*
   // Draw the player ships

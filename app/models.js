@@ -258,6 +258,7 @@ var Room = Backbone.Model.extend({
       let new_view = transition[currentView];
       this.set("currentView", new_view);
       drawView(this.get("views")[new_view]);
+      drawInventory();
     }
   },
 
