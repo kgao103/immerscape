@@ -511,7 +511,7 @@ function useObjectOnItem(object, item) {
         item.set("state", "happy");
         item.set("source", "img/mousehole_happy.png");
         generateSpeech(
-          "The mouse ate the cheese and thanks you for the cheese."
+          "The mouse ate the cheese and thanks you for the cheese. As a reward, it hands you a golden key."
         );
         inventoryObjects.push(key);
         drawView(currentRoom.getView());
