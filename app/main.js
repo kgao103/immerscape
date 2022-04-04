@@ -31,6 +31,9 @@ var isHovering = false; // if hovering over some object
 var hoveringObject = null; // object hovering over
 var inventoryObjects = [];
 
+var disableTransition = true;
+var elapsedFrames = 0;
+
 // MAIN GAME LOOP
 // Called every time the Leap provides a new frame of data
 Leap.loop({
@@ -60,9 +63,23 @@ Leap.loop({
       isGrabbing = hand.grabStrength > 0.5;
       if (isGrabbing) {
         console.log("isGrabbing");
-        var hoveredItem = getHoveredItem(cursor.get("screenPosition"));
-        if (hoveredItem && hoveredItem.get("grabbable")) {
-          grabItem(hoveredItem);
+        if (tryGrab()) {
+
+        } else if (!disableTransition) {
+          if (cursorPosition[0] < window.innerWidth * 0.1) {
+            currentRoom.transition("left");
+            disableTransition = true;
+            elapsedFrames = 0;
+          } else if (cursorPosition[0] > window.innerWidth * 0.9) {
+            currentRoom.transition("right");
+            disableTransition = true;
+            elapsedFrames = 0;
+          }
+        }
+      } else {
+        elapsedFrames += 1;
+        if (elapsedFrames >= 10) {
+          disableTransition = false;
         }
       }
     }
