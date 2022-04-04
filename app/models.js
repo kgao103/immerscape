@@ -160,6 +160,12 @@ dresser = new Item({
   position: [window.innerWidth * 0.4, window.innerHeight * 0.38],
 });
 
+mashedPotatoes = new Item({
+  source: "img/mashed_potatoes.png",
+  size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
+  position: [window.innerWidth * 0.45, window.innerHeight * 0.3],
+});
+
 var View = Backbone.Model.extend({
   defaults: {
     background: "",
@@ -184,8 +190,8 @@ wall3 = new View({
 
 wall4 = new View({
   background: "img/purple_wall.png",
-  items: [dresser],
-})
+  items: [dresser, mashedPotatoes],
+});
 
 var Room = Backbone.Model.extend({
   defaults: {
@@ -212,23 +218,23 @@ var Room = Backbone.Model.extend({
 room = new Room({
   currentView: "wall1",
   views: {
-    "wall1": wall1,
-    "wall2": wall2,
-    "wall3": wall3,
-    "wall4": wall4,
+    wall1: wall1,
+    wall2: wall2,
+    wall3: wall3,
+    wall4: wall4,
   },
   transitions: {
-    "left": {
-      "wall1": "wall4",
-      "wall2": "wall1",
-      "wall3": "wall2",
-      "wall4": "wall3",
+    left: {
+      wall1: "wall4",
+      wall2: "wall1",
+      wall3: "wall2",
+      wall4: "wall3",
     },
-    "right": {
-      "wall1": "wall2",
-      "wall2": "wall3",
-      "wall3": "wall4",
-      "wall4": "wall1",
-    } 
+    right: {
+      wall1: "wall2",
+      wall2: "wall3",
+      wall3: "wall4",
+      wall4: "wall1",
+    },
   },
 });
