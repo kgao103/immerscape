@@ -108,7 +108,7 @@ var processSpeech = function (transcript) {
       currentRoom.transition("right");
       processed = true;
     }
-    var hoveredItem = getHoveredItem();
+    var hoveredItem = getHoveredItem(cursor.get("screenPosition"));
     if (userSaid(transcript, ["look"]) && hoveredItem) {
       isZoomedIn = true;
       processed = true;
@@ -130,10 +130,14 @@ var processSpeech = function (transcript) {
       processed = true;
       inventoryObjects.push(hoveredItem);
       zoomInObject(hoveredItem);
+      console.log("grabbed object");
     }
     if (hoveredItem && getInventoryItemIndice(transcript)) {
       processed = true;
-      useObjectOnItem(getInventoryItemIndice(transcript), hoveredItem);
+      useObjectOnItem(
+        inventoryObjects[getInventoryItemIndice(transcript)],
+        hoveredItem
+      );
       inventoryObjects.splice(getInventoryItemIndice(transcript), 1);
     }
 
@@ -423,9 +427,9 @@ function zoomInObject(object) {
   console.log("zoomed in on object" + object);
 }
 
-function getHoveredItem() {
-  for (item in getWall(currentWall).items) {
-    if (item.isHovered) {
+function getHoveredItem(cursorPosition) {
+  for (item of currentRoom.getView().get("items")) {
+    if (item.isHovered(cursorPosition)) {
       return item;
     }
   }
@@ -446,4 +450,51 @@ function getInventoryItemIndice(transcript) {
     }
   }
   return -1;
+}
+
+function useObjectOnItem(object, item) {
+  if (object.name == "key") {
+    if (item.name == "door") {
+      if (item.get("isOpen")) {
+        generateSpeech("The door is already open");
+      } else {
+        item.set("isOpen", true);
+        generateSpeech("You unlocked the door");
+      }
+    } else {
+      generateSpeech("You can't use the key on that");
+    }
+  } else if (object.name == "cheese") {
+    if (item.name == "mousehole") {
+      if (item.get("state") == "sad") {
+        item.set("state", "happy");
+        generateSpeech(
+          "The mouse ate the cheese and thanks you for the cheese."
+        );
+      } else if (item.get("state") == "happy") {
+        generateSpeech("The mouse is already happy");
+      } else if (item.get("state") == "dead") {
+        generateSpeech(
+          "The mouse is dead. It can't eat the cheese anymore you idiot."
+        );
+      }
+    } else {
+      generateSpeech("You can't use the cheese on that");
+    }
+  } else if (object.name == "mashed potatoes") {
+    if (item.name == "mousehole") {
+      if (item.get("state") !== "dead") {
+        item.set("state", "dead");
+        generateSpeech("The mouse ate the mashed potatoes and instantly dies.");
+      } else {
+        generateSpeech(
+          "The mouse is already dead. It can't eat the mashed potatoes anymore you idiot. "
+        );
+      }
+    } else {
+      generateSpeech("You can't use the mashed potatoes on that");
+    }
+  } else {
+    generateSpeech("You can't use " + object.name + " on " + item.name);
+  }
 }

@@ -103,79 +103,87 @@ var Item = Backbone.Model.extend({
 });
 var ItemSet = Backbone.Collection.extend({ model: Item });
 
-mousehole_sad = new Item({
-  source: "img/mousehole_sad.png",
+mousehole = new Item({
+  state: "sad",
+  source:
+    state == "sad"
+      ? "images/mousehole_sad.png"
+      : state == "happy"
+      ? "images/mousehole_happy.png"
+      : "images/mousehole_dead.png",
   size: [100, 100],
   position: [window.innerWidth * 0.5, window.innerHeight * 0.605],
+  name: "mousehole",
   description:
-    "You see a sad mouse in a hole in the wall. It looks like it wants something to eat",
-});
-
-mousehole_happy = new Item({
-  source: "img/mousehole_happy.png",
-  size: [100, 100],
-  position: [window.innerWidth * 0.5, window.innerHeight * 0.605],
-  description: "The mouse thanks you for the cheese and gives you a key",
-});
-
-mousehole_dead = new Item({
-  source: "img/mousehole_dead.png",
-  size: [100, 100],
-  position: [window.innerWidth * 0.5, window.innerHeight * 0.605],
-  description: "The mouse eats the mashed potatoe powder and dies.",
+    state == "sad"
+      ? "You see a sad mouse in a hole in the wall. It looks like it wants something to eat"
+      : state == "happy"
+      ? "The mouse thanks you for the cheese and gives you a key"
+      : "The mouse eats the mashed potatoe powder and dies.",
 });
 
 door = new Item({
-  source: "img/door.png",
+  isOpen: false,
+  source: isOpen ? "img/door_opened.png" : "img/door.png",
   size: [200, 400],
+  name: "door",
   position: [window.innerWidth * 0.25, window.innerHeight * 0.18],
 });
 
 clock = new Item({
   source: "img/clock.png",
   size: [100, 100],
+  name: "clock",
   position: [window.innerWidth * 0.6, window.innerHeight * 0.22],
 });
 
-fridge_closed = new Item({
-  source: "img/fridge_closed.png",
+fridge = new Item({
   size: [220, 220],
+  name: "fridge",
+  isOpen: false,
+  source: isOpen ? "img/fridge_open.png" : "img/fridge_closed.png",
   position: [window.innerWidth * 0.65, window.innerHeight * 0.55],
 });
 
 lamp = new Item({
   source: "img/lamp.png",
   size: [100, 350],
+  name: "lamp",
   position: [window.innerWidth * 0.2, window.innerHeight * 0.3],
 });
 
 painting = new Item({
   source: "img/painting.png",
   size: [180, 240],
+  name: "painting",
   position: [window.innerWidth * 0.4, window.innerHeight * 0.22],
 });
 
 bedtable = new Item({
   source: "img/bedtable.png",
   size: [window.innerWidth * 0.12, window.innerWidth * 0.12],
+  name: "bedtable",
   position: [window.innerWidth * 0.3, window.innerHeight * 0.6],
 });
 
 bed = new Item({
   source: "img/bed.png",
   size: [500, 300],
+  name: "bed",
   position: [window.innerWidth * 0.4, window.innerHeight * 0.5],
 });
 
 painting2 = new Item({
   source: "img/painting2.jpeg",
   size: [window.innerWidth * 0.12, window.innerWidth * 0.15],
+  name: "painting2",
   position: [window.innerWidth * 0.3, window.innerHeight * 0.2],
 });
 
 dresser = new Item({
   source: "img/dresser.png",
   size: [window.innerWidth * 0.4, window.innerWidth * 0.25],
+  name: "dresser",
   position: [window.innerWidth * 0.4, window.innerHeight * 0.38],
 });
 
@@ -200,6 +208,7 @@ key = new Item({
   size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
   position: [window.innerWidth * 0.45, window.innerHeight * 0.3],
   grabbable: true,
+  name: "key",
 });
 
 var View = Backbone.Model.extend({
@@ -211,12 +220,12 @@ var View = Backbone.Model.extend({
 
 wall1 = new View({
   background: "img/blue_wall.png",
-  items: [mousehole_sad, door, clock],
+  items: [mousehole, door, clock],
 });
 
 wall2 = new View({
   background: "img/pink_wall.png",
-  items: [fridge_closed, lamp, painting],
+  items: [fridge, lamp, painting],
 });
 
 wall3 = new View({
