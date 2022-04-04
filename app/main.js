@@ -22,6 +22,7 @@ var grabbedOffset = [0, 0];
 var isGrabbing = false;
 
 // global variables for our game
+var currentRoom = room;
 var currentWall = 1;
 var isZoomedIn = false;
 
@@ -63,7 +64,7 @@ Leap.loop({
       isGrabbing = false;
 
       cursorObject.setProperties({ backgroundColor: "pink" });
-      getWall(currentWall)
+      currentRoom.getView()
         .get("items")
         .forEach((item) => {
           if (item.isHovered(cursorPosition)) {
@@ -97,14 +98,12 @@ var processSpeech = function (transcript) {
   var processed = false;
   if (!isZoomedIn) {
     if (userSaid(transcript, ["left"])) {
-      currentWall = currentWall == 1 ? 4 : currentWall - 1;
+      currentRoom.transition("left");
       processed = true;
-      goToWall(currentWall);
     }
     if (userSaid(transcript, ["right"])) {
-      currentWall = currentWall == 4 ? 1 : currentWall + 1;
+      currentRoom.transition("right");
       processed = true;
-      goToWall(currentWall);
     }
     if (userSaid(transcript, ["look"]) && isHovering) {
       isZoomedIn = true;

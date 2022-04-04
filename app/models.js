@@ -195,10 +195,18 @@ var Room = Backbone.Model.extend({
   },
 
   transition: function (type) {
-    if (this.get('currentView') in transitions[type]) {
-      this.set('currentView', transitions[type][this.get('currentView')]);
+    let transition = this.get('transitions')[type];
+    let currentView = this.get('currentView');;
+    if (currentView in transition) {
+      let new_view = transition[currentView];
+      this.set('currentView', new_view);
+      drawView(this.get('views')[new_view]);
     }
-  }
+  },
+
+  getView: function() {
+    return this.get('views')[this.get('currentView')];
+  },
 });
 
 room = new Room({
