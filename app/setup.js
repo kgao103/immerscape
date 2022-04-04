@@ -169,14 +169,9 @@ var setupUserInterface = function () {
     mainContext.add(labelModifier).add(label);
   });
 
-  drawWall1();
-
   function drawWall2() {
     drawView(wall2);
   }
-
-  drawWall2();
-  // goToWall2();
 
   function drawWall3() {
     drawView(wall3);
@@ -186,7 +181,7 @@ var setupUserInterface = function () {
     drawView(wall4);
   }
 
-  drawWall2();
+  drawWall1();
 
   var INVENTORY_SIZE = 5;
   var SLOT_SIZE = 100;
