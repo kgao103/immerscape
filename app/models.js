@@ -73,6 +73,7 @@ var Item = Backbone.Model.extend({
     position: [0, 0],
     grabbable: false,
     name: "",
+    description: "",
   },
 
   initialize: function () {
@@ -106,6 +107,22 @@ mousehole_sad = new Item({
   source: "img/mousehole_sad.png",
   size: [100, 100],
   position: [window.innerWidth * 0.5, window.innerHeight * 0.605],
+  description:
+    "You see a sad mouse in a hole in the wall. It looks like it wants something to eat",
+});
+
+mousehole_happy = new Item({
+  source: "img/mousehole_happy.png",
+  size: [100, 100],
+  position: [window.innerWidth * 0.5, window.innerHeight * 0.605],
+  description: "The mouse thanks you for the cheese and gives you a key",
+});
+
+mousehole_dead = new Item({
+  source: "img/mousehole_dead.png",
+  size: [100, 100],
+  position: [window.innerWidth * 0.5, window.innerHeight * 0.605],
+  description: "The mouse eats the mashed potatoe powder and dies.",
 });
 
 door = new Item({
@@ -220,17 +237,17 @@ var Room = Backbone.Model.extend({
   },
 
   transition: function (type) {
-    let transition = this.get('transitions')[type];
-    let currentView = this.get('currentView');;
+    let transition = this.get("transitions")[type];
+    let currentView = this.get("currentView");
     if (currentView in transition) {
       let new_view = transition[currentView];
-      this.set('currentView', new_view);
-      drawView(this.get('views')[new_view]);
+      this.set("currentView", new_view);
+      drawView(this.get("views")[new_view]);
     }
   },
 
-  getView: function() {
-    return this.get('views')[this.get('currentView')];
+  getView: function () {
+    return this.get("views")[this.get("currentView")];
   },
 });
 

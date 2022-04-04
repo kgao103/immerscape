@@ -25,6 +25,7 @@ var isGrabbing = false;
 var currentRoom = room;
 var currentWall = 1;
 var isZoomedIn = false;
+var zoomedInObject = false;
 
 var isHovering = false; // if hovering over some object
 var hoveringObject = null; // object hovering over
@@ -65,7 +66,8 @@ Leap.loop({
       isGrabbing = false;
 
       cursorObject.setProperties({ backgroundColor: "pink" });
-      currentRoom.getView()
+      currentRoom
+        .getView()
         .get("items")
         .forEach((item) => {
           if (item.isHovered(cursorPosition)) {
@@ -110,11 +112,13 @@ var processSpeech = function (transcript) {
     if (userSaid(transcript, ["look"]) && hoveredItem) {
       isZoomedIn = true;
       processed = true;
+      zoomedInObject = hoveredItem;
       zoomInObject(hoveredItem);
     }
     if (userSaid(transcript, ["zoom out"]) && isZoomedIn) {
       isZoomedIn = false;
       processed = true;
+      zoomedInObject = false;
       goToWall(currentWall);
     }
     if (
@@ -127,25 +131,13 @@ var processSpeech = function (transcript) {
       inventoryObjects.push(hoveredItem);
       zoomInObject(hoveredItem);
     }
-    if (
-      hoveredItem &&
-      userSaid(transcript, ["use one", "use two", "use three", "use four"])
-    ) {
+    if (hoveredItem && getInventoryItemIndice(transcript)) {
       processed = true;
-      useObjectOnItem(inventoryObjects[0], hoveredItem);
-      arrayRemoveItem(inventoryObjects, inventoryObjects[0]);
+      useObjectOnItem(getInventoryItemIndice(transcript), hoveredItem);
+      inventoryObjects.splice(getInventoryItemIndice(transcript), 1);
     }
 
     console.log("currentWall: ", currentWall);
-
-    // 4.3, Starting the game with speech
-    // Detect the 'start' command, and start the game if it was said
-    // if (userSaid(transcript, ["start", "Start"])) {
-    //   gameState.startGame();
-    //   console.log("game started");
-    //   generateSpeech("Game started. Let's go.");
-    //   processed = true;
-    // }
   } else if (gameState.get("state") == "playing") {
     if (gameState.isPlayerTurn()) {
       // 4.4, Player's turn
@@ -428,6 +420,7 @@ function zoomInObject(object) {
   var newScale = scale * 1.5;
   object.set("scale", newScale);
   object.set("position", { x: x, y: y, z: z });
+  console.log("zoomed in on object" + object);
 }
 
 function getHoveredItem() {
@@ -444,4 +437,13 @@ function arrayRemoveItem(array, item) {
   if (index > -1) {
     array.splice(index, 1);
   }
+}
+
+function getInventoryItemIndice(transcript) {
+  for (var i = 0; i < inventoryObjects.length; i++) {
+    if (transcript.includes(inventoryObjects[i].name.toLowerCase())) {
+      return i;
+    }
+  }
+  return -1;
 }
