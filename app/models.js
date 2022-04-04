@@ -105,26 +105,30 @@ var ItemSet = Backbone.Collection.extend({ model: Item });
 
 mousehole = new Item({
   state: "sad",
-  source:
-    state == "sad"
-      ? "images/mousehole_sad.png"
-      : state == "happy"
-      ? "images/mousehole_happy.png"
-      : "images/mousehole_dead.png",
+  get source() {
+    return this.state === "sad"
+      ? "img/mousehole_sad.png"
+      : this.state === "happy"
+      ? "img/mousehole_happy.png"
+      : "img/mousehole_dead.png";
+  },
   size: [100, 100],
   position: [window.innerWidth * 0.5, window.innerHeight * 0.605],
   name: "mousehole",
-  description:
-    state == "sad"
+  get description() {
+    return this.state === "sad"
       ? "You see a sad mouse in a hole in the wall. It looks like it wants something to eat"
-      : state == "happy"
+      : this.state === "happy"
       ? "The mouse thanks you for the cheese and gives you a key"
-      : "The mouse eats the mashed potatoe powder and dies.",
+      : "The mouse eats the mashed potatoe powder and dies.";
+  },
 });
 
 door = new Item({
   isOpen: false,
-  source: isOpen ? "img/door_opened.png" : "img/door.png",
+  get source() {
+    return this.isOpen ? "img/door_opened.png" : "img/door.png";
+  },
   size: [200, 400],
   name: "door",
   position: [window.innerWidth * 0.25, window.innerHeight * 0.18],
@@ -141,7 +145,9 @@ fridge = new Item({
   size: [220, 220],
   name: "fridge",
   isOpen: false,
-  source: isOpen ? "img/fridge_open.png" : "img/fridge_closed.png",
+  get source() {
+    return this.isOpen ? "img/fridge_open.png" : "img/fridge_closed.png";
+  },
   position: [window.innerWidth * 0.65, window.innerHeight * 0.55],
 });
 
