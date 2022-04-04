@@ -71,7 +71,11 @@ Leap.loop({
         .get("items")
         .forEach((item) => {
           if (item.isHovered(cursorPosition)) {
-            cursorObject.setProperties({ backgroundColor: "green" });
+            if (item.get("grabbable")) {
+              cursorObject.setProperties({ backgroundColor: "#00ffff" });
+            } else {
+              cursorObject.setProperties({ backgroundColor: "#66ff33" });
+            }
           }
         });
 
@@ -91,6 +95,7 @@ Leap.loop({
 //    processed, a boolean indicating whether the system reacted to the speech or not
 var processSpeech = function (transcript) {
   // Helper function to detect if any commands appear in a string
+  console.log(transcript);
   var userSaid = function (str, commands) {
     for (var i = 0; i < commands.length; i++) {
       if (str.indexOf(commands[i]) > -1) return true;
@@ -108,37 +113,42 @@ var processSpeech = function (transcript) {
       currentRoom.transition("right");
       processed = true;
     }
-    var hoveredItem = getHoveredItem(cursor.get("screenPosition"));
+    var hoveredItem = getHoveredItem(cursor.get("screenPosition")); // previously: cusor.get("screenPosition")
+    // console.log("screen position", cursor.get("screenPosition"));
+    // console.log("hovered item name: ", hoveredItem.get("name"));
     if (userSaid(transcript, ["look"]) && hoveredItem) {
       isZoomedIn = true;
       processed = true;
       zoomedInObject = hoveredItem;
       zoomInObject(hoveredItem);
-    }
-    if (userSaid(transcript, ["zoom out"]) && isZoomedIn) {
+    } else if (userSaid(transcript, ["zoom out"]) && isZoomedIn) {
       isZoomedIn = false;
       processed = true;
       zoomedInObject = false;
       goToWall(currentWall);
-    }
-    if (
+    } else if (
       userSaid(transcript, ["grab"]) &&
       hoveredItem &&
-      hoveredItem.grabbable
+      hoveredItem.get("grabbable")
     ) {
-      isZoomedIn = true;
       processed = true;
       inventoryObjects.push(hoveredItem);
-      zoomInObject(hoveredItem);
       console.log("grabbed object");
-    }
-    if (hoveredItem && getInventoryItemIndice(transcript)) {
+      console.log("inventory: ", inventoryObjects);
+      currentRoom.getView().removeItem(hoveredItem);
+      drawView(currentRoom.getView());
+      drawInventory();
+    } else if (hoveredItem && getInventoryItemIndice(transcript) > -1) {
       processed = true;
-      useObjectOnItem(
+      var objectWasUsed = useObjectOnItem(
         inventoryObjects[getInventoryItemIndice(transcript)],
         hoveredItem
       );
-      inventoryObjects.splice(getInventoryItemIndice(transcript), 1);
+      if (objectWasUsed) {
+        inventoryObjects.splice(getInventoryItemIndice(transcript), 1);
+        drawInventory();
+      }
+    } else {
     }
 
     console.log("currentWall: ", currentWall);
@@ -445,56 +455,81 @@ function arrayRemoveItem(array, item) {
 
 function getInventoryItemIndice(transcript) {
   for (var i = 0; i < inventoryObjects.length; i++) {
-    if (transcript.includes(inventoryObjects[i].name.toLowerCase())) {
+    if (transcript.includes(inventoryObjects[i].get("name").toLowerCase())) {
       return i;
     }
   }
   return -1;
 }
 
+// returns true if object was used, false otherwise
 function useObjectOnItem(object, item) {
-  if (object.name == "key") {
-    if (item.name == "door") {
+  if (object.get("name") == "key") {
+    if (item.get("name") == "door") {
       if (item.get("isOpen")) {
         generateSpeech("The door is already open");
+        return false;
       } else {
         item.set("isOpen", true);
-        generateSpeech("You unlocked the door");
+        item.set("source", "img/door_opened.png");
+        generateSpeech(
+          "You unlocked the door. Congrats on solving the escape room"
+        );
+        drawView(currentRoom.getView());
+        drawInventory();
+        return true;
       }
     } else {
       generateSpeech("You can't use the key on that");
+      return false;
     }
-  } else if (object.name == "cheese") {
-    if (item.name == "mousehole") {
+  } else if (object.get("name") == "cheese") {
+    if (item.get("name") == "mousehole") {
       if (item.get("state") == "sad") {
         item.set("state", "happy");
+        item.set("source", "img/mousehole_happy.png");
         generateSpeech(
           "The mouse ate the cheese and thanks you for the cheese."
         );
+        inventoryObjects.push(key);
+        drawView(currentRoom.getView());
+        return true;
       } else if (item.get("state") == "happy") {
         generateSpeech("The mouse is already happy");
+        return true;
       } else if (item.get("state") == "dead") {
         generateSpeech(
           "The mouse is dead. It can't eat the cheese anymore you idiot."
         );
+        return false;
       }
     } else {
       generateSpeech("You can't use the cheese on that");
+      return false;
     }
-  } else if (object.name == "mashed potatoes") {
-    if (item.name == "mousehole") {
+  } else if (object.get("name") == "mashed potatoes") {
+    if (item.get("name") == "mousehole") {
       if (item.get("state") !== "dead") {
-        item.set("state", "dead");
         generateSpeech("The mouse ate the mashed potatoes and instantly dies.");
+        item.set("state", "dead");
+        item.set("source", "img/mousehole_dead.png");
+        drawView(currentRoom.getView());
+        return true;
       } else {
         generateSpeech(
           "The mouse is already dead. It can't eat the mashed potatoes anymore you idiot. "
         );
+        return false;
       }
     } else {
       generateSpeech("You can't use the mashed potatoes on that");
+      return false;
     }
   } else {
-    generateSpeech("You can't use " + object.name + " on " + item.name);
+    generateSpeech(
+      "You can't use " + object.get("name") + " on " + item.get("name")
+    );
+    return false;
   }
+  return true;
 }

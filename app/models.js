@@ -203,8 +203,8 @@ mashedPotatoes = new Item({
 
 cheese = new Item({
   source: "img/cheese.png",
-  size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
-  position: [window.innerWidth * 0.45, window.innerHeight * 0.3],
+  size: [window.innerWidth * 0.07, window.innerWidth * 0.06],
+  position: [window.innerWidth * 0.72, window.innerHeight * 0.51],
   grabbable: true,
   name: "cheese",
 });
@@ -222,6 +222,12 @@ var View = Backbone.Model.extend({
     background: "",
     items: [],
   },
+  removeItem: function (item) {
+    let items = this.get("items");
+    let index = items.indexOf(item);
+    items.splice(index, 1);
+    this.set("items", items);
+  },
 });
 
 wall1 = new View({
@@ -231,7 +237,7 @@ wall1 = new View({
 
 wall2 = new View({
   background: "img/pink_wall.png",
-  items: [fridge, lamp, painting],
+  items: [fridge, lamp, painting, cheese],
 });
 
 wall3 = new View({

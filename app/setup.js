@@ -81,13 +81,24 @@ function drawInventory() {
   var TOTAL_WIDTH =
     SLOT_SIZE * INVENTORY_SIZE + SLOT_SPACING * (INVENTORY_SIZE - 1);
   for (var i = 0; i < INVENTORY_SIZE; i++) {
-    var tileView = new Surface({
-      size: [SLOT_SIZE, SLOT_SIZE],
-      properties: {
-        backgroundColor: "#ccffff",
-        border: "solid 1px #ccffff",
-      },
-    });
+    if (inventoryObjects && i < inventoryObjects.length) {
+      var tileView = new ImageSurface({
+        size: [SLOT_SIZE, SLOT_SIZE],
+        content: inventoryObjects[i].get("source"),
+        properties: {
+          backgroundColor: "#ccffff",
+          border: "solid 1px #ccffff",
+        },
+      });
+    } else {
+      var tileView = new Surface({
+        size: [SLOT_SIZE, SLOT_SIZE],
+        properties: {
+          backgroundColor: "#ccffff",
+          border: "solid 1px #ccffff",
+        },
+      });
+    }
 
     var tileTranslateModifier = new Modifier({
       transform: Transform.translate(
