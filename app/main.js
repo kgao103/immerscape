@@ -148,6 +148,28 @@ var processSpeech = function (transcript) {
         inventoryObjects.splice(getInventoryItemIndice(transcript), 1);
         drawInventory();
       }
+    } else if (
+      userSaid(transcript, ["open"]) &&
+      hoveredItem &&
+      hoveredItem.get("openable")
+    ) {
+      processed = true;
+      console.log(hoveredItem.get("name"));
+      hoveredItem.set("isOpen", true);
+      hoveredItem.set("source", hoveredItem.get("sourceOpened"));
+      drawView(currentRoom.getView());
+      drawInventory();
+    } else if (
+      userSaid(transcript, ["close"]) &&
+      hoveredItem &&
+      hoveredItem.get("openable")
+    ) {
+      processed = true;
+      console.log(hoveredItem.get("name"));
+      hoveredItem.set("isOpen", false);
+      hoveredItem.set("source", hoveredItem.get("sourceClosed"));
+      drawView(currentRoom.getView());
+      drawInventory();
     } else {
     }
 

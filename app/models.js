@@ -72,6 +72,7 @@ var Item = Backbone.Model.extend({
     size: [0, 0],
     position: [0, 0],
     grabbable: false,
+    openable: false,
     name: "",
     description: "",
   },
@@ -145,9 +146,16 @@ fridge = new Item({
   size: [220, 220],
   name: "fridge",
   isOpen: false,
+  openable: true,
   get source() {
     return this.isOpen ? "img/fridge_open.png" : "img/fridge_closed.png";
   },
+  sourceOpened: "img/fridge_open.png",
+  sourceClosed: "img/fridge_closed.png",
+  // open: function () {
+  //   this.set("isOpen", true);
+  //   generateSpeech("there's nothing in the fridge you dummy");
+  // },
   position: [window.innerWidth * 0.65, window.innerHeight * 0.55],
 });
 
@@ -193,6 +201,13 @@ dresser = new Item({
   position: [window.innerWidth * 0.4, window.innerHeight * 0.38],
 });
 
+windowLarge = new Item({
+  source: "img/window.png",
+  size: [window.innerWidth * 0.25, window.innerWidth * 0.18],
+  name: "window",
+  position: [window.innerWidth * 0.2, window.innerHeight * 0.2],
+});
+
 mashedPotatoes = new Item({
   source: "img/mashed_potatoes.png",
   size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
@@ -203,8 +218,8 @@ mashedPotatoes = new Item({
 
 cheese = new Item({
   source: "img/cheese.png",
-  size: [window.innerWidth * 0.07, window.innerWidth * 0.06],
-  position: [window.innerWidth * 0.72, window.innerHeight * 0.51],
+  size: [window.innerWidth * 0.06, window.innerWidth * 0.05],
+  position: [window.innerWidth * 0.7, window.innerHeight * 0.488],
   grabbable: true,
   name: "cheese",
 });
@@ -247,7 +262,7 @@ wall3 = new View({
 
 wall4 = new View({
   background: "img/purple_wall.png",
-  items: [dresser, mashedPotatoes],
+  items: [windowLarge, dresser, mashedPotatoes],
 });
 
 var Room = Backbone.Model.extend({
