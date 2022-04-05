@@ -60,28 +60,38 @@ Leap.loop({
       if (isGrabbing) {
         console.log("isGrabbing");
         if (tryGrab()) {
-        } else if (!disableTransition) {
-          if (cursorPosition[0] < window.innerWidth * 0.1) {
-            currentRoom.transition("left");
-            disableTransition = true;
-            elapsedFrames = 0;
-          } else if (cursorPosition[0] > window.innerWidth * 0.9) {
-            currentRoom.transition("right");
-            disableTransition = true;
-            elapsedFrames = 0;
-          }
+        }
+      }
+
+      if (!disableTransition) {
+        if (cursorPosition[0] < 0) {
+          currentRoom.transition("left");
+          disableTransition = true;
+          elapsedFrames = 0;
+        } else if (cursorPosition[0] > window.innerWidth) {
+          currentRoom.transition("right");
+          disableTransition = true;
+          elapsedFrames = 0;
         }
       } else {
-        elapsedFrames += 1;
-        if (elapsedFrames >= 10) {
-          disableTransition = false;
+        if (cursorPosition[0] < 0 || cursorPosition[0] > window.innerWidth) {
+        } else {
+          elapsedFrames += 1;
+          if (elapsedFrames >= 10) {
+            disableTransition = false;
+          }
         }
       }
 
       if (!grabbedItem && isGrabbing) {
         // detect if they are grabbing an inventory item
-        grabbedItem = inventory.getHoveredItem(cursor.get("screenPosition"));
+        grabbedItem = inventory.getHoveredItem(cursorPosition);
         if (grabbedItem) {
+          var itemPosition = grabbedItem.get("position");
+          grabbedOffset = [
+            cursorPosition[0] - itemPosition[0],
+            cursorPosition[1] - itemPosition[1],
+          ];
           grabbedItem.set("holding", true);
         }
       } else if (grabbedItem && isGrabbing) {
