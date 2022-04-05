@@ -2,11 +2,11 @@
 var initialState = SKIPSETUP ? "playing" : "setup";
 var gameState = new GameState({ state: initialState });
 var cursor = new Cursor();
-var hitSound = new Audio("sound/explosion.wav");
-var winSound = new Audio("sound/win.wav");
-var lostSound = new Audio("sound/lost.wav");
-var sunkSound = new Audio("sound/sunkShip.wav");
-var missSound = new Audio("sound/miss.mp3");
+//var hitSound = new Audio("sound/explosion.wav");
+//var winSound = new Audio("sound/win.wav");
+//var lostSound = new Audio("sound/lost.wav");
+//var sunkSound = new Audio("sound/sunkShip.wav");
+//var missSound = new Audio("sound/miss.mp3");
 
 // UI SETUP
 setupUserInterface();
@@ -15,7 +15,7 @@ setupUserInterface();
 var selectedTile = false;
 
 // grabbedShip/Offset: The ship and offset if player is currently manipulating a ship
-var grabbedShip = false;
+var grabbedItem = false;
 var grabbedOffset = [0, 0];
 
 // isGrabbing: Is the player's hand currently in a grabbing pose
@@ -29,8 +29,6 @@ var zoomedInObject = false;
 
 var isHovering = false; // if hovering over some object
 var hoveringObject = null; // object hovering over
-var inventoryObjects = [];
-
 var disableTransition = true;
 var elapsedFrames = 0;
 
@@ -82,12 +80,46 @@ Leap.loop({
           disableTransition = false;
         }
       }
+
+      if (!grabbedItem && isGrabbing) {
+        // detect if they are grabbing an inventory item
+        grabbedItem = inventory.getHoveredItem(cursor.get("screenPosition"));
+        if (grabbedItem) {
+          grabbedItem.set("holding", true);
+        }
+      }
+
+      else if (grabbedItem && isGrabbing) {
+        itemPosition = [cursorPosition[0] - grabbedOffset[0], cursorPosition[1] - grabbedOffset[1]];
+        grabbedItem.set("position", itemPosition);
+        // move the item
+      }
+  
+      else if (grabbedItem && !isGrabbing) {
+        // check if they can use the item
+        var hoveredItem = getHoveredItem(cursor.get("screenPosition"));
+        
+        if (hoveredItem) {
+          var objectWasUsed = useObjectOnItem(
+            grabbedItem,
+            hoveredItem
+          );
+          if (objectWasUsed) {
+            inventory.removeItem(grabbedItem, 1);
+            currentRoom.drawView();
+          }
+        }
+
+        grabbedItem.set("holding", false);
+        grabbedItem = false;
+        inventory.updateItemPositions();
+      }
     }
   },
 }).use("screenPosition", { scale: LEAPSCALE });
 
 function grabItem(item) {
-  inventoryObjects.push(item);
+  inventory.addItem(item);
   console.log("grabbed object");
   currentRoom.getView().removeItem(item);
   currentRoom.drawView();
@@ -130,6 +162,7 @@ var processSpeech = function (transcript) {
       processed = true;
     }
     var hoveredItem = getHoveredItem(cursor.get("screenPosition")); // previously: cusor.get("screenPosition")
+    var usedItem = inventory.getInventoryItem(transcript);
     // console.log("screen position", cursor.get("screenPosition"));
     // console.log("hovered item name: ", hoveredItem.get("name"));
     if (userSaid(transcript, ["look"]) && hoveredItem) {
@@ -145,15 +178,15 @@ var processSpeech = function (transcript) {
     } else if (userSaid(transcript, ["grab"])) {
       processed = true;
       tryGrab();
-    } else if (hoveredItem && getInventoryItemIndice(transcript) > -1) {
+    } else if (hoveredItem && usedItem) {
       processed = true;
       var objectWasUsed = useObjectOnItem(
-        inventoryObjects[getInventoryItemIndice(transcript)],
+        usedItem,
         hoveredItem
       );
       if (objectWasUsed) {
-        inventoryObjects.splice(getInventoryItemIndice(transcript), 1);
-        drawInventory();
+        inventory.removeItem(usedItem, 1);
+        inventory.draw();
       }
     } else if (
       userSaid(transcript, ["open"]) &&
@@ -215,22 +248,6 @@ function getHoveredItem(cursorPosition) {
   return false;
 }
 
-function arrayRemoveItem(array, item) {
-  var index = array.indexOf(item);
-  if (index > -1) {
-    array.splice(index, 1);
-  }
-}
-
-function getInventoryItemIndice(transcript) {
-  for (var i = 0; i < inventoryObjects.length; i++) {
-    if (transcript.includes(inventoryObjects[i].get("name").toLowerCase())) {
-      return i;
-    }
-  }
-  return -1;
-}
-
 // returns true if object was used, false otherwise
 function useObjectOnItem(object, item) {
   if (object.get("name") == "key") {
@@ -259,7 +276,9 @@ function useObjectOnItem(object, item) {
         generateSpeech(
           "The mouse ate the cheese and thanks you for the cheese. As a reward, it hands you a golden key."
         );
-        inventoryObjects.push(key);
+        inventory.addItem(key);
+        console.log(key);
+        console.log('items:', inventory.get('items'));
         currentRoom.drawView();
         return true;
       } else if (item.get("state") == "happy") {
