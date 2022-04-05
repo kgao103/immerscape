@@ -89,8 +89,11 @@ Leap.loop({
 
       if (!grabbedItem && isGrabbing) {
         // detect if they are grabbing an inventory item
-        grabbedItem = inventory.getHoveredItem(cursor.get("screenPosition"));
+        grabbedItem = inventory.getHoveredItem(cursorPosition);
         if (grabbedItem) {
+          var itemPosition = grabbedItem.get("position");
+          grabbedOffset = [cursorPosition[0] - itemPosition[0],
+                  cursorPosition[1] - itemPosition[1]];
           grabbedItem.set("holding", true);
         }
       }
