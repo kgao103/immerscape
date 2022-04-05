@@ -9,7 +9,7 @@ mousehole = new Item({
       ? "img/mousehole_happy.png"
       : "img/mousehole_dead.png";
   },
-  size: [100, 100],
+  size: [130, 100],
   position: [window.innerWidth * 0.5, window.innerHeight * 0.605],
   name: "mousehole",
   get description() {
@@ -94,7 +94,7 @@ dresser = new Item({
   source: "img/dresser.png",
   size: [window.innerWidth * 0.4, window.innerWidth * 0.25],
   name: "dresser",
-  position: [window.innerWidth * 0.4, window.innerHeight * 0.38],
+  position: [window.innerWidth * 0.4, window.innerHeight * 0.4],
 });
 
 windowLarge = new Item({
@@ -107,7 +107,7 @@ windowLarge = new Item({
 mashedPotatoes = new Item({
   source: "img/mashed_potatoes.png",
   size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
-  position: [window.innerWidth * 0.45, window.innerHeight * 0.3],
+  position: [window.innerWidth * 0.45, window.innerHeight * 0.33],
   grabbable: true,
   name: "mashed potatoes",
 });

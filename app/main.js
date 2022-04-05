@@ -45,24 +45,21 @@ Leap.loop({
 
     // SETUP mode
     if (gameState.get("state") == "setup") {
-
       cursorObject.setProperties({ backgroundColor: "pink" });
-      currentRoom.getItems()
-        .forEach((item) => {
-          if (item.isHovered(cursorPosition)) {
-            if (item.get("grabbable")) {
-              cursorObject.setProperties({ backgroundColor: "#00ffff" });
-            } else {
-              cursorObject.setProperties({ backgroundColor: "#66ff33" });
-            }
+      currentRoom.getItems().forEach((item) => {
+        if (item.isHovered(cursorPosition)) {
+          if (item.get("grabbable")) {
+            cursorObject.setProperties({ backgroundColor: "#00ffff" });
+          } else {
+            cursorObject.setProperties({ backgroundColor: "#66ff33" });
           }
-        });
+        }
+      });
 
       isGrabbing = hand.grabStrength > 0.5;
       if (isGrabbing) {
         console.log("isGrabbing");
         if (tryGrab()) {
-
         } else if (!disableTransition) {
           if (cursorPosition[0] < window.innerWidth * 0.1) {
             currentRoom.transition("left");
@@ -87,23 +84,19 @@ Leap.loop({
         if (grabbedItem) {
           grabbedItem.set("holding", true);
         }
-      }
-
-      else if (grabbedItem && isGrabbing) {
-        itemPosition = [cursorPosition[0] - grabbedOffset[0], cursorPosition[1] - grabbedOffset[1]];
+      } else if (grabbedItem && isGrabbing) {
+        itemPosition = [
+          cursorPosition[0] - grabbedOffset[0],
+          cursorPosition[1] - grabbedOffset[1],
+        ];
         grabbedItem.set("position", itemPosition);
         // move the item
-      }
-  
-      else if (grabbedItem && !isGrabbing) {
+      } else if (grabbedItem && !isGrabbing) {
         // check if they can use the item
         var hoveredItem = getHoveredItem(cursor.get("screenPosition"));
-        
+
         if (hoveredItem) {
-          var objectWasUsed = useObjectOnItem(
-            grabbedItem,
-            hoveredItem
-          );
+          var objectWasUsed = useObjectOnItem(grabbedItem, hoveredItem);
           if (objectWasUsed) {
             inventory.removeItem(grabbedItem, 1);
             currentRoom.drawView();
@@ -180,10 +173,7 @@ var processSpeech = function (transcript) {
       tryGrab();
     } else if (hoveredItem && usedItem) {
       processed = true;
-      var objectWasUsed = useObjectOnItem(
-        usedItem,
-        hoveredItem
-      );
+      var objectWasUsed = useObjectOnItem(usedItem, hoveredItem);
       if (objectWasUsed) {
         inventory.removeItem(usedItem, 1);
         inventory.draw();
@@ -259,7 +249,7 @@ function useObjectOnItem(object, item) {
         item.set("isOpen", true);
         item.set("source", "img/door_opened.png");
         generateSpeech(
-          "You unlocked the door. Congrats on solving the escape room"
+          "You unlocked the door. You see the mouse's gradnma waiting for him outside. Congrats on solving the escape room"
         );
         currentRoom.drawView();
         return true;
@@ -278,7 +268,7 @@ function useObjectOnItem(object, item) {
         );
         inventory.addItem(key);
         console.log(key);
-        console.log('items:', inventory.get('items'));
+        console.log("items:", inventory.get("items"));
         currentRoom.drawView();
         return true;
       } else if (item.get("state") == "happy") {
