@@ -6,7 +6,9 @@ var cursor = new Cursor();
 //var winSound = new Audio("sound/win.wav");
 //var lostSound = new Audio("sound/lost.wav");
 //var sunkSound = new Audio("sound/sunkShip.wav");
-//var missSound = new Audio("sound/miss.mp3");
+// var missSound = new Audio("sound/miss.mp3");
+var windowBreakingSound = new Audio("sound/break_window.mp3");
+var doorUnlockingSound = new Audio("sound/door_unlock.mp3");
 
 // UI SETUP
 setupUserInterface();
@@ -132,8 +134,10 @@ function tryGrab() {
   var hoveredItem = getHoveredItem(cursor.get("screenPosition"));
   if (hoveredItem && hoveredItem.get("grabbable")) {
     grabItem(hoveredItem);
+    generateSpeech("You've just grabbed a " + hoveredItem.get("name"));
     return true;
   } else {
+    generateSpeech("oops, please try again");
     return false;
   }
 }
@@ -258,8 +262,30 @@ function useObjectOnItem(object, item) {
       } else {
         item.set("isOpen", true);
         item.set("source", "img/door_open.png");
+        doorUnlockingSound.play();
         generateSpeech(
           "You unlocked the door. You see the mouse's gradnma waiting for him outside. Congrats on solving the escape room"
+        );
+        currentRoom.drawView();
+        return true;
+      }
+    } else {
+      generateSpeech("You can't use the key on that");
+      return false;
+    }
+  } else if (object.get("name") == "hammer") {
+    if (item.get("name") == "window") {
+      if (item.get("isBroken")) {
+        generateSpeech(
+          "You already tried breaking the window, it won't shatter enough for you to fit through."
+        );
+        return false;
+      } else {
+        item.set("isBroken", true);
+        item.set("source", "img/window_broken.png");
+        windowBreakingSound.play();
+        generateSpeech(
+          "You broke the window. However, the glass is too strong and won't break completely. You'll need to find another way to get through."
         );
         currentRoom.drawView();
         return true;

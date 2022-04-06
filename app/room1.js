@@ -26,7 +26,7 @@ door = new Item({
   get source() {
     return this.isOpen ? "img/door_open.png" : "img/door.png";
   },
-  size: [200, 400],
+  size: [window.innerHeight * 0.27, window.innerHeight * 0.574],
   name: "door",
   position: [window.innerWidth * 0.25, window.innerHeight * 0.18],
 });
@@ -98,7 +98,10 @@ dresser = new Item({
 });
 
 windowLarge = new Item({
-  source: "img/window.png",
+  isBroken: false,
+  get source() {
+    return this.isOpen ? "img/window_broken.png" : "img/window.png";
+  },
   size: [window.innerWidth * 0.25, window.innerWidth * 0.18],
   name: "window",
   position: [window.innerWidth * 0.2, window.innerHeight * 0.2],
@@ -120,6 +123,15 @@ cheese = new Item({
   name: "cheese",
 });
 
+cat = new Item({
+  source: "img/cat.png",
+  grabbable: true,
+  size: [window.innerWidth * 0.13, window.innerWidth * 0.13],
+  position: [window.innerWidth * 0.15, window.innerHeight * 0.7],
+  grabbable: true,
+  name: "cat",
+});
+
 key = new Item({
   source: "img/key.png",
   size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
@@ -128,11 +140,19 @@ key = new Item({
   name: "key",
 });
 
+hammer = new Item({
+  source: "img/hammer.png",
+  size: [window.innerWidth * 0.09, window.innerWidth * 0.05],
+  position: [window.innerWidth * 0.8, window.innerHeight * 0.8],
+  grabbable: true,
+  name: "hammer",
+});
+
 // VIEWS
 
 wall1 = new View({
   background: "img/blue_wall.png",
-  items: [mousehole, door, clock],
+  items: [mousehole, door, clock, hammer, cat],
 });
 
 wall2 = new View({
@@ -142,7 +162,7 @@ wall2 = new View({
 
 wall3 = new View({
   background: "img/green_wall.png",
-  items: [bedtable, bed, painting2],
+  items: [bedtable, bed, painting2, hammer],
 });
 
 wall4 = new View({
