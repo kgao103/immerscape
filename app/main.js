@@ -257,7 +257,7 @@ function useObjectOnItem(object, item) {
         return false;
       } else {
         item.set("isOpen", true);
-        item.set("source", "img/door_opened.png");
+        item.set("source", "img/door_open.png");
         generateSpeech(
           "You unlocked the door. You see the mouse's gradnma waiting for him outside. Congrats on solving the escape room"
         );

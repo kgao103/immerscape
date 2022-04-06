@@ -24,7 +24,7 @@ mousehole = new Item({
 door = new Item({
   isOpen: false,
   get source() {
-    return this.isOpen ? "img/door_opened.png" : "img/door.png";
+    return this.isOpen ? "img/door_open.png" : "img/door.png";
   },
   size: [200, 400],
   name: "door",
