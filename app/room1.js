@@ -1,5 +1,13 @@
 // ITEMS
 
+tutorial = new Item({
+  name: "tutorial",
+  source: "img/help.png",
+  displayed: false,
+  size: [window.innerHeight * 1.2, window.innerHeight * 0.7],
+  position: [window.innerWidth * 0.2, window.innerHeight * 0.05],
+});
+
 mousehole = new Item({
   state: "sad",
   get source() {
@@ -10,7 +18,7 @@ mousehole = new Item({
       : "img/mousehole_dead.png";
   },
   size: [130, 100],
-  position: [window.innerWidth * 0.5, window.innerHeight * 0.605],
+  position: [window.innerWidth * 0.5, window.innerHeight * 0.603],
   name: "mousehole",
   get description() {
     return this.state === "sad"
@@ -53,6 +61,8 @@ fridge = new Item({
   //   generateSpeech("there's nothing in the fridge you dummy");
   // },
   position: [window.innerWidth * 0.65, window.innerHeight * 0.55],
+  openSound: new Audio("sound/fridge_open.wav"),
+  closingSound: new Audio("sound/fridge_close.wav"),
 });
 
 lamp = new Item({
@@ -126,8 +136,8 @@ cheese = new Item({
 cat = new Item({
   source: "img/cat.png",
   grabbable: true,
-  size: [window.innerWidth * 0.13, window.innerWidth * 0.13],
-  position: [window.innerWidth * 0.15, window.innerHeight * 0.7],
+  size: [window.innerWidth * 0.07, window.innerWidth * 0.08],
+  position: [window.innerWidth * 0.6, window.innerHeight * 0.5],
   grabbable: true,
   name: "cat",
 });
@@ -152,7 +162,7 @@ hammer = new Item({
 
 wall1 = new View({
   background: "img/blue_wall.png",
-  items: [mousehole, door, clock, hammer, cat],
+  items: [mousehole, door, clock, hammer],
 });
 
 wall2 = new View({
@@ -162,7 +172,7 @@ wall2 = new View({
 
 wall3 = new View({
   background: "img/green_wall.png",
-  items: [bedtable, bed, painting2, hammer],
+  items: [bedtable, bed, painting2, hammer, cat],
 });
 
 wall4 = new View({

@@ -9,6 +9,9 @@ var cursor = new Cursor();
 // var missSound = new Audio("sound/miss.mp3");
 var windowBreakingSound = new Audio("sound/break_window.mp3");
 var doorUnlockingSound = new Audio("sound/door_unlock.mp3");
+var mouseCry = new Audio("sound/mouse_cry.mp3");
+var mouseHappySound = new Audio("sound/mouse_happy.m4a");
+var grandmaDeadGrandson = new Audio("sound/grandma.m4a");
 
 // UI SETUP
 setupUserInterface();
@@ -134,10 +137,10 @@ function tryGrab() {
   var hoveredItem = getHoveredItem(cursor.get("screenPosition"));
   if (hoveredItem && hoveredItem.get("grabbable")) {
     grabItem(hoveredItem);
-    generateSpeech("You've just grabbed a " + hoveredItem.get("name"));
+    generateSpeech("You've just obtained the " + hoveredItem.get("name"));
     return true;
   } else {
-    generateSpeech("oops, please try again");
+    // generateSpeech("oops, please try again");
     return false;
   }
 }
@@ -195,20 +198,24 @@ var processSpeech = function (transcript) {
     } else if (
       userSaid(transcript, ["open"]) &&
       hoveredItem &&
-      hoveredItem.get("openable")
+      hoveredItem.get("openable") &&
+      hoveredItem.get("isOpen") == false
     ) {
       processed = true;
       console.log(hoveredItem.get("name"));
+      hoveredItem.get("openSound").play();
       hoveredItem.set("isOpen", true);
       hoveredItem.set("source", hoveredItem.get("sourceOpened"));
       currentRoom.drawView();
     } else if (
       userSaid(transcript, ["close"]) &&
       hoveredItem &&
-      hoveredItem.get("openable")
+      hoveredItem.get("openable") &&
+      hoveredItem.get("isOpen") == true
     ) {
       processed = true;
       console.log(hoveredItem.get("name"));
+      hoveredItem.get("closingSound").play();
       hoveredItem.set("isOpen", false);
       hoveredItem.set("source", hoveredItem.get("sourceClosed"));
       currentRoom.drawView();
@@ -263,9 +270,26 @@ function useObjectOnItem(object, item) {
         item.set("isOpen", true);
         item.set("source", "img/door_open.png");
         doorUnlockingSound.play();
-        generateSpeech(
-          "You unlocked the door. You see the mouse's gradnma waiting for him outside. Congrats on solving the escape room"
-        );
+
+        sleep(1000).then(() => {
+          if (mousehole.get("state") === "dead") {
+            generateSpeech(
+              "You unlocked the door. You see the mouse's grandnma waiting for him outside. Congrats on solving the escape room and killing the grandson you sick bastard.",
+              () => {
+                grandmaDeadGrandson.play();
+              }
+            );
+          } else {
+            generateSpeech(
+              "You unlocked the door. You see the mouse's grandnma waiting for him outside. Congrats on solving the escape room"
+            );
+          }
+        });
+        // if (mousehole.get("state") === "dead") {
+        //   sleep(8000).then(() => {
+        //     grandmaDeadGrandson.play();
+        //   });
+        // }
         currentRoom.drawView();
         return true;
       }
@@ -288,10 +312,10 @@ function useObjectOnItem(object, item) {
           "You broke the window. However, the glass is too strong and won't break completely. You'll need to find another way to get through."
         );
         currentRoom.drawView();
-        return true;
+        return false;
       }
     } else {
-      generateSpeech("You can't use the key on that");
+      generateSpeech("You can't use the hammer on that");
       return false;
     }
   } else if (object.get("name") == "cheese") {
@@ -299,9 +323,12 @@ function useObjectOnItem(object, item) {
       if (item.get("state") == "sad") {
         item.set("state", "happy");
         item.set("source", "img/mousehole_happy.png");
-        generateSpeech(
-          "The mouse ate the cheese and thanks you for the cheese. As a reward, it hands you a golden key."
-        );
+        mouseHappySound.play();
+        sleep(2000).then(() => {
+          generateSpeech(
+            "The mouse ate the cheese and thanks you for the cheese. As a reward, it hands you a golden key."
+          );
+        });
         inventory.addItem(key);
         console.log(key);
         console.log("items:", inventory.get("items"));
@@ -323,7 +350,12 @@ function useObjectOnItem(object, item) {
   } else if (object.get("name") == "mashed potatoes") {
     if (item.get("name") == "mousehole") {
       if (item.get("state") !== "dead") {
-        generateSpeech("The mouse ate the mashed potatoes and instantly dies.");
+        mouseCry.play();
+        sleep(2000).then(() => {
+          generateSpeech(
+            "The mouse ate the mashed potatoes and instantly dies."
+          );
+        });
         item.set("state", "dead");
         item.set("source", "img/mousehole_dead.png");
         currentRoom.drawView();
