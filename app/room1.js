@@ -123,6 +123,31 @@ mashedPotatoes = new Item({
   position: [window.innerWidth * 0.45, window.innerHeight * 0.33],
   grabbable: true,
   name: "mashed potatoes",
+  // set useOn(item) {
+  //   console.log("yiijijijij");
+  //   if (item.get("name") == "mousehole") {
+  //     if (item.get("state") !== "dead") {
+  //       mouseCry.play();
+  //       sleep(2000).then(() => {
+  //         generateSpeech(
+  //           "The mouse ate the mashed potatoes and instantly dies."
+  //         );
+  //       });
+  //       item.set("state", "dead");
+  //       item.set("source", "img/mousehole_dead.png");
+  //       currentRoom.drawView();
+  //       return true;
+  //     } else {
+  //       generateSpeech(
+  //         "The mouse is already dead. It can't eat the mashed potatoes anymore you idiot. "
+  //       );
+  //       return false;
+  //     }
+  //   } else {
+  //     generateSpeech("You can't use the mashed potatoes on that");
+  //     return false;
+  //   }
+  // },
 });
 
 cheese = new Item({

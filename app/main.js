@@ -285,11 +285,11 @@ function useObjectOnItem(object, item) {
             );
           }
         });
-        // if (mousehole.get("state") === "dead") {
-        //   sleep(8000).then(() => {
-        //     grandmaDeadGrandson.play();
-        //   });
-        // }
+        if (mousehole.get("state") === "dead") {
+          sleep(8000).then(() => {
+            grandmaDeadGrandson.play();
+          });
+        }
         currentRoom.drawView();
         return true;
       }
@@ -313,6 +313,20 @@ function useObjectOnItem(object, item) {
         );
         currentRoom.drawView();
         return false;
+      }
+    } else if (item.get("name") == "door") {
+      if (item.get("isOpen")) {
+        generateSpeech("The door is already open");
+        return false;
+      } else {
+        item.set("isOpen", true);
+        item.set("source", "img/door_open.png");
+        doorUnlockingSound.play();
+        generateSpeech(
+          "You broke the lock with the hammer unlocked the door! Congrats!"
+        );
+        currentRoom.drawView();
+        return true;
       }
     } else {
       generateSpeech("You can't use the hammer on that");
@@ -368,6 +382,27 @@ function useObjectOnItem(object, item) {
       }
     } else {
       generateSpeech("You can't use the mashed potatoes on that");
+      return false;
+    }
+  } else if (object.get("name") == "cat") {
+    if (item.get("name") == "mousehole") {
+      if (item.get("state") !== "dead") {
+        mouseCry.play();
+        sleep(2000).then(() => {
+          generateSpeech("The cat eats the mouse with no remorse.");
+        });
+        item.set("state", "dead");
+        item.set("source", "img/mousehole_dead.png");
+        currentRoom.drawView();
+        return true;
+      } else {
+        generateSpeech(
+          "The mouse is already dead. The cat can't kill it again you idiot. "
+        );
+        return false;
+      }
+    } else {
+      generateSpeech("You can't use the cat on that");
       return false;
     }
   } else {

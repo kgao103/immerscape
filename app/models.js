@@ -30,6 +30,11 @@ var Item = Backbone.Model.extend({
     description: "",
   },
 
+  // useOn: function (item) {
+  //   console.log("hiiii");
+  //   return false;
+  // },
+
   initialize: function () {
     this.set("health", this.get("length"));
   },
