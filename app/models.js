@@ -18,6 +18,7 @@ var GameState = Backbone.Model.extend({
 
 var Item = Backbone.Model.extend({
   defaults: {
+    context: null,
     source: "",
     size: [0, 0],
     position: [0, 0],
@@ -58,6 +59,37 @@ var Item = Backbone.Model.extend({
     let withinY = minY <= cursorPosition[1] && cursorPosition[1] <= maxY;
     let result = withinX && withinY;
     return result;
+  },
+
+  setContent: function (source) {
+    this.set("source", source);
+    this.get("context").setContent(source);
+  },
+  
+  isOpenable: function () {
+    return this.get("openable") && !this.get("isOpen");
+  },
+
+  isClosable: function () {
+    return this.get("openable") && this.get("isOpen");
+  },
+
+  open: function () {
+    console.log("opening");
+    this.set("isOpen", true);
+    if (this.get("openSound")) {
+      this.get("openSound").play();
+    }
+    this.setContent(this.get("sourceOpened"));
+  },
+
+  close: function () {
+    console.log("closing");
+    this.set("isOpen", false);
+    if (this.get("closingSound")) {
+      this.get("closingSound").play();
+    }
+    this.setContent(this.get("sourceClosed"));
   },
 });
 var ItemSet = Backbone.Collection.extend({ model: Item });

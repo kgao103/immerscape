@@ -102,29 +102,20 @@ Leap.loop({
       if (
         hand.grabStrength > 0.5 &&
         hand.screenPosition()[2] > 300 &&
-        hoveredItem &&
-        hoveredItem.get("openable") &&
-        hoveredItem.get("isOpen") == false
+        hoveredItem && hoveredItem.isOpenable()
       ) {
         console.log(hoveredItem.get("name"));
-        hoveredItem.get("openSound").play();
-        hoveredItem.set("isOpen", true);
-        hoveredItem.set("source", hoveredItem.get("sourceOpened"));
-        currentRoom.drawView();
+        hoveredItem.open();
+        //currentRoom.drawView();
       }
-
       if (
         hand.grabStrength < 0.5 &&
         hand.screenPosition()[2] < 0 &&
-        hoveredItem &&
-        hoveredItem.get("openable") &&
-        hoveredItem.get("isOpen")
+        hoveredItem && hoveredItem.isClosable()
       ) {
         console.log(hoveredItem.get("name"));
-        hoveredItem.get("closingSound").play();
-        hoveredItem.set("isOpen", false);
-        hoveredItem.set("source", hoveredItem.get("sourceClosed"));
-        currentRoom.drawView();
+        hoveredItem.close();
+        //currentRoom.drawView();
       }
 
       if (!grabbedItem && isGrabbing) {
@@ -229,7 +220,7 @@ var processSpeech = function (transcript) {
       isZoomedIn = false;
       processed = true;
       zoomedInObject = false;
-      goToWall(currentWall);
+      // TODO: ADD ZOOM OUT FUNCTIONALITY
     } else if (userSaid(transcript, ["grab"])) {
       processed = true;
       tryGrab();
@@ -242,28 +233,20 @@ var processSpeech = function (transcript) {
       }
     } else if (
       userSaid(transcript, ["open"]) &&
-      hoveredItem &&
-      hoveredItem.get("openable") &&
-      hoveredItem.get("isOpen") == false
+      hoveredItem && hoveredItem.isOpenable()
     ) {
       processed = true;
       console.log(hoveredItem.get("name"));
-      hoveredItem.get("openSound").play();
-      hoveredItem.set("isOpen", true);
-      hoveredItem.set("source", hoveredItem.get("sourceOpened"));
-      currentRoom.drawView();
+      hoveredItem.open();
+      //currentRoom.drawView();
     } else if (
       userSaid(transcript, ["close"]) &&
-      hoveredItem &&
-      hoveredItem.get("openable") &&
-      hoveredItem.get("isOpen") == true
+      hoveredItem && hoveredItem.isClosable()
     ) {
       processed = true;
       console.log(hoveredItem.get("name"));
-      hoveredItem.get("closingSound").play();
-      hoveredItem.set("isOpen", false);
-      hoveredItem.set("source", hoveredItem.get("sourceClosed"));
-      currentRoom.drawView();
+      hoveredItem.close();
+      //currentRoom.drawView();
     } else {
     }
 
@@ -271,18 +254,6 @@ var processSpeech = function (transcript) {
   }
   return processed;
 };
-
-function goToWall(wallNumber) {
-  if (wallNumber == 1) {
-    drawWall1();
-  } else if (wallNumber == 2) {
-    drawWall2();
-  } else if (wallNumber == 3) {
-    drawWall3();
-  } else {
-    drawWall4();
-  }
-}
 
 function zoomInObject(object) {
   var x = object.get("position").x;

@@ -56,6 +56,7 @@ function drawItem(item) {
   });
 
   mainContext.add(itemTranslateModifier).add(itemView);
+  item.set("context", itemView);
 }
 
 function drawView(view) {
