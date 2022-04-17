@@ -189,7 +189,6 @@ zero = new Item({
 });
 
 safe_screen = new Item({
-  source: "img/safe_screen.png",
   size: [window.innerWidth * 0.395, window.innerHeight * 0.29],
   name: "safe_screen",
   position: [window.innerWidth * 0.42, window.innerHeight * 0.02],
