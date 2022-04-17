@@ -1,12 +1,15 @@
 var INVENTORY_SIZE = 5;
 var SLOT_SIZE = 100;
 var SLOT_SPACING = 10;
+var SLOT_PADDING = SLOT_SIZE * 0.1;
 var TOTAL_WIDTH =
   SLOT_SIZE * INVENTORY_SIZE + SLOT_SPACING * (INVENTORY_SIZE - 1);
 
 var Inventory = Backbone.Model.extend({
   defaults: {
     items: [],
+    rendered: false,
+    context: null,
   },
 
   addItem: function (item) {
@@ -56,13 +59,13 @@ var Inventory = Backbone.Model.extend({
     let items = this.get("items");
     for (var i = 0; i < items.length; i++) {
       var item = items[i];
-      item.set("size", [SLOT_SIZE, SLOT_SIZE]);
+      item.set("size", [SLOT_SIZE - SLOT_PADDING * 2, SLOT_SIZE - SLOT_PADDING * 2]);
       if (item.get("holding")) {
       } else {
         let x =
           (window.innerWidth - TOTAL_WIDTH) / 2 +
-          (SLOT_SIZE + SLOT_SPACING) * i;
-        let y = window.innerHeight - SLOT_SIZE - 10;
+          (SLOT_SIZE + SLOT_SPACING) * i + SLOT_PADDING;
+        let y = window.innerHeight - SLOT_SIZE - 10 + SLOT_PADDING;
         item.set("position", [x, y]);
       }
     }
@@ -71,24 +74,42 @@ var Inventory = Backbone.Model.extend({
   draw: function () {
     let items = this.get("items");
     this.updateItemPositions();
+    if (this.get("rendered")) {
+
+    } else {
+      this.set("rendered", true);
+      var inventoryView = new ContainerSurface({
+        size: [TOTAL_WIDTH, SLOT_SIZE],
+        properties: {
+          zIndex: 1,
+        },
+      });
+   
+      var tileTranslateModifier = new Modifier({
+        transform: Transform.translate(
+          (window.innerWidth - TOTAL_WIDTH) / 2,
+          window.innerHeight - SLOT_SIZE - 10, 
+          0),
+      });
+
+      mainContext.add(tileTranslateModifier).add(inventoryView);
+      this.set("context", inventoryView);
+    }
+    
     for (var i = 0; i < INVENTORY_SIZE; i++) {
       var tileView = new Surface({
         size: [SLOT_SIZE, SLOT_SIZE],
         properties: {
           backgroundColor: "#ccffff",
           border: "solid 1px #ccffff",
-          zIndex: 1,
         },
       });
 
-      let x =
-        (window.innerWidth - TOTAL_WIDTH) / 2 + (SLOT_SIZE + SLOT_SPACING) * i;
-      let y = window.innerHeight - SLOT_SIZE - 10;
       var tileTranslateModifier = new Modifier({
-        transform: Transform.translate(x, y, 0),
+        transform: Transform.translate((SLOT_SIZE + SLOT_SPACING) * i, 0, 0),
       });
 
-      mainContext.add(tileTranslateModifier).add(tileView);
+      this.get("context").add(tileTranslateModifier).add(tileView);
 
       if (i < items.length) {
         let item = items[i];
