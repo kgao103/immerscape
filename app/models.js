@@ -31,6 +31,8 @@ var Item = Backbone.Model.extend({
     switchedOnable: false,
     name: "",
     description: "",
+    opacity: 1,
+    rendered: false,
   },
 
   // useOn: function (item) {
@@ -39,7 +41,7 @@ var Item = Backbone.Model.extend({
   // },
 
   initialize: function () {
-    this.set("health", this.get("length"));
+
   },
 
   setPosition: function (position) {
@@ -76,6 +78,14 @@ var Item = Backbone.Model.extend({
     return this.get("openable") && this.get("isOpen");
   },
 
+  isOnable: function () {
+    return this.get("switchedOnable") && !this.get("isOn");
+  },
+
+  isOffable: function () {
+    return this.get("switchedOnable") && this.get("isOn");
+  },
+
   open: function () {
     console.log("opening");
     this.set("isOpen", true);
@@ -93,6 +103,20 @@ var Item = Backbone.Model.extend({
     }
     this.setContent(this.get("sourceClosed"));
   },
+
+  draw: function () {
+    this.set("opacity", 1);
+    if (this.get("rendered")) {
+      return;
+    } else {
+      this.set("rendered", true);
+      drawItem(this);
+    }
+  },
+
+  hide: function () {
+    this.set("opacity", 0);
+  },
 });
 var ItemSet = Backbone.Collection.extend({ model: Item });
 
@@ -109,6 +133,12 @@ var View = Backbone.Model.extend({
     items.splice(index, 1);
     this.set("items", items);
   },
+
+  hide: function() {
+    this.get("items").forEach((item) => {
+      item.hide();
+    });
+  }
 });
 
 var Room = Backbone.Model.extend({
@@ -122,6 +152,7 @@ var Room = Backbone.Model.extend({
     let transition = this.get("transitions")[type];
     let currentView = this.get("currentView");
     if (currentView in transition) {
+      this.getView().hide();
       let new_view = transition[currentView];
       this.set("currentView", new_view);
       drawView(this.getView());

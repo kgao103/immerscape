@@ -18,10 +18,12 @@ recognition.onresult = function(event) {
   }
 
   if (DEBUGSPEECH) {
+    /*
     if (hasFinal)
       otherFeedback.setContent("SPEECH DEBUG: ready");
     else
       otherFeedback.setContent("SPEECH DEBUG: " + transcript);
+    */
   }
 
   var processed = debouncedProcessSpeech(transcript);
@@ -34,8 +36,10 @@ recognition.onresult = function(event) {
 // Restart recognition if it has stopped
 recognition.onend = function(event) {
   setTimeout(function() {
+    /*
     if (DEBUGSPEECH)
       otherFeedback.setContent("SPEECH DEBUG: ready");
+    */
     recognition.start();
   }, 1000);
 };
