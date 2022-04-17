@@ -101,6 +101,97 @@ bed = new Item({
   position: [window.innerWidth * 0.4, window.innerHeight * 0.5],
 });
 
+safe = new Item({
+  source: "img/safe.png",
+  size: [window.innerWidth * 0.12, window.innerWidth * 0.1],
+  name: "safe",
+  position: [window.innerWidth * 0.2, window.innerHeight * 0.6],
+});
+
+one = new Item({
+  source: "img/button_one.png",
+  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  name: "one",
+  position: [window.innerWidth * 0.4, window.innerHeight * 0.4],
+});
+
+two = new Item({
+  source: "img/button_two.png",
+  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  name: "two",
+  position: [window.innerWidth * 0.52, window.innerHeight * 0.4],
+});
+
+three = new Item({
+  source: "img/button_three.png",
+  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  name: "three",
+  position: [window.innerWidth * 0.625, window.innerHeight * 0.4],
+});
+
+four = new Item({
+  source: "img/button_four.png",
+  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  name: "four",
+  position: [window.innerWidth * 0.4, window.innerHeight * 0.53],
+});
+
+five = new Item({
+  source: "img/button_five.png",
+  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  name: "five",
+  position: [window.innerWidth * 0.52, window.innerHeight * 0.53],
+});
+
+six = new Item({
+  source: "img/button_six.png",
+  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  name: "six",
+  position: [window.innerWidth * 0.625, window.innerHeight * 0.53],
+});
+
+seven = new Item({
+  source: "img/button_seven.png",
+  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  name: "seven",
+  position: [window.innerWidth * 0.4, window.innerHeight * 0.66],
+});
+
+eight = new Item({
+  source: "img/button_eight.png",
+  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  name: "eight",
+  position: [window.innerWidth * 0.52, window.innerHeight * 0.66],
+});
+
+nine = new Item({
+  source: "img/button_nine.png",
+  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  name: "nine",
+  position: [window.innerWidth * 0.625, window.innerHeight * 0.66],
+});
+
+zero = new Item({
+  source: "img/button_zero.png",
+  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  name: "zero",
+  position: [window.innerWidth * 0.73, window.innerHeight * 0.53],
+});
+
+button_delete = new Item({
+  source: "img/button_x.png",
+  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  name: "button_delete",
+  position: [window.innerWidth * 0.73, window.innerHeight * 0.4],
+});
+
+button_enter = new Item({
+  source: "img/button_enter.png",
+  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  name: "button_enter",
+  position: [window.innerWidth * 0.73, window.innerHeight * 0.66],
+});
+
 painting2 = new Item({
   source: "img/painting2.jpeg",
   size: [window.innerWidth * 0.12, window.innerWidth * 0.15],
@@ -218,7 +309,27 @@ wall4 = new View({
   background: "img/purple_wall.png",
   background_light: "img/purple_wall.png",
   background_dark: "img/purple_wall_dark.png",
-  items: [windowLarge, dresser, mashedPotatoes],
+  items: [windowLarge, dresser, mashedPotatoes, safe],
+});
+
+zoomedSafe = new View({
+  background: "img/safe_zoomed.png",
+  background_light: "img/safe_zoomed.png",
+  background_dark: "img/safe_zoomed.png",
+  items: [
+    one,
+    two,
+    three,
+    four,
+    five,
+    six,
+    seven,
+    eight,
+    nine,
+    zero,
+    button_delete,
+    button_enter,
+  ],
 });
 
 // ROOM
@@ -230,6 +341,7 @@ room = new Room({
     wall2: wall2,
     wall3: wall3,
     wall4: wall4,
+    zoomedSafe: zoomedSafe,
   },
   transitions: {
     left: {
@@ -243,6 +355,12 @@ room = new Room({
       wall2: "wall3",
       wall3: "wall4",
       wall4: "wall1",
+    },
+    zoom_in: {
+      wall4: "zoomedSafe",
+    },
+    zoom_out: {
+      zoomedSafe: "wall4",
     },
   },
 });

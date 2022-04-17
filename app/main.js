@@ -219,15 +219,13 @@ var processSpeech = function (transcript) {
       }
     }
 
+    console.log("i'm a piece of shit");
     if (userSaid(transcript, ["look"]) && hoveredItem) {
       isZoomedIn = true;
       processed = true;
       zoomedInObject = hoveredItem;
-      zoomInObject(hoveredItem);
-    } else if (userSaid(transcript, ["zoom out"]) && isZoomedIn) {
-      isZoomedIn = false;
-      processed = true;
-      zoomedInObject = false;
+      currentRoom.transition("zoom_in");
+      //zoomInObject(hoveredItem);
     } else if (hoveredItem && usedItem) {
       processed = true;
       var objectWasUsed = useObjectOnItem(usedItem, hoveredItem);
@@ -267,8 +265,15 @@ var processSpeech = function (transcript) {
       currentRoom.drawView();
     } else {
     }
-
     console.log("currentWall: ", currentWall);
+  } else {
+    if (userSaid(transcript, ["zoom out", "out"])) {
+      console.log("hiiiiiiyoooo");
+      isZoomedIn = false;
+      processed = true;
+      currentRoom.transition("zoom_out");
+      zoomedInObject = false;
+    }
   }
   return processed;
 };
