@@ -117,6 +117,7 @@ Leap.loop({
         if (hoveredItem) {
           var objectWasUsed = useObjectOnItem(grabbedItem, hoveredItem);
           if (objectWasUsed) {
+            grabbedItem.hide();
             inventory.removeItem(grabbedItem, 1);
             currentRoom.drawView();
           }
@@ -251,6 +252,7 @@ var processSpeech = function (transcript) {
       processed = true;
       var objectWasUsed = useObjectOnItem(usedItem, hoveredItem);
       if (objectWasUsed) {
+        usedItem.hide();
         inventory.removeItem(usedItem, 1);
         inventory.draw();
       }
@@ -290,7 +292,7 @@ function useObjectOnItem(object, item) {
         return false;
       } else {
         item.set("isOpen", true);
-        item.set("source", "img/door_open.png");
+        item.setContent("img/door_open.png");
         doorUnlockingSound.play();
 
         sleep(1000).then(() => {
@@ -333,7 +335,7 @@ function useObjectOnItem(object, item) {
         return false;
       } else {
         item.set("isBroken", true);
-        item.set("source", "img/window_broken.png");
+        item.setContent("img/window_broken.png");
         windowBreakingSound.play();
         generateSpeech(
           "You broke the window. However, the glass is too strong and won't break completely. You'll need to find another way to get through."
@@ -368,7 +370,7 @@ function useObjectOnItem(object, item) {
     if (item.get("name") == "mousehole") {
       if (item.get("state") == "sad") {
         item.set("state", "happy");
-        item.set("source", "img/mousehole_happy.png");
+        item.setContent("img/mousehole_happy.png");
         mouseHappySound.play();
         sleep(2000).then(() => {
           generateSpeech(
@@ -408,7 +410,7 @@ function useObjectOnItem(object, item) {
           );
         });
         item.set("state", "dead");
-        item.set("source", "img/mousehole_dead.png");
+        item.setContent("img/mousehole_dead.png");
         currentRoom.drawView();
         return true;
       } else {
@@ -434,7 +436,7 @@ function useObjectOnItem(object, item) {
           generateSpeech("The cat eats the mouse with no remorse.");
         });
         item.set("state", "dead");
-        item.set("source", "img/mousehole_dead.png");
+        item.setContent("img/mousehole_dead.png");
         currentRoom.drawView();
         return true;
       } else {
