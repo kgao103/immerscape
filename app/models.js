@@ -76,6 +76,14 @@ var Item = Backbone.Model.extend({
     return this.get("openable") && this.get("isOpen");
   },
 
+  isOnable: function () {
+    return this.get("switchedOnable") && !this.get("isOn");
+  },
+
+  isOffable: function () {
+    return this.get("switchedOnable") && this.get("isOn");
+  },
+
   open: function () {
     console.log("opening");
     this.set("isOpen", true);

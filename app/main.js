@@ -174,6 +174,28 @@ function tryCloseHoveredItem() {
   }
 }
 
+function tryTurnOffHoveredItem() {
+  if (hoveredItem && hoveredItem.isOffable()) {
+    hoveredItem.get("offSound").play();
+    hoveredItem.set("isOn", false);
+    lightOn = false;
+    currentRoom.turnOffLight();
+    hoveredItem.set("source", hoveredItem.get("sourceOff"));
+    currentRoom.drawView();
+  }
+}
+
+function tryTurnOnHoveredItem() {
+  if (hoveredItem && hoveredItem.isOnable()) {
+    hoveredItem.get("onSound").play();
+    hoveredItem.set("isOn", true);
+    lightOn = true;
+    currentRoom.turnOnLight();
+    hoveredItem.set("source", hoveredItem.get("sourceOn"));
+    currentRoom.drawView();
+  }
+}
+
 // processSpeech(transcript)
 //  Is called anytime speech is recognized by the Web Speech API
 // Input:
@@ -210,6 +232,8 @@ var processSpeech = function (transcript) {
       [["grab"], tryGrab],
       [["open"], tryOpenHoveredItem],
       [["close"], tryCloseHoveredItem],
+      [["on"], tryTurnOnHoveredItem],
+      [["off"], tryTurnOffHoveredItem],
     ];
 
     for (command of commands) {
@@ -235,37 +259,6 @@ var processSpeech = function (transcript) {
         inventory.removeItem(usedItem, 1);
         inventory.draw();
       }
-    } else if (
-      userSaid(transcript, ["off"]) &&
-      hoveredItem &&
-      hoveredItem.get("switchedOnable") &&
-      hoveredItem.get("isOn") == true
-    ) {
-      processed = true;
-      console.log(hoveredItem.get("name"));
-      console.log("hi i'm a dumbo");
-      hoveredItem.get("offSound").play();
-      hoveredItem.set("isOn", false);
-      lightOn = false;
-      currentRoom.turnOffLight();
-      hoveredItem.set("source", hoveredItem.get("sourceOff"));
-      currentRoom.drawView();
-    } else if (
-      userSaid(transcript, ["on"]) &&
-      hoveredItem &&
-      hoveredItem.get("switchedOnable") &&
-      hoveredItem.get("isOn") == false
-    ) {
-      processed = true;
-      console.log(hoveredItem.get("name"));
-      console.log("hi i'm a dumbo");
-      hoveredItem.get("onSound").play();
-      hoveredItem.set("isOn", true);
-      lightOn = true;
-      currentRoom.turnOnLight();
-      hoveredItem.set("source", hoveredItem.get("sourceOn"));
-      currentRoom.drawView();
-    } else {
     }
 
     console.log("currentWall: ", currentWall);
