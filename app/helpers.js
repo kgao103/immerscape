@@ -17,6 +17,19 @@ var generateSpeech = function (message, callback) {
   }
 };
 
+function arrayRemoveItem(array, item) {
+  var index = array.indexOf(item);
+  if (index > -1) {
+    array.splice(index, 1);
+  }
+}
+
+function withinBoundingBox(position, xRange, yRange) {
+  withinX = xRange[0] <= position[0] && position[0] <= xRange[1];
+  withinY = yRange[0] <= position[1] && position[1] <= yRange[1];
+  return withinX && withinY;
+}
+
 // make the program sleep for ms number of milliseconds
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));

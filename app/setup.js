@@ -42,36 +42,6 @@ function drawImage(image, size, position) {
   mainContext.add(itemTranslateModifier).add(itemView);
 }
 
-function drawItem(item) {
-  image = item.get('source');
-  //size = item.get('size');
-  //position = item.get('position');
-  zIndex = item.get('grabbable') ? 60 : 0;
-  var itemView = new ImageSurface({
-    //size: size,
-    content: image,
-    properties: {
-      zIndex: zIndex,
-    }
-  });
-
-  var itemTranslateModifier = new Modifier({
-    transform: function () {
-      let position = item.get('position');
-      return Transform.translate(position[0], position[1], 0);
-    },
-    opacity: function () {
-      return item.get('opacity');
-    },
-    size: function () {
-      return item.get('size');
-    },
-  });
-
-  mainContext.add(itemTranslateModifier).add(itemView);
-  item.set("context", itemView);
-}
-
 function drawView(view) {
   drawBackground(view.get("background"));
   view.get("items").forEach((item) => {
@@ -80,17 +50,9 @@ function drawView(view) {
   //inventory.draw();
 }
 
-// USER INTERFACE SETUP
-var setupUserInterface = function () {
-  background = new ImageSurface({
-    size: [window.innerWidth, window.innerHeight],
-    content: wall1.get("background"),
-  });
+var tooltipContext;
 
-  mainContext.add(background);
-  drawView(wall1);
-  inventory.draw();
-
+function drawToolTip() {
   let tooltipWidth = window.innerWidth / 3;
   let tooltipHeight = window.innerHeight / 3;
   let w = tooltipWidth;
@@ -98,23 +60,16 @@ var setupUserInterface = function () {
 
   let x = (window.innerWidth - tooltipWidth) / 2;
   let y = (window.innerHeight - tooltipHeight) / 2;
-  /*
-  otherFeedback = new Surface({
+
+  tooltipView = new ContainerSurface({
     content: "",
     size: [tooltipWidth, tooltipHeight],
     properties: {
       backgroundColor: "rgb(34, 34, 34)",
       color: "white",
       zIndex: 90,
-      opacity: 1,
     },
   });
-
-  var tileTranslateModifier = new Modifier({
-    transform: Transform.translate(x, y, 0),
-  });
-
-  mainContext.add(tileTranslateModifier).add(otherFeedback);
 
   let hItem = 0.8;
   let wItem = 0.4;
@@ -126,7 +81,6 @@ var setupUserInterface = function () {
       backgroundColor: "white",
       color: "white",
       zIndex: 95,
-      opacity: 1,
     }
   });
 
@@ -140,7 +94,7 @@ var setupUserInterface = function () {
       0),
   });
 
-  mainContext.add(tileTranslateModifier).add(itemImage);
+  //tooltipView.add(tileTranslateModifier).add(itemImage);
 
   itemText = new Surface({
     content: "this is a hammer. it can break things.",
@@ -149,7 +103,7 @@ var setupUserInterface = function () {
       backgroundColor: "black",
       color: "white",
       zIndex: 95,    
-      opacity: 1, 
+      opacity: 0, 
     }
   });
 
@@ -162,8 +116,31 @@ var setupUserInterface = function () {
       0),
   });
 
-  mainContext.add(tileTranslateModifier).add(itemText);
-  */
+  //tooltipView.add(tileTranslateModifier).add(itemText);
+
+  var tileTranslateModifier = new Modifier({
+    transform: Transform.translate(x, y, 0),
+    opacity: function () {
+      return 1;
+    }
+  });
+
+  tooltipContext = tooltipView;
+  mainContext.add(tileTranslateModifier).add(tooltipView);
+}
+
+// USER INTERFACE SETUP
+var setupUserInterface = function () {
+  background = new ImageSurface({
+    size: [window.innerWidth, window.innerHeight],
+    content: wall1.get("background"),
+  });
+
+  mainContext.add(background);
+  drawView(wall1);
+  inventory.draw();
+  //drawToolTip();
+  //tooltipContext.setProperties({"opacity": 0});
 
   // Draw the cursor
   var cursorSurface = new Surface({
