@@ -162,7 +162,7 @@ cat = new Item({
   source: "img/cat.png",
   grabbable: true,
   size: [window.innerWidth * 0.07, window.innerWidth * 0.08],
-  position: [window.innerWidth * 0.6, window.innerHeight * 0.5],
+  position: [window.innerWidth * 0.2, window.innerHeight * 0.8],
   grabbable: true,
   name: "cat",
 });
@@ -178,7 +178,7 @@ key = new Item({
 hammer = new Item({
   source: "img/hammer.png",
   size: [window.innerWidth * 0.09, window.innerWidth * 0.05],
-  position: [window.innerWidth * 0.8, window.innerHeight * 0.8],
+  position: [window.innerWidth * 0.85, window.innerHeight * 0.8],
   grabbable: true,
   name: "hammer",
 });
@@ -187,7 +187,7 @@ hammer = new Item({
 
 wall1 = new View({
   background: "img/blue_wall.png",
-  items: [mousehole, door, clock, hammer],
+  items: [mousehole, door, clock],
 });
 
 wall2 = new View({

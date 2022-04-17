@@ -36,17 +36,24 @@ var isHovering = false; // if hovering over some object
 var hoveringObject = null; // object hovering over
 var disableTransition = true;
 var elapsedFrames = 0;
+var cursorFrozen = false;
+var hoveredItem = null;
+
+var cursorPosition = [0, 0];
 
 // MAIN GAME LOOP
 // Called every time the Leap provides a new frame of data
 Leap.loop({
   hand: function (hand) {
     // Use the hand data to control the cursor's screen position
-    var cursorPosition = [
-      hand.screenPosition()[0],
-      hand.screenPosition()[1] + 400,
-    ];
-    cursor.setScreenPosition(cursorPosition);
+
+    if (!cursorFrozen) {
+      cursorPosition = [
+        hand.screenPosition()[0],
+        hand.screenPosition()[1] + 400,
+      ];
+      cursor.setScreenPosition(cursorPosition);
+    }
 
     // SETUP mode
     if (gameState.get("state") == "setup") {
@@ -87,6 +94,38 @@ Leap.loop({
           }
         }
       }
+      // console.log("hand screen position" + hand.screenPosition());
+      // if (hand.screenPosition()[2] < 0) {
+      //   console.log("hand below zero");
+      // }
+      hoveredItem = getHoveredItem(cursorPosition);
+      if (
+        hand.grabStrength > 0.5 &&
+        hand.screenPosition()[2] > 300 &&
+        hoveredItem &&
+        hoveredItem.get("openable") &&
+        hoveredItem.get("isOpen") == false
+      ) {
+        console.log(hoveredItem.get("name"));
+        hoveredItem.get("openSound").play();
+        hoveredItem.set("isOpen", true);
+        hoveredItem.set("source", hoveredItem.get("sourceOpened"));
+        currentRoom.drawView();
+      }
+
+      if (
+        hand.grabStrength < 0.5 &&
+        hand.screenPosition()[2] < 0 &&
+        hoveredItem &&
+        hoveredItem.get("openable") &&
+        hoveredItem.get("isOpen")
+      ) {
+        console.log(hoveredItem.get("name"));
+        hoveredItem.get("closingSound").play();
+        hoveredItem.set("isOpen", false);
+        hoveredItem.set("source", hoveredItem.get("sourceClosed"));
+        currentRoom.drawView();
+      }
 
       if (!grabbedItem && isGrabbing) {
         // detect if they are grabbing an inventory item
@@ -108,7 +147,7 @@ Leap.loop({
         // move the item
       } else if (grabbedItem && !isGrabbing) {
         // check if they can use the item
-        var hoveredItem = getHoveredItem(cursor.get("screenPosition"));
+        var hoveredItem = getHoveredItem(cursorPosition);
 
         if (hoveredItem) {
           var objectWasUsed = useObjectOnItem(grabbedItem, hoveredItem);
@@ -134,7 +173,7 @@ function grabItem(item) {
 }
 
 function tryGrab() {
-  var hoveredItem = getHoveredItem(cursor.get("screenPosition"));
+  hoveredItem = getHoveredItem(cursor.get("screenPosition"));
   if (hoveredItem && hoveredItem.get("grabbable")) {
     grabItem(hoveredItem);
     generateSpeech("You've just obtained the " + hoveredItem.get("name"));
@@ -171,7 +210,7 @@ var processSpeech = function (transcript) {
       currentRoom.transition("right");
       processed = true;
     }
-    var hoveredItem = getHoveredItem(cursor.get("screenPosition")); // previously: cusor.get("screenPosition")
+    hoveredItem = getHoveredItem(cursor.get("screenPosition")); // previously: cusor.get("screenPosition")
     var usedItem = inventory.getInventoryItem(transcript);
     // console.log("screen position", cursor.get("screenPosition"));
     // console.log("hovered item name: ", hoveredItem.get("name"));
@@ -180,6 +219,12 @@ var processSpeech = function (transcript) {
       processed = true;
       zoomedInObject = hoveredItem;
       zoomInObject(hoveredItem);
+    } else if (userSaid(transcript, ["stay", "freeze"])) {
+      cursorFrozen = true;
+      processed = true;
+    } else if (userSaid(transcript, ["move", "unfreeze"])) {
+      cursorFrozen = false;
+      processed = true;
     } else if (userSaid(transcript, ["zoom out"]) && isZoomedIn) {
       isZoomedIn = false;
       processed = true;
@@ -294,7 +339,12 @@ function useObjectOnItem(object, item) {
         return true;
       }
     } else {
-      generateSpeech("You can't use the key on that");
+      generateSpeech(
+        "You can't use the " +
+          object.get("name") +
+          " on the " +
+          item.get("name")
+      );
       return false;
     }
   } else if (object.get("name") == "hammer") {
@@ -323,13 +373,18 @@ function useObjectOnItem(object, item) {
         item.set("source", "img/door_open.png");
         doorUnlockingSound.play();
         generateSpeech(
-          "You broke the lock with the hammer unlocked the door! Congrats!"
+          "You broke the lock with the hammer unlocked the door! Congrats on solving the escape room and reuniting the grandma with her grandson!"
         );
         currentRoom.drawView();
         return true;
       }
     } else {
-      generateSpeech("You can't use the hammer on that");
+      generateSpeech(
+        "You can't use the " +
+          object.get("name") +
+          " on the " +
+          item.get("name")
+      );
       return false;
     }
   } else if (object.get("name") == "cheese") {
@@ -358,7 +413,12 @@ function useObjectOnItem(object, item) {
         return false;
       }
     } else {
-      generateSpeech("You can't use the cheese on that");
+      generateSpeech(
+        "You can't use the " +
+          object.get("name") +
+          " on the " +
+          item.get("name")
+      );
       return false;
     }
   } else if (object.get("name") == "mashed potatoes") {
@@ -381,7 +441,12 @@ function useObjectOnItem(object, item) {
         return false;
       }
     } else {
-      generateSpeech("You can't use the mashed potatoes on that");
+      generateSpeech(
+        "You can't use the " +
+          object.get("name") +
+          " on the " +
+          item.get("name")
+      );
       return false;
     }
   } else if (object.get("name") == "cat") {
@@ -402,12 +467,17 @@ function useObjectOnItem(object, item) {
         return false;
       }
     } else {
-      generateSpeech("You can't use the cat on that");
+      generateSpeech(
+        "You can't use the " +
+          object.get("name") +
+          " on the " +
+          item.get("name")
+      );
       return false;
     }
   } else {
     generateSpeech(
-      "You can't use " + object.get("name") + " on " + item.get("name")
+      "You can't use the " + object.get("name") + " on the " + item.get("name")
     );
     return false;
   }
