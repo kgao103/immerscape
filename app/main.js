@@ -38,6 +38,7 @@ var disableTransition = true;
 var elapsedFrames = 0;
 var cursorFrozen = false;
 var hoveredItem = null;
+var lightOn = true;
 
 var cursorPosition = [0, 0];
 
@@ -263,6 +264,36 @@ var processSpeech = function (transcript) {
       hoveredItem.get("closingSound").play();
       hoveredItem.set("isOpen", false);
       hoveredItem.set("source", hoveredItem.get("sourceClosed"));
+      currentRoom.drawView();
+    } else if (
+      userSaid(transcript, ["off"]) &&
+      hoveredItem &&
+      hoveredItem.get("switchedOnable") &&
+      hoveredItem.get("isOn") == true
+    ) {
+      processed = true;
+      console.log(hoveredItem.get("name"));
+      console.log("hi i'm a dumbo");
+      hoveredItem.get("offSound").play();
+      hoveredItem.set("isOn", false);
+      lightOn = false;
+      currentRoom.turnOffLight();
+      hoveredItem.set("source", hoveredItem.get("sourceOff"));
+      currentRoom.drawView();
+    } else if (
+      userSaid(transcript, ["on"]) &&
+      hoveredItem &&
+      hoveredItem.get("switchedOnable") &&
+      hoveredItem.get("isOn") == false
+    ) {
+      processed = true;
+      console.log(hoveredItem.get("name"));
+      console.log("hi i'm a dumbo");
+      hoveredItem.get("onSound").play();
+      hoveredItem.set("isOn", true);
+      lightOn = true;
+      currentRoom.turnOnLight();
+      hoveredItem.set("source", hoveredItem.get("sourceOn"));
       currentRoom.drawView();
     } else {
     }

@@ -26,6 +26,8 @@ var Item = Backbone.Model.extend({
     closingSound: null,
     openable: false,
     holding: false,
+    isOn: true,
+    switchedOnable: false,
     name: "",
     description: "",
   },
@@ -65,6 +67,8 @@ var ItemSet = Backbone.Collection.extend({ model: Item });
 var View = Backbone.Model.extend({
   defaults: {
     background: "",
+    background_dark: "",
+    isDark: false,
     items: [],
   },
   removeItem: function (item) {
@@ -103,6 +107,22 @@ var Room = Backbone.Model.extend({
   drawView: function () {
     drawView(this.getView());
     inventory.draw();
+  },
+
+  turnOffLight: function () {
+    console.log("halpppp shleeeee");
+    for (let wall of Object.values(this.get("views"))) {
+      console.log("halpppp meee");
+      wall.set("background", wall.get("background_dark"));
+    }
+  },
+
+  turnOnLight: function () {
+    console.log("halpppp shleeeee");
+    for (let wall of Object.values(this.get("views"))) {
+      console.log("halpppp meee");
+      wall.set("background", wall.get("background_light"));
+    }
   },
 });
 

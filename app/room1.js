@@ -66,10 +66,18 @@ fridge = new Item({
 });
 
 lamp = new Item({
-  source: "img/lamp.png",
+  isOn: true,
+  get source() {
+    return this.isOn ? "img/lamp_on.png" : "img/lamp_off.png";
+  },
+  sourceOn: "img/lamp_on.png",
+  sourceOff: "img/lamp_off.png",
   size: [100, 350],
   name: "lamp",
+  switchedOnable: true,
   position: [window.innerWidth * 0.2, window.innerHeight * 0.3],
+  onSound: new Audio("sound/lamp_on.mov"),
+  offSound: new Audio("sound/lamp_off.mov"),
 });
 
 painting = new Item({
@@ -187,21 +195,29 @@ hammer = new Item({
 
 wall1 = new View({
   background: "img/blue_wall.png",
+  background_light: "img/blue_wall.png",
+  background_dark: "img/blue_wall_dark.png",
   items: [mousehole, door, clock],
 });
 
 wall2 = new View({
   background: "img/pink_wall.png",
+  background_light: "img/pink_wall.png",
+  background_dark: "img/pink_wall_dark.png",
   items: [fridge, lamp, painting, cheese],
 });
 
 wall3 = new View({
   background: "img/green_wall.png",
+  background_light: "img/green_wall.png",
+  background_dark: "img/green_wall_dark.png",
   items: [bedtable, bed, painting2, hammer, cat],
 });
 
 wall4 = new View({
   background: "img/purple_wall.png",
+  background_light: "img/purple_wall.png",
+  background_dark: "img/purple_wall_dark.png",
   items: [windowLarge, dresser, mashedPotatoes],
 });
 
