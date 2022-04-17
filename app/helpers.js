@@ -191,3 +191,15 @@ var getSnappedScreenPosition = function (boardPosition) {
   screenPosition[1] += boardPosition.row * TILESIZE;
   return screenPosition;
 };
+
+var vectorAdd = function (v1, v2) {
+  return v1.map(function (x, i) {
+    return x + v2[i];
+  })
+};
+
+var vectorSub = function (v1, v2) {
+  return v1.map(function (x, i) {
+    return x - v2[i];
+  })
+};

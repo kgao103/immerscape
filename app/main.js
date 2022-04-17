@@ -16,14 +16,9 @@ var grandmaDeadGrandson = new Audio("sound/grandma.m4a");
 // UI SETUP
 setupUserInterface();
 
-// selectedTile: The tile that the player is currently hovering above
-var selectedTile = false;
-
-// grabbedShip/Offset: The ship and offset if player is currently manipulating a ship
 var grabbedItem = false;
 var grabbedOffset = [0, 0];
 
-// isGrabbing: Is the player's hand currently in a grabbing pose
 var isGrabbing = false;
 
 // global variables for our game
@@ -100,25 +95,13 @@ Leap.loop({
       //   console.log("hand below zero");
       // }
       hoveredItem = getHoveredItem(cursorPosition);
-      if (
-        hand.grabStrength > 0.5 &&
-        hand.screenPosition()[2] > 300 &&
-        hoveredItem &&
-        hoveredItem.isOpenable()
-      ) {
-        console.log(hoveredItem.get("name"));
-        hoveredItem.open();
-        //currentRoom.drawView();
+      var isOpening = hand.grabStrength > 0.5 && hand.screenPosition()[2] > 300;
+      var isClosing = hand.grabStrength < 0.5 && hand.screenPosition()[2] < 0;
+      if (isOpening) {
+        tryOpenHoveredItem();
       }
-      if (
-        hand.grabStrength < 0.5 &&
-        hand.screenPosition()[2] < 0 &&
-        hoveredItem &&
-        hoveredItem.isClosable()
-      ) {
-        console.log(hoveredItem.get("name"));
-        hoveredItem.close();
-        //currentRoom.drawView();
+      if (isClosing) {
+        tryCloseHoveredItem();
       }
 
       if (!grabbedItem && isGrabbing) {
@@ -126,22 +109,15 @@ Leap.loop({
         grabbedItem = inventory.getHoveredItem(cursorPosition);
         if (grabbedItem) {
           var itemPosition = grabbedItem.get("position");
-          grabbedOffset = [
-            cursorPosition[0] - itemPosition[0],
-            cursorPosition[1] - itemPosition[1],
-          ];
+          grabbedOffset = vectorSub(cursorPosition, itemPosition);
           grabbedItem.set("holding", true);
         }
       } else if (grabbedItem && isGrabbing) {
-        itemPosition = [
-          cursorPosition[0] - grabbedOffset[0],
-          cursorPosition[1] - grabbedOffset[1],
-        ];
+        var itemPosition = vectorSub(cursorPosition, grabbedOffset);
         grabbedItem.set("position", itemPosition);
         // move the item
       } else if (grabbedItem && !isGrabbing) {
         // check if they can use the item
-        var hoveredItem = getHoveredItem(cursorPosition);
 
         if (hoveredItem) {
           var objectWasUsed = useObjectOnItem(grabbedItem, hoveredItem);
@@ -178,6 +154,26 @@ function tryGrab() {
   }
 }
 
+function freezeCursor() {
+  cursorFrozen = true;
+}
+
+function unfreezeCursor() {
+  cursorFrozen = false;
+}
+
+function tryOpenHoveredItem() {
+  if (hoveredItem && hoveredItem.isOpenable()) {
+    hoveredItem.open();
+  }
+}
+
+function tryCloseHoveredItem() {
+  if (hoveredItem && hoveredItem.isClosable()) {
+    hoveredItem.close();
+  }
+}
+
 // processSpeech(transcript)
 //  Is called anytime speech is recognized by the Web Speech API
 // Input:
@@ -204,29 +200,34 @@ var processSpeech = function (transcript) {
       currentRoom.transition("right");
       processed = true;
     }
-    hoveredItem = getHoveredItem(cursor.get("screenPosition")); // previously: cusor.get("screenPosition")
     var usedItem = inventory.getInventoryItem(transcript);
     // console.log("screen position", cursor.get("screenPosition"));
     // console.log("hovered item name: ", hoveredItem.get("name"));
+
+    var commands = [
+      [["stay", "freeze"], freezeCursor],
+      [["move", "unfreeze"], unfreezeCursor],
+      [["grab"], tryGrab],
+      [["open"], tryOpenHoveredItem],
+      [["close"], tryCloseHoveredItem],
+    ];
+
+    for (command of commands) {
+      if (userSaid(transcript, command[0])) {
+        command[1]();
+        processed = true;
+      }
+    }
+
     if (userSaid(transcript, ["look"]) && hoveredItem) {
       isZoomedIn = true;
       processed = true;
       zoomedInObject = hoveredItem;
       zoomInObject(hoveredItem);
-    } else if (userSaid(transcript, ["stay", "freeze"])) {
-      cursorFrozen = true;
-      processed = true;
-    } else if (userSaid(transcript, ["move", "unfreeze"])) {
-      cursorFrozen = false;
-      processed = true;
     } else if (userSaid(transcript, ["zoom out"]) && isZoomedIn) {
       isZoomedIn = false;
       processed = true;
       zoomedInObject = false;
-      // TODO: ADD ZOOM OUT FUNCTIONALITY
-    } else if (userSaid(transcript, ["grab"])) {
-      processed = true;
-      tryGrab();
     } else if (hoveredItem && usedItem) {
       processed = true;
       var objectWasUsed = useObjectOnItem(usedItem, hoveredItem);
@@ -234,26 +235,6 @@ var processSpeech = function (transcript) {
         inventory.removeItem(usedItem, 1);
         inventory.draw();
       }
-    } else if (
-      userSaid(transcript, ["open"]) &&
-      hoveredItem &&
-      hoveredItem.isOpenable()
-    ) {
-      processed = true;
-      console.log(hoveredItem.get("name"));
-      hoveredItem.open();
-      //currentRoom.drawView();
-    } else if (
-      userSaid(transcript, ["close"]) &&
-      hoveredItem &&
-      hoveredItem.isClosable()
-    ) {
-      processed = true;
-      console.log(hoveredItem.get("name"));
-      hoveredItem.get("closingSound").play();
-      hoveredItem.set("isOpen", false);
-      hoveredItem.set("source", hoveredItem.get("sourceClosed"));
-      currentRoom.drawView();
     } else if (
       userSaid(transcript, ["off"]) &&
       hoveredItem &&
