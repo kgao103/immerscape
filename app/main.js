@@ -7,6 +7,10 @@ var doorUnlockingSound = new Audio("sound/door_unlock.mp3");
 var mouseCry = new Audio("sound/mouse_cry.mp3");
 var mouseHappySound = new Audio("sound/mouse_happy.m4a");
 var grandmaDeadGrandson = new Audio("sound/grandma.m4a");
+var safeUnlock = new Audio("sound/safe_unlock.mp3");
+var safeBeep = new Audio("sound/safe_beep.mp3");
+var safeIncorrect = new Audio("sound/safe_incorrect.mp3");
+var safeDelete = new Audio("sound/safe_delete.mp3");
 
 // UI SETUP
 setupUserInterface();
@@ -40,7 +44,8 @@ Leap.loop({
     //console.log(hand);
     // Use the hand data to control the cursor's screen position
 
-    isPointing = !hand.fingers[0].extended &&
+    isPointing =
+      !hand.fingers[0].extended &&
       hand.fingers[1].extended &&
       !hand.fingers[2].extended &&
       !hand.fingers[3].extended &&
@@ -289,9 +294,33 @@ function registerPress(item) {
   // if (item.get("pressable")) {
   // item.get("pressSound").play();
   // item.set("isPressed", true);
-  passwordSafe += item.get("number").toString();
-  console.log(passwordSafe);
-  currentRoom.drawView();
+  if (item.get("name") == "button_delete" && passwordSafe.length > 0) {
+    console.log("deleted character");
+    safeDelete.play();
+    passwordSafe = passwordSafe.slice(0, -1);
+    console.log(passwordSafe);
+    currentRoom.drawView();
+  } else if (item.get("name") == "button_enter" && passwordSafe.length == 3) {
+    if (passwordSafe == "245") {
+      console.log("correct password");
+      safeUnlock.play();
+      generateSpeech(
+        "you unlocked the safe and obtained a golden key. congrats!"
+      );
+      inventory.addItem(key);
+      currentRoom.drawView();
+    } else {
+      console.log("incorrect password");
+      safeIncorrect.play();
+      generateSpeech("wrong password. Please try again");
+      passwordSafe = "";
+    }
+  } else {
+    passwordSafe += item.get("number").toString();
+    console.log(passwordSafe);
+    safeBeep.play();
+    currentRoom.drawView();
+  }
   // }
 }
 

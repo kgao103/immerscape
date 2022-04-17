@@ -188,6 +188,13 @@ zero = new Item({
   number: 0,
 });
 
+safe_screen = new Item({
+  source: "img/safe_screen.png",
+  size: [window.innerWidth * 0.395, window.innerHeight * 0.29],
+  name: "safe_screen",
+  position: [window.innerWidth * 0.42, window.innerHeight * 0.02],
+});
+
 button_delete = new Item({
   source: "img/button_x.png",
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
@@ -339,6 +346,7 @@ zoomedSafe = new View({
     zero,
     button_delete,
     button_enter,
+    safe_screen,
   ],
 });
 
