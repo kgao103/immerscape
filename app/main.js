@@ -31,6 +31,7 @@ var hoveredItem = null;
 var lightOn = true;
 
 var cursorPosition = [0, 0];
+var passwordSafe = "";
 
 // MAIN GAME LOOP
 // Called every time the Leap provides a new frame of data
@@ -250,15 +251,13 @@ var processSpeech = function (transcript) {
       }
     }
 
+    console.log("i'm a piece of shit");
     if (userSaid(transcript, ["look"]) && hoveredItem) {
       isZoomedIn = true;
       processed = true;
       zoomedInObject = hoveredItem;
-      zoomInObject(hoveredItem);
-    } else if (userSaid(transcript, ["zoom out"]) && isZoomedIn) {
-      isZoomedIn = false;
-      processed = true;
-      zoomedInObject = false;
+      currentRoom.transition("zoom_in");
+      //zoomInObject(hoveredItem);
     } else if (hoveredItem && usedItem) {
       processed = true;
       var objectWasUsed = useObjectOnItem(usedItem, hoveredItem);
@@ -268,11 +267,33 @@ var processSpeech = function (transcript) {
         inventory.draw();
       }
     }
-
     console.log("currentWall: ", currentWall);
+  } else {
+    hoveredItem = getHoveredItem(cursorPosition);
+    if (userSaid(transcript, ["zoom out", "out"])) {
+      console.log("hiiiiiiyoooo");
+      isZoomedIn = false;
+      processed = true;
+      currentRoom.transition("zoom_out");
+      zoomedInObject = false;
+    } else if (userSaid(transcript, ["press"]) && hoveredItem) {
+      processed = true;
+      console.log("hiaaaaa");
+      registerPress(hoveredItem);
+    }
   }
   return processed;
 };
+
+function registerPress(item) {
+  // if (item.get("pressable")) {
+  // item.get("pressSound").play();
+  // item.set("isPressed", true);
+  passwordSafe += item.get("number").toString();
+  console.log(passwordSafe);
+  currentRoom.drawView();
+  // }
+}
 
 function zoomInObject(object) {
   var x = object.get("position").x;
