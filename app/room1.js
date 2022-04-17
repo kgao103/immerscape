@@ -113,6 +113,7 @@ one = new Item({
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "one",
   position: [window.innerWidth * 0.4, window.innerHeight * 0.4],
+  number: 1,
 });
 
 two = new Item({
@@ -120,6 +121,7 @@ two = new Item({
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "two",
   position: [window.innerWidth * 0.52, window.innerHeight * 0.4],
+  number: 2,
 });
 
 three = new Item({
@@ -127,6 +129,7 @@ three = new Item({
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "three",
   position: [window.innerWidth * 0.625, window.innerHeight * 0.4],
+  number: 3,
 });
 
 four = new Item({
@@ -134,6 +137,7 @@ four = new Item({
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "four",
   position: [window.innerWidth * 0.4, window.innerHeight * 0.53],
+  number: 4,
 });
 
 five = new Item({
@@ -141,6 +145,7 @@ five = new Item({
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "five",
   position: [window.innerWidth * 0.52, window.innerHeight * 0.53],
+  number: 5,
 });
 
 six = new Item({
@@ -148,6 +153,7 @@ six = new Item({
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "six",
   position: [window.innerWidth * 0.625, window.innerHeight * 0.53],
+  number: 6,
 });
 
 seven = new Item({
@@ -155,6 +161,7 @@ seven = new Item({
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "seven",
   position: [window.innerWidth * 0.4, window.innerHeight * 0.66],
+  number: 7,
 });
 
 eight = new Item({
@@ -162,6 +169,7 @@ eight = new Item({
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "eight",
   position: [window.innerWidth * 0.52, window.innerHeight * 0.66],
+  number: 8,
 });
 
 nine = new Item({
@@ -169,6 +177,7 @@ nine = new Item({
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "nine",
   position: [window.innerWidth * 0.625, window.innerHeight * 0.66],
+  number: 9,
 });
 
 zero = new Item({
@@ -176,6 +185,7 @@ zero = new Item({
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "zero",
   position: [window.innerWidth * 0.73, window.innerHeight * 0.53],
+  number: 0,
 });
 
 button_delete = new Item({

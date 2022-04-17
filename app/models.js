@@ -33,6 +33,7 @@ var Item = Backbone.Model.extend({
     description: "",
     opacity: 1,
     rendered: false,
+    number: -1,
   },
 
   // useOn: function (item) {
@@ -40,9 +41,7 @@ var Item = Backbone.Model.extend({
   //   return false;
   // },
 
-  initialize: function () {
-
-  },
+  initialize: function () {},
 
   setPosition: function (position) {
     this.set("position", position);
@@ -69,7 +68,7 @@ var Item = Backbone.Model.extend({
     this.set("source", source);
     this.get("context").setContent(source);
   },
-  
+
   isOpenable: function () {
     return this.get("openable") && !this.get("isOpen");
   },
@@ -134,11 +133,11 @@ var View = Backbone.Model.extend({
     this.set("items", items);
   },
 
-  hide: function() {
+  hide: function () {
     this.get("items").forEach((item) => {
       item.hide();
     });
-  }
+  },
 });
 
 var Room = Backbone.Model.extend({
