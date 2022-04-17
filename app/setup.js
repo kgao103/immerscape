@@ -4,6 +4,7 @@ var Modifier = famous.core.Modifier;
 var Transform = famous.core.Transform;
 var Surface = famous.core.Surface;
 var ImageSurface = famous.surfaces.ImageSurface;
+var ContainerSurface = famous.surfaces.ContainerSurface;
 var StateModifier = famous.modifiers.StateModifier;
 var Draggable = famous.modifiers.Draggable;
 var GridLayout = famous.views.GridLayout;
@@ -83,8 +84,6 @@ function drawToolTip() {
       zIndex: 95,
     }
   });
-
-  console.log(itemImage);
   
 
   var tileTranslateModifier = new Modifier({
@@ -94,7 +93,7 @@ function drawToolTip() {
       0),
   });
 
-  //tooltipView.add(tileTranslateModifier).add(itemImage);
+  tooltipView.add(tileTranslateModifier).add(itemImage);
 
   itemText = new Surface({
     content: "this is a hammer. it can break things.",
@@ -116,12 +115,12 @@ function drawToolTip() {
       0),
   });
 
-  //tooltipView.add(tileTranslateModifier).add(itemText);
+  tooltipView.add(tileTranslateModifier).add(itemText);
 
   var tileTranslateModifier = new Modifier({
     transform: Transform.translate(x, y, 0),
     opacity: function () {
-      return 1;
+      return 0;
     }
   });
 
@@ -139,7 +138,7 @@ var setupUserInterface = function () {
   mainContext.add(background);
   drawView(wall1);
   inventory.draw();
-  //drawToolTip();
+  drawToolTip();
   //tooltipContext.setProperties({"opacity": 0});
 
   // Draw the cursor

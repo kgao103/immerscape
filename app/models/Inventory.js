@@ -1,6 +1,7 @@
 var INVENTORY_SIZE = 5;
 var SLOT_SIZE = 100;
 var SLOT_SPACING = 10;
+var SLOT_PADDING = SLOT_SIZE * 0.1;
 var TOTAL_WIDTH =
   SLOT_SIZE * INVENTORY_SIZE + SLOT_SPACING * (INVENTORY_SIZE - 1);
 
@@ -56,13 +57,13 @@ var Inventory = Backbone.Model.extend({
     let items = this.get("items");
     for (var i = 0; i < items.length; i++) {
       var item = items[i];
-      item.set("size", [SLOT_SIZE, SLOT_SIZE]);
+      item.set("size", [SLOT_SIZE - SLOT_PADDING * 2, SLOT_SIZE - SLOT_PADDING * 2]);
       if (item.get("holding")) {
       } else {
         let x =
           (window.innerWidth - TOTAL_WIDTH) / 2 +
-          (SLOT_SIZE + SLOT_SPACING) * i;
-        let y = window.innerHeight - SLOT_SIZE - 10;
+          (SLOT_SIZE + SLOT_SPACING) * i + SLOT_PADDING;
+        let y = window.innerHeight - SLOT_SIZE - 10 + SLOT_PADDING;
         item.set("position", [x, y]);
       }
     }
