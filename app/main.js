@@ -299,10 +299,12 @@ function registerPress(item) {
     safeDelete.play();
     passwordSafe = passwordSafe.slice(0, -1);
     console.log(passwordSafe);
+    safe.get("context").setContent(passwordSafe);
     currentRoom.drawView();
   } else if (item.get("name") == "button_enter" && passwordSafe.length == 3) {
     if (passwordSafe == "245") {
       console.log("correct password");
+      safe.get("context").setContent(passwordSafe);
       safeUnlock.play();
       generateSpeech(
         "you unlocked the safe and obtained a golden key. congrats!"
@@ -311,11 +313,13 @@ function registerPress(item) {
       currentRoom.drawView();
     } else {
       console.log("incorrect password");
+      safe.get("context").setContent(passwordSafe);
       safeIncorrect.play();
       generateSpeech("wrong password. Please try again");
       passwordSafe = "";
     }
   } else {
+    safe.get("context").setContent(passwordSafe);
     passwordSafe += item.get("number").toString();
     console.log(passwordSafe);
     safeBeep.play();

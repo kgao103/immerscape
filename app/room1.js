@@ -283,6 +283,13 @@ cat = new Item({
   name: "cat",
 });
 
+capybara = new Item({
+  source: "img/capybara.png",
+  size: [window.innerWidth * 0.15, window.innerHeight * 0.3],
+  position: [window.innerWidth * 0.1, window.innerHeight * 0.7],
+  name: "capybara",
+});
+
 key = new Item({
   source: "img/key.png",
   size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
@@ -326,7 +333,7 @@ wall4 = new View({
   background: "img/purple_wall.png",
   background_light: "img/purple_wall.png",
   background_dark: "img/purple_wall_dark.png",
-  items: [windowLarge, dresser, mashedPotatoes, safe],
+  items: [windowLarge, dresser, mashedPotatoes, safe, capybara],
 });
 
 zoomedSafe = new View({
