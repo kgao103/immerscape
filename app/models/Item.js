@@ -1,12 +1,23 @@
 function drawItem(item) {
   image = item.get('source');
   zIndex = item.get('grabbable') ? 60 : 0;
-  var itemView = new ImageSurface({
-    content: image,
-    properties: {
-      zIndex: zIndex,
-    }
-  });
+  var itemView;
+  if (image) {
+    itemView = new ImageSurface({
+      content: image,
+      properties: {
+        zIndex: zIndex,
+      }
+    });
+  } else {
+    itemView = new Surface({
+      content: "test",
+      properties: {
+        backgroundColor: "black",
+        color: "white",
+      }
+    });
+  }
 
   var itemTranslateModifier = new Modifier({
     transform: function () {

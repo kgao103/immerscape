@@ -66,7 +66,8 @@ function drawToolTip() {
     content: "",
     size: [tooltipWidth, tooltipHeight],
     properties: {
-      backgroundColor: "rgb(34, 34, 34)",
+      backgroundColor: "#fbbf77",
+      borderRadius: "30px",
       color: "white",
       zIndex: 90,
     },
@@ -79,7 +80,8 @@ function drawToolTip() {
     content: "img/hammer.png",
     size: [wItem * w, hItem * h],
     properties: {
-      backgroundColor: "white",
+      backgroundColor: "#fffee0",
+      borderRadius: "20px",
       color: "white",
       zIndex: 95,
     }
@@ -88,8 +90,8 @@ function drawToolTip() {
 
   var tileTranslateModifier = new Modifier({
     transform: Transform.translate(
-      x + (0.5 - wItem)/2 * w,
-      y + (1 - hItem)/2 * h, 
+      (0.5 - wItem)/2 * w,
+      (1 - hItem)/2 * h, 
       0),
   });
 
@@ -102,16 +104,13 @@ function drawToolTip() {
       backgroundColor: "black",
       color: "white",
       zIndex: 95,    
-      opacity: 0, 
     }
   });
 
-  console.log (itemText);
-
   var tileTranslateModifier = new Modifier({
     transform: Transform.translate(
-      x + (1.5 - wItem)/2 * w,
-      y + (1 - hItem)/2 * h, 
+      (1.5 - wItem)/2 * w,
+      (1 - hItem)/2 * h, 
       0),
   });
 
@@ -139,7 +138,7 @@ var setupUserInterface = function () {
   drawView(wall1);
   inventory.draw();
   drawToolTip();
-  //tooltipContext.setProperties({"opacity": 0});
+  tooltipContext.setProperties({"opacity": 0});
 
   // Draw the cursor
   var cursorSurface = new Surface({
