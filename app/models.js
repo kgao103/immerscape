@@ -9,10 +9,7 @@ var Cursor = Backbone.Model.extend({
 
 var GameState = Backbone.Model.extend({
   defaults: {
-    state: "setup", // setup, playing, end
-    turn: "player", // player, cpu
-    boards: [],
-    waiting: true,
+    state: "playing",
   },
 });
 

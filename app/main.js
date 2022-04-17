@@ -1,5 +1,5 @@
 // GAME SETUP
-var initialState = SKIPSETUP ? "playing" : "setup";
+var initialState = "playing";
 var gameState = new GameState({ state: initialState });
 var cursor = new Cursor();
 var windowBreakingSound = new Audio("sound/break_window.mp3");
@@ -59,7 +59,7 @@ Leap.loop({
     }
 
     // SETUP mode
-    if (gameState.get("state") == "setup") {
+    if (gameState.get("state") == "playing") {
       cursorObject.setProperties({ backgroundColor: "pink" });
       currentRoom.getItems().forEach((item) => {
         if (item.isHovered(cursorPosition)) {
@@ -307,12 +307,19 @@ function zoomInObject(object) {
 }
 
 function getHoveredItem(cursorPosition) {
-  for (item of currentRoom.getItems()) {
-    if (item.isHovered(cursorPosition)) {
-      return item;
-    }
+  hoveredItems = currentRoom.getItems().filter(function (item) {
+    return item.isHovered(cursorPosition);
+  });
+  grabbableHoveredItems = hoveredItems.filter(function (item) {
+    return item.get("grabbable");
+  });
+  if (grabbableHoveredItems.length > 0) {
+    return grabbableHoveredItems[0];
+  } else if (hoveredItems.length > 0) {
+    return hoveredItems[0];
+  } else {
+    return false;
   }
-  return false;
 }
 
 // returns true if object was used, false otherwise
