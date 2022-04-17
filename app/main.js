@@ -36,7 +36,18 @@ var cursorPosition = [0, 0];
 // Called every time the Leap provides a new frame of data
 Leap.loop({
   hand: function (hand) {
+    //console.log(hand);
     // Use the hand data to control the cursor's screen position
+
+    isPointing = !hand.fingers[0].extended &&
+      hand.fingers[1].extended &&
+      !hand.fingers[2].extended &&
+      !hand.fingers[3].extended &&
+      !hand.fingers[4].extended;
+
+    if (isPointing) {
+      console.log("pointing");
+    }
 
     if (!cursorFrozen) {
       cursorPosition = [
@@ -349,7 +360,7 @@ function useObjectOnItem(object, item) {
         return false;
       } else {
         item.set("isOpen", true);
-        item.set("source", "img/door_open.png");
+        item.setContent("img/door_open.png");
         doorUnlockingSound.play();
         generateSpeech(
           "You broke the lock with the hammer unlocked the door! Congrats on solving the escape room and reuniting the grandma with her grandson!"

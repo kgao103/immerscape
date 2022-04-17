@@ -46,9 +46,13 @@ function drawItem(item) {
   image = item.get('source');
   //size = item.get('size');
   //position = item.get('position');
+  zIndex = item.get('grabbable') ? 60 : 0;
   var itemView = new ImageSurface({
     //size: size,
     content: image,
+    properties: {
+      zIndex: zIndex,
+    }
   });
 
   var itemTranslateModifier = new Modifier({
@@ -76,23 +80,6 @@ function drawView(view) {
   //inventory.draw();
 }
 
-function drawWall1() {
-  drawView(wall1);
-}
-
-function drawWall2() {
-  drawView(wall2);
-}
-
-function drawWall3() {
-  drawView(wall3);
-}
-
-function drawWall4() {
-  drawView(wall4);
-  console.log("before drawing inventory");
-}
-
 // USER INTERFACE SETUP
 var setupUserInterface = function () {
   background = new ImageSurface({
@@ -101,8 +88,82 @@ var setupUserInterface = function () {
   });
 
   mainContext.add(background);
-  drawWall1();
+  drawView(wall1);
   inventory.draw();
+
+  let tooltipWidth = window.innerWidth / 3;
+  let tooltipHeight = window.innerHeight / 3;
+  let w = tooltipWidth;
+  let h = tooltipHeight;
+
+  let x = (window.innerWidth - tooltipWidth) / 2;
+  let y = (window.innerHeight - tooltipHeight) / 2;
+  /*
+  otherFeedback = new Surface({
+    content: "",
+    size: [tooltipWidth, tooltipHeight],
+    properties: {
+      backgroundColor: "rgb(34, 34, 34)",
+      color: "white",
+      zIndex: 90,
+      opacity: 1,
+    },
+  });
+
+  var tileTranslateModifier = new Modifier({
+    transform: Transform.translate(x, y, 0),
+  });
+
+  mainContext.add(tileTranslateModifier).add(otherFeedback);
+
+  let hItem = 0.8;
+  let wItem = 0.4;
+
+  itemImage = new ImageSurface({
+    content: "img/hammer.png",
+    size: [wItem * w, hItem * h],
+    properties: {
+      backgroundColor: "white",
+      color: "white",
+      zIndex: 95,
+      opacity: 1,
+    }
+  });
+
+  console.log(itemImage);
+  
+
+  var tileTranslateModifier = new Modifier({
+    transform: Transform.translate(
+      x + (0.5 - wItem)/2 * w,
+      y + (1 - hItem)/2 * h, 
+      0),
+  });
+
+  mainContext.add(tileTranslateModifier).add(itemImage);
+
+  itemText = new Surface({
+    content: "this is a hammer. it can break things.",
+    size: [wItem * w, hItem * h],
+    properties: {
+      backgroundColor: "black",
+      color: "white",
+      zIndex: 95,    
+      opacity: 1, 
+    }
+  });
+
+  console.log (itemText);
+
+  var tileTranslateModifier = new Modifier({
+    transform: Transform.translate(
+      x + (1.5 - wItem)/2 * w,
+      y + (1 - hItem)/2 * h, 
+      0),
+  });
+
+  mainContext.add(tileTranslateModifier).add(itemText);
+  */
 
   // Draw the cursor
   var cursorSurface = new Surface({
@@ -111,7 +172,7 @@ var setupUserInterface = function () {
     properties: {
       borderRadius: CURSORSIZE / 2 + "px",
       pointerEvents: "none",
-      zIndex: 1,
+      zIndex: 100,
       backgroundColor: "pink",
       opacity: 0.8,
     },

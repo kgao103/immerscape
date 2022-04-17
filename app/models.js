@@ -281,6 +281,7 @@ var Inventory = Backbone.Model.extend({
         properties: {
           backgroundColor: "#ccffff",
           border: "solid 1px #ccffff",
+          zIndex: 1,
         },
       });
 
