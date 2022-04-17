@@ -15,6 +15,7 @@ var mainContext = Engine.createContext();
 var inventory = new Inventory();
 
 function drawBackground(imagePath) {
+  /*
   var itemView = new ImageSurface({
     size: [window.innerWidth, window.innerHeight],
     content: imagePath,
@@ -22,6 +23,8 @@ function drawBackground(imagePath) {
   });
 
   mainContext.add(itemView);
+  */
+  background.setContent(imagePath);
 }
 
 function drawImage(image, size, position) {
@@ -41,10 +44,10 @@ function drawImage(image, size, position) {
 
 function drawItem(item) {
   image = item.get('source');
-  size = item.get('size');
-  position = item.get('position');
+  //size = item.get('size');
+  //position = item.get('position');
   var itemView = new ImageSurface({
-    size: size,
+    //size: size,
     content: image,
   });
 
@@ -52,6 +55,12 @@ function drawItem(item) {
     transform: function () {
       let position = item.get('position');
       return Transform.translate(position[0], position[1], 0);
+    },
+    opacity: function () {
+      return item.get('opacity');
+    },
+    size: function () {
+      return item.get('size');
     },
   });
 
@@ -62,9 +71,9 @@ function drawItem(item) {
 function drawView(view) {
   drawBackground(view.get("background"));
   view.get("items").forEach((item) => {
-    drawItem(item);
+    item.draw();
   });
-  inventory.draw();
+  //inventory.draw();
 }
 
 function drawWall1() {
@@ -86,41 +95,12 @@ function drawWall4() {
 
 // USER INTERFACE SETUP
 var setupUserInterface = function () {
-  background = new Surface({
-    content: "<h1>battleship</h1>",
-    properties: {
-      backgroundColor: "rgb(34, 34, 34)",
-      color: "white",
-    },
+  background = new ImageSurface({
+    size: [window.innerWidth, window.innerHeight],
+    content: wall1.get("background"),
   });
-  mainContext.add(background);
-  turnFeedback = new Surface({
-    content: "",
-    size: [undefined, 150],
-    properties: {
-      backgroundColor: "rgb(34, 34, 34)",
-      color: "white",
-    },
-  });
-  var turnModifier = new StateModifier({
-    origin: [0.0, 0.0],
-    align: [0.0, 0.4],
-  });
-  mainContext.add(turnModifier).add(turnFeedback);
-  otherFeedback = new Surface({
-    content: "",
-    size: [undefined, 50],
-    properties: {
-      backgroundColor: "rgb(34, 34, 34)",
-      color: "white",
-    },
-  });
-  var otherModifier = new StateModifier({
-    origin: [0.0, 1.0],
-    align: [0.0, 1.0],
-  });
-  mainContext.add(otherModifier).add(otherFeedback);
 
+  mainContext.add(background);
   drawWall1();
   inventory.draw();
 

@@ -2,11 +2,6 @@
 var initialState = SKIPSETUP ? "playing" : "setup";
 var gameState = new GameState({ state: initialState });
 var cursor = new Cursor();
-//var hitSound = new Audio("sound/explosion.wav");
-//var winSound = new Audio("sound/win.wav");
-//var lostSound = new Audio("sound/lost.wav");
-//var sunkSound = new Audio("sound/sunkShip.wav");
-// var missSound = new Audio("sound/miss.mp3");
 var windowBreakingSound = new Audio("sound/break_window.mp3");
 var doorUnlockingSound = new Audio("sound/door_unlock.mp3");
 var mouseCry = new Audio("sound/mouse_cry.mp3");
