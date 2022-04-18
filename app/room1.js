@@ -65,6 +65,44 @@ fridge = new Item({
   closingSound: new Audio("sound/fridge_close.wav"),
 });
 
+dresser = new Item({
+  openable: true,
+  isOpen: false,
+  get source() {
+    return this.isOpen ? "img/dresser_opened.png" : "img/dresser.png";
+  },
+  sourceOpened: "img/dresser_opened.png",
+  sourceClosed: "img/dresser.png",
+  size: [window.innerWidth * 0.4, window.innerWidth * 0.25],
+  name: "dresser",
+  position: [window.innerWidth * 0.4, window.innerHeight * 0.4],
+  openSound: new Audio("sound/drawer_opening.mp3"),
+  closingSound: new Audio("sound/drawer_closing.wav"),
+});
+
+painting = new Item({
+  get source() {
+    return this.isOpen ? "img/painting_opened.png" : "img/painting.png";
+  },
+  openable: true,
+  isOpen: false,
+  size: [182, 240],
+  name: "painting",
+  sourceOpened: "img/painting_opened.png",
+  sourceClosed: "img/painting.png",
+  position: [window.innerWidth * 0.4, window.innerHeight * 0.25],
+  openSound: new Audio("sound/painting_opening.mp3"),
+  closingSound: new Audio("sound/drawer_closing.wav"),
+});
+
+flashlight = new Item({
+  name: "flashlight",
+  source: "img/flashlight.png",
+  size: [100, 100],
+  position: [window.innerWidth * 0.8, window.innerHeight * 0.22],
+  grabbable: true,
+});
+
 lamp = new Item({
   isOn: true,
   get source() {
@@ -78,13 +116,6 @@ lamp = new Item({
   position: [window.innerWidth * 0.2, window.innerHeight * 0.3],
   onSound: new Audio("sound/lamp_on.mov"),
   offSound: new Audio("sound/lamp_off.mov"),
-});
-
-painting = new Item({
-  source: "img/painting.png",
-  size: [180, 240],
-  name: "painting",
-  position: [window.innerWidth * 0.4, window.innerHeight * 0.22],
 });
 
 bedtable = new Item({
@@ -103,9 +134,10 @@ bed = new Item({
 
 safe = new Item({
   source: "img/safe.png",
-  size: [window.innerWidth * 0.12, window.innerWidth * 0.1],
+  size: [window.innerWidth * 0.1, window.innerWidth * 0.08],
   name: "safe",
-  position: [window.innerWidth * 0.2, window.innerHeight * 0.6],
+  isHidden: true,
+  position: [window.innerWidth * 0.425, window.innerHeight * 0.45],
 });
 
 one = new Item({
@@ -235,13 +267,6 @@ painting2 = new Item({
   position: [window.innerWidth * 0.3, window.innerHeight * 0.2],
 });
 
-dresser = new Item({
-  source: "img/dresser.png",
-  size: [window.innerWidth * 0.4, window.innerWidth * 0.25],
-  name: "dresser",
-  position: [window.innerWidth * 0.4, window.innerHeight * 0.4],
-});
-
 windowLarge = new Item({
   isBroken: false,
   get source() {
@@ -310,6 +335,13 @@ cat = new Item({
   name: "cat",
 });
 
+ceiling_fan = new Item({
+  source: "img/ceiling_fan.gif",
+  size: [window.innerWidth * 0.25, window.innerWidth * 0.2],
+  position: [window.innerWidth * 0.35, -30],
+  name: "ceiling fan",
+});
+
 capybara = new Item({
   source: "img/capybara.png",
   size: [window.innerWidth * 0.15, window.innerHeight * 0.3],
@@ -346,14 +378,14 @@ wall1 = new View({
   background: "img/blue_wall.png",
   background_light: "img/blue_wall.png",
   background_dark: "img/blue_wall_dark.png",
-  items: [mousehole, door, clock],
+  items: [mousehole, door, clock, ceiling_fan],
 });
 
 wall2 = new View({
   background: "img/pink_wall.png",
   background_light: "img/pink_wall.png",
   background_dark: "img/pink_wall_dark.png",
-  items: [fridge, lamp, painting, cheese],
+  items: [fridge, lamp, safe, painting, cheese],
 });
 
 wall3 = new View({
@@ -367,7 +399,7 @@ wall4 = new View({
   background: "img/purple_wall.png",
   background_light: "img/purple_wall.png",
   background_dark: "img/purple_wall_dark.png",
-  items: [windowLarge, dresser, mashedPotatoes, safe, capybara],
+  items: [windowLarge, dresser, mashedPotatoes, capybara],
 });
 
 capybaraConversation = new View({
@@ -421,10 +453,10 @@ room = new Room({
       wall4: "wall1",
     },
     zoom_in: {
-      wall4: "zoomedSafe",
+      wall2: "zoomedSafe",
     },
     zoom_out: {
-      zoomedSafe: "wall4",
+      zoomedSafe: "wall2",
     },
   },
 });
