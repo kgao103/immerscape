@@ -135,7 +135,7 @@ var setupUserInterface = function () {
   });
 
   mainContext.add(background);
-  drawView(wall1);
+  room.drawView();
   inventory.draw();
   drawToolTip();
   tooltipContext.setProperties({"opacity": 0});

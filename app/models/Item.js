@@ -11,11 +11,8 @@ function drawItem(item) {
     });
   } else {
     itemView = new Surface({
-      content: "test",
-      properties: {
-        backgroundColor: "black",
-        color: "white",
-      }
+      content: item.get("text"),
+      properties: item.get("properties"),
     });
   }
 
@@ -40,6 +37,8 @@ var Item = Backbone.Model.extend({
   defaults: {
     context: null,
     source: "",
+    text: "",
+    properties: {},
     size: [0, 0],
     position: [0, 0],
     grabbable: false,

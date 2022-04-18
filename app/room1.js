@@ -192,6 +192,10 @@ safe_screen = new Item({
   size: [window.innerWidth * 0.395, window.innerHeight * 0.29],
   name: "safe_screen",
   position: [window.innerWidth * 0.42, window.innerHeight * 0.02],
+  properties: {
+    backgroundColor: "black",
+    color: "white",
+  }
 });
 
 button_delete = new Item({
@@ -305,6 +309,22 @@ hammer = new Item({
   name: "hammer",
 });
 
+talkingCapybara = new Item({
+  source: "img/capybara.png",
+  size: [window.innerWidth * 0.3, window.innerHeight * 0.6],
+  position: [window.innerWidth * 0.1, window.innerHeight * 0.3],
+  name: "capybara",
+});
+
+capybaraSpeech = new Item({
+  size: [window.innerWidth * 0.2, window.innerHeight * 0.3],
+  position: [window.innerWidth * 0.3, window.innerHeight * 0.1],
+  properties: {
+    backgroundColor: "white",
+    border: "1px solid black",
+  }
+})
+
 // VIEWS
 
 wall1 = new View({
@@ -335,6 +355,10 @@ wall4 = new View({
   items: [windowLarge, dresser, mashedPotatoes, safe, capybara],
 });
 
+capybaraConversation = new View({
+  items: [talkingCapybara, capybaraSpeech],
+});
+
 zoomedSafe = new View({
   background: "img/safe_zoomed.png",
   background_light: "img/safe_zoomed.png",
@@ -359,13 +383,14 @@ zoomedSafe = new View({
 // ROOM
 
 room = new Room({
-  currentView: "wall1",
+  currentView: "capybaraConversation",
   views: {
     wall1: wall1,
     wall2: wall2,
     wall3: wall3,
     wall4: wall4,
     zoomedSafe: zoomedSafe,
+    capybaraConversation: capybaraConversation
   },
   transitions: {
     left: {
