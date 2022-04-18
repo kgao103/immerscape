@@ -13,6 +13,9 @@ var Room = Backbone.Model.extend({
       let new_view = transition[currentView];
       this.set("currentView", new_view);
       drawView(this.getView());
+      return true;
+    } else {
+      return false;
     }
   },
 

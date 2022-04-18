@@ -17,6 +17,13 @@ var generateSpeech = function (message, callback) {
   }
 };
 
+var userSaid = function (str, commands) {
+  for (var i = 0; i < commands.length; i++) {
+    if (str.indexOf(commands[i]) > -1) return true;
+  }
+  return false;
+};
+
 function arrayRemoveItem(array, item) {
   var index = array.indexOf(item);
   if (index > -1) {

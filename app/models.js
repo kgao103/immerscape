@@ -19,6 +19,7 @@ var View = Backbone.Model.extend({
     background_dark: "",
     isDark: false,
     items: [],
+    special: [],
   },
   removeItem: function (item) {
     let items = this.get("items");
@@ -39,5 +40,140 @@ var View = Backbone.Model.extend({
     this.get("items").forEach((item) => {
       item.hide();
     });
+    this.get("special").forEach((item) => {
+      item.hide();
+    });
   },
 });
+
+speechBubble1 = new Item({
+  text: "Hello. I am Cabbage!",
+  position: [window.innerWidth * 0.3, window.innerHeight * 0.1],
+  size: [window.innerWidth * 0.3, window.innerHeight * 0.4],
+  opacity: 1,
+  properties: {
+    backgroundImage: "url(img/speech_bubble.webp)",
+    backgroundSize: "100% 100%",
+    color: "black",
+    zIndex: 95,
+    fontSize: "20px",
+    padding: window.innerWidth * 0.05 + "px",
+  }
+})
+
+var Conversation = Backbone.Model.extend({
+  defaults: {
+    content: "",
+    context: null,
+    npcContext: speechBubble1,
+    subcontext: [],
+    rendered: false,
+    opacity: 0,
+    speechOptions: [
+      "Who is Steve?",
+      "Who are you?",
+      "Who am I?",
+      "Goodbye!",
+    ]
+  },
+
+  processSpeech(transcript) {
+
+  },
+
+  updateOptions() {
+    for (var i = 0; i < this.get("subcontext").length; i++) {
+      var subcontext = this.get("subcontext")[i];
+      if (i < speechOptions.length) {
+        var speechOption = this.get("speechOptions")[i];
+        subcontext.set("opacity", 1);
+        subcontext.get("context").setContent(speechOption);
+      } else {
+        subcontext.set("opacity", 0);
+      }
+    }
+  },
+
+  hide() {
+    //this.get("npcContext").set("opacity", 0);
+    this.get("npcContext").hide();
+    this.set("opacity", 0);
+  },
+
+  draw() {
+    //this.get("npcContext").set("opacity", 1);
+    this.get("npcContext").draw();
+    this.set("opacity", 1);
+    if (this.get("rendered")) {
+      return;
+    } else {
+      this.set("rendered", true);
+      x = window.innerWidth * 0.6;
+      y = window.innerHeight * 0.1;
+      w = window.innerWidth * 0.3;
+      h = window.innerHeight * 0.15;
+      s = window.innerWidth * 0.015;
+
+      optionsView = new ContainerSurface({
+
+      });
+
+      var optionsTranslateModifier = new Modifier({
+        transform: Transform.translate(x, y, 0),
+        opacity: function () {
+          return this.get("opacity");
+        }.bind(this),
+      })
+
+      mainContext.add(optionsTranslateModifier).add(optionsView);
+      this.set("context", optionsView);
+
+      let speechOptions = this.get("speechOptions");
+      for (let i = 0; i < speechOptions.length; i++) {
+        speechOption = new Item({
+          content: speechOptions[i],
+          position: [0, i * (h + s)],
+          size: [w, h],
+          opacity: 1,
+          properties: {
+            backgroundImage: "url(img/speech_bubble_right.png)",
+            backgroundSize: "100% 100%",
+            color: "black",
+            zIndex: 95,
+            fontSize: "20px",
+            padding: 
+              window.innerWidth * 0.015 + "px " +
+              window.innerWidth * 0.05 + "px " +
+              window.innerWidth * 0.015 + "px " +
+              window.innerWidth * 0.015 + "px ",
+          }
+        });
+        
+        let item = speechOption;
+        speechView = new Surface({
+          content: item.get("content"),
+          properties: item.get("properties"),
+        });
+      
+        var itemTranslateModifier = new Modifier({
+          transform: function () {
+            let position = item.get("position");
+            return Transform.translate(position[0], position[1], 0);
+          },
+          opacity: function () {
+            return item.get("opacity");
+          },
+          size: function () {
+            return item.get("size");
+          },
+        });
+        
+        speechOption.context = speechView;
+        optionsView.add(itemTranslateModifier).add(speechView); 
+        this.get("subcontext").push(speechOption);
+      }
+    }
+  },
+})
+
+capybaraSpeechOptions = new Conversation({});

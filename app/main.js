@@ -44,6 +44,8 @@ var movingDown = false;
 var movingLeft = false;
 var movingRight = false;
 
+var inConversation = false;
+
 // MAIN GAME LOOP
 // Called every time the Leap provides a new frame of data
 Leap.loop({
@@ -286,15 +288,17 @@ function tryTurnOnHoveredItem() {
 var processSpeech = function (transcript) {
   // Helper function to detect if any commands appear in a string
   console.log(transcript);
-  var userSaid = function (str, commands) {
-    for (var i = 0; i < commands.length; i++) {
-      if (str.indexOf(commands[i]) > -1) return true;
-    }
-    return false;
-  };
 
   var processed = false;
-  if (!isZoomedIn) {
+  if (inConversation) {
+    if (userSaid(transcript, ["bye", "goodbye", "by", "buy"])) {
+      currentRoom.transition("bye");
+      inConversation = false;
+      processed = true;
+    }
+  }
+
+  else if (!isZoomedIn) {
     if (userSaid(transcript, ["left"])) {
       currentRoom.transition("left");
       processed = true;
@@ -304,9 +308,12 @@ var processSpeech = function (transcript) {
       processed = true;
     }
     if (userSaid(transcript, ["hello", "hi", "hey"])) {
-      currentRoom.transition("talk");
+      if (currentRoom.transition("talk")) {
+        inConversation = true;
+      }
       processed = true;
     }
+    
     var usedItem = inventory.getInventoryItem(transcript);
     // console.log("screen position", cursor.get("screenPosition"));
     // console.log("hovered item name: ", hoveredItem.get("name"));

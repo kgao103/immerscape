@@ -10,6 +10,7 @@ var Inventory = Backbone.Model.extend({
     items: [],
     rendered: false,
     context: null,
+    opacity: 1,
   },
 
   addItem: function (item) {
@@ -71,9 +72,14 @@ var Inventory = Backbone.Model.extend({
     }
   },
 
+  hide: function () {
+    this.set("opacity", 0);
+  },
+
   draw: function () {
     let items = this.get("items");
     this.updateItemPositions();
+    this.set("opacity", 1);
     if (this.get("rendered")) {
 
     } else {
@@ -90,6 +96,7 @@ var Inventory = Backbone.Model.extend({
           (window.innerWidth - TOTAL_WIDTH) / 2,
           window.innerHeight - SLOT_SIZE - 10, 
           0),
+        opacity: function() { return this.get("opacity") }.bind(this),
       });
 
       mainContext.add(tileTranslateModifier).add(inventoryView);

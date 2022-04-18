@@ -404,6 +404,7 @@ wall4 = new View({
 
 capybaraConversation = new View({
   items: [talkingCapybara],
+  special: [capybaraSpeechOptions],
 });
 
 zoomedSafe = new View({
@@ -454,6 +455,9 @@ room = new Room({
     },
     talk: {
       wall4: "capybaraConversation",
+    },
+    bye: {
+      capybaraConversation: "wall4",
     },
     zoom_in: {
       wall2: "zoomedSafe",
