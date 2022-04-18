@@ -224,7 +224,9 @@ function tryOpenHoveredItem() {
       painting.hide();
       safe.appear();
       currentRoom.getView().removeItem(painting);
+      currentRoom.getView().addItem(safe);
       hoveredItem.get("openSound").play();
+      currentRoom.drawView();
       generateSpeech("You opened the painting and discovered a safe!");
     } else {
       hoveredItem.open();
@@ -330,7 +332,11 @@ var processSpeech = function (transcript) {
 
     hoveredItem = getHoveredItem(cursorPosition);
     // console.log("hovered item name", hoveredItem.get("name"));
-    if (userSaid(transcript, ["look"]) && hoveredItem) {
+    if (
+      userSaid(transcript, ["look"]) &&
+      hoveredItem &&
+      !hoveredItem.get("isHidden")
+    ) {
       isZoomedIn = true;
       processed = true;
       zoomedInObject = hoveredItem;
@@ -353,8 +359,18 @@ var processSpeech = function (transcript) {
       currentRoom.transition("zoom_out");
       zoomedInObject = false;
     } else if (
-      userSaid(transcript, 
-        ["press", "price", "bass", "fast", "harass", "bratz", "fatz", "pratt", "grass", "pass"]) &&
+      userSaid(transcript, [
+        "press",
+        "price",
+        "bass",
+        "fast",
+        "harass",
+        "bratz",
+        "fatz",
+        "pratt",
+        "grass",
+        "pass",
+      ]) &&
       hoveredItem &&
       hoveredItem.isPressable()
     ) {
@@ -404,7 +420,7 @@ function registerPress(item) {
     passwordSafe = "";
     safe_screen.get("context").setContent(passwordSafe);
     currentRoom.drawView();
-  } else if (passwordSafe.length < 3) {
+  } else if (passwordSafe.length < 3 && item.get("name") !== "button_delete") {
     passwordSafe += item.get("number").toString();
     safe_screen.get("context").setContent(passwordSafe);
     console.log(passwordSafe);

@@ -385,7 +385,7 @@ wall2 = new View({
   background: "img/pink_wall.png",
   background_light: "img/pink_wall.png",
   background_dark: "img/pink_wall_dark.png",
-  items: [fridge, lamp, safe, painting, cheese],
+  items: [fridge, lamp, painting, cheese],
 });
 
 wall3 = new View({
@@ -437,7 +437,7 @@ room = new Room({
     wall3: wall3,
     wall4: wall4,
     zoomedSafe: zoomedSafe,
-    capybaraConversation: capybaraConversation
+    capybaraConversation: capybaraConversation,
   },
   transitions: {
     left: {
