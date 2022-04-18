@@ -452,6 +452,9 @@ room = new Room({
       wall3: "wall4",
       wall4: "wall1",
     },
+    talk: {
+      wall4: "capybaraConversation",
+    },
     zoom_in: {
       wall2: "zoomedSafe",
     },

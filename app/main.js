@@ -54,10 +54,14 @@ Leap.loop({
     movingLeft = hand.palmVelocity[0] < -200;
     movingUp = hand.palmVelocity[1] > 200;
     movingDown = hand.palmVelocity[1] < -200;
-    movingForward = hand.palmVelocity[2] > 200;
-    movingBackward = hand.palmVelocity[2] < -200;
-    console.log(movingRight, movingLeft, movingUp, movingDown, movingForward, movingBackward);
+    movingForward = hand.palmVelocity[2] > 100;
+    movingBackward = hand.palmVelocity[2] < -100;
+    //console.log(movingRight, movingLeft, movingUp, movingDown, movingForward, movingBackward);
     // Use the hand data to control the cursor's screen position
+
+    if (movingForward) {
+      //console.log("moving forward");
+    }
 
     isPointing =
       !hand.fingers[0].extended &&
@@ -67,6 +71,9 @@ Leap.loop({
       !hand.fingers[4].extended;
 
     if (isPointing) {
+      if (movingForward) {
+        console.log("pressing");
+      }
       //console.log("pointing");
     }
     // point to press button
@@ -294,6 +301,10 @@ var processSpeech = function (transcript) {
     }
     if (userSaid(transcript, ["right"])) {
       currentRoom.transition("right");
+      processed = true;
+    }
+    if (userSaid(transcript, ["hello", "hi", "hey"])) {
+      currentRoom.transition("talk");
       processed = true;
     }
     var usedItem = inventory.getInventoryItem(transcript);

@@ -187,7 +187,27 @@ function drawSpeechOptions() {
         padding: window.innerWidth * 0.015 + "px",
       }
     })
-    drawImageWithText(speechOption);
+    
+    let item = speechOption;
+    speechView = new Surface({
+      content: item.get("content"),
+      properties: item.get("properties"),
+    });
+  
+    var itemTranslateModifier = new Modifier({
+      transform: function () {
+        let position = item.get("position");
+        return Transform.translate(position[0], position[1], 0);
+      },
+      opacity: function () {
+        return item.get("opacity");
+      },
+      size: function () {
+        return item.get("size");
+      },
+    });
+    
+    //.add(itemTranslateModifier).add(itemView);
   }
 }
 
@@ -212,6 +232,7 @@ function drawImageWithText(item) {
   });
 
   mainContext.add(itemTranslateModifier).add(itemView);
+  return itemView;
 }
 
 // USER INTERFACE SETUP
