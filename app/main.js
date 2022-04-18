@@ -89,8 +89,7 @@ Leap.loop({
       hand.pinchStrength > 0.8 &&
       hand.grabStrength < 0.2 &&
       !cursorFrozen &&
-      hoveredItem &&
-      !hoveredItem.get("isHidden")
+      hoveredItem
     ) {
       isZoomedIn = true;
       processed = true;
@@ -222,7 +221,6 @@ function tryOpenHoveredItem() {
   if (hoveredItem && hoveredItem.isOpenable()) {
     if (hoveredItem.get("name") == "painting") {
       painting.hide();
-      safe.appear();
       currentRoom.getView().removeItem(painting);
       currentRoom.getView().addItem(safe);
       hoveredItem.get("openSound").play();
@@ -334,8 +332,7 @@ var processSpeech = function (transcript) {
     // console.log("hovered item name", hoveredItem.get("name"));
     if (
       userSaid(transcript, ["look"]) &&
-      hoveredItem &&
-      !hoveredItem.get("isHidden")
+      hoveredItem
     ) {
       isZoomedIn = true;
       processed = true;
@@ -461,7 +458,7 @@ function zoomInObject(object) {
 
 function getHoveredItem(cursorPosition) {
   hoveredItems = currentRoom.getItems().filter(function (item) {
-    return item.isHovered(cursorPosition) && item.get("isHidden") == false;
+    return item.isHovered(cursorPosition);
   });
   grabbableHoveredItems = hoveredItems.filter(function (item) {
     return item.get("grabbable");

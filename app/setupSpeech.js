@@ -41,7 +41,7 @@ recognition.onend = function(event) {
       otherFeedback.setContent("SPEECH DEBUG: ready");
     */
     recognition.start();
-  }, 1000);
+  }, 0);
 };
 recognition.start();
 /*****************************************************************/
