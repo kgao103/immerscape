@@ -56,7 +56,8 @@ Leap.loop({
     }
     if (isPointing && hoveredItem && hoveredItem.isPressable()) {
       console.log("pointing at pressable key");
-      // registerPress(hoveredItem);
+      hoveredItem.set("isPressed", true);
+      registerPress(hoveredItem);
     }
 
     if (!cursorFrozen) {
@@ -317,7 +318,7 @@ function registerPress(item) {
     console.log(passwordSafe);
     safe_screen.get("context").setContent(passwordSafe);
     currentRoom.drawView();
-  } else if (item.get("name") == "button_enter" && passwordSafe.length == 3) {
+  } else if (item.get("name") == "button_enter" && passwordSafe.length >= 3) {
     if (passwordSafe == "245") {
       console.log("correct password");
       safe_screen.get("context").setContent(passwordSafe);
@@ -329,15 +330,44 @@ function registerPress(item) {
       console.log("incorrect password");
       safe_screen.get("context").setContent(passwordSafe);
       safeIncorrect.play();
-      generateSpeech("wrong password. Please try again");
+      generateSpeech(
+        "wrong password. Please try again",
+        safe_screen.get("context").setContent("")
+      );
       passwordSafe = "";
+      currentRoom.drawView();
     }
-  } else {
+  } else if (item.get("name") == "button_enter" && passwordSafe.length < 3) {
+    console.log("not enough characters");
+    safeIncorrect.play();
+    generateSpeech("not enough characters. Please try again");
+    passwordSafe = "";
+    safe_screen.get("context").setContent(passwordSafe);
+    currentRoom.drawView();
+  } else if (passwordSafe.length < 3) {
     passwordSafe += item.get("number").toString();
     safe_screen.get("context").setContent(passwordSafe);
     console.log(passwordSafe);
     safeBeep.play();
     currentRoom.drawView();
+  }
+  for (let button of [
+    one,
+    two,
+    three,
+    four,
+    five,
+    six,
+    seven,
+    eight,
+    nine,
+    zero,
+    button_delete,
+    button_enter,
+  ]) {
+    if (button !== item) {
+      button.set("isPressed", false);
+    }
   }
   // }
 }
