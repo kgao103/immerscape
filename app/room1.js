@@ -114,6 +114,7 @@ one = new Item({
   name: "one",
   position: [window.innerWidth * 0.4, window.innerHeight * 0.4],
   number: 1,
+  pressable: true,
 });
 
 two = new Item({
@@ -122,6 +123,7 @@ two = new Item({
   name: "two",
   position: [window.innerWidth * 0.52, window.innerHeight * 0.4],
   number: 2,
+  pressable: true,
 });
 
 three = new Item({
@@ -130,6 +132,7 @@ three = new Item({
   name: "three",
   position: [window.innerWidth * 0.625, window.innerHeight * 0.4],
   number: 3,
+  pressable: true,
 });
 
 four = new Item({
@@ -138,6 +141,7 @@ four = new Item({
   name: "four",
   position: [window.innerWidth * 0.4, window.innerHeight * 0.53],
   number: 4,
+  pressable: true,
 });
 
 five = new Item({
@@ -146,6 +150,7 @@ five = new Item({
   name: "five",
   position: [window.innerWidth * 0.52, window.innerHeight * 0.53],
   number: 5,
+  pressable: true,
 });
 
 six = new Item({
@@ -154,6 +159,7 @@ six = new Item({
   name: "six",
   position: [window.innerWidth * 0.625, window.innerHeight * 0.53],
   number: 6,
+  pressable: true,
 });
 
 seven = new Item({
@@ -162,6 +168,7 @@ seven = new Item({
   name: "seven",
   position: [window.innerWidth * 0.4, window.innerHeight * 0.66],
   number: 7,
+  pressable: true,
 });
 
 eight = new Item({
@@ -170,6 +177,7 @@ eight = new Item({
   name: "eight",
   position: [window.innerWidth * 0.52, window.innerHeight * 0.66],
   number: 8,
+  pressable: true,
 });
 
 nine = new Item({
@@ -178,6 +186,7 @@ nine = new Item({
   name: "nine",
   position: [window.innerWidth * 0.625, window.innerHeight * 0.66],
   number: 9,
+  pressable: true,
 });
 
 zero = new Item({
@@ -186,6 +195,7 @@ zero = new Item({
   name: "zero",
   position: [window.innerWidth * 0.73, window.innerHeight * 0.53],
   number: 0,
+  pressable: true,
 });
 
 safe_screen = new Item({
@@ -203,6 +213,7 @@ button_delete = new Item({
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "button_delete",
   position: [window.innerWidth * 0.73, window.innerHeight * 0.4],
+  pressable: true,
 });
 
 button_enter = new Item({
@@ -210,6 +221,7 @@ button_enter = new Item({
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "button_enter",
   position: [window.innerWidth * 0.73, window.innerHeight * 0.66],
+  pressable: true,
 });
 
 painting2 = new Item({
@@ -275,6 +287,14 @@ cheese = new Item({
   position: [window.innerWidth * 0.7, window.innerHeight * 0.488],
   grabbable: true,
   name: "cheese",
+});
+
+watermelon = new Item({
+  source: "img/watermelon.png",
+  size: [window.innerWidth * 0.06, window.innerWidth * 0.05],
+  position: [window.innerWidth * 0.7, window.innerHeight * 0.488],
+  grabbable: true,
+  name: "watermelon",
 });
 
 cat = new Item({
@@ -345,7 +365,7 @@ wall3 = new View({
   background: "img/green_wall.png",
   background_light: "img/green_wall.png",
   background_dark: "img/green_wall_dark.png",
-  items: [bedtable, bed, painting2, hammer, cat],
+  items: [bedtable, bed, painting2, cat],
 });
 
 wall4 = new View({
