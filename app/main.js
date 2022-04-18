@@ -292,10 +292,13 @@ var processSpeech = function (transcript) {
   var processed = false;
   if (inConversation) {
     if (userSaid(transcript, ["bye", "goodbye", "by", "buy"])) {
-      currentRoom.transition("bye");
       inConversation = false;
       processed = true;
+      sleep(1000).then(() => {
+        currentRoom.transition("bye");
+      });
     }
+    capybaraSpeechOptions.processSpeech(transcript);
   }
 
   else if (!isZoomedIn) {
@@ -310,6 +313,7 @@ var processSpeech = function (transcript) {
     if (userSaid(transcript, ["hello", "hi", "hey"])) {
       if (currentRoom.transition("talk")) {
         inConversation = true;
+        capybaraSpeechOptions.processSpeech("hello");
       }
       processed = true;
     }

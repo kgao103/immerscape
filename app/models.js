@@ -47,7 +47,7 @@ var View = Backbone.Model.extend({
 });
 
 speechBubble1 = new Item({
-  text: "Hello. I am Cabbage!",
+  text: "",
   position: [window.innerWidth * 0.3, window.innerHeight * 0.1],
   size: [window.innerWidth * 0.3, window.innerHeight * 0.4],
   opacity: 1,
@@ -70,15 +70,27 @@ var Conversation = Backbone.Model.extend({
     rendered: false,
     opacity: 0,
     speechOptions: [
-      "Who is Steve?",
-      "Who are you?",
-      "Who am I?",
-      "Goodbye!",
+      "(Ask about the MOUSE)",
+      "(Ask about the SAFE CODE)",
+      "(Say BYE)",
     ]
   },
 
   processSpeech(transcript) {
-
+    let speechOptions = this.get("speechOptions");
+    response = null;
+    if (userSaid(transcript, ["mouse"], ["rat"])) {
+      response = "steve is a mouse";
+    } else if (userSaid(transcript, ["safe", "code"])) {
+      response = "the code is 123";
+    } else if (userSaid(transcript, ["bye", "by", "goodbye"])) {
+      response = "goodbye!";
+    } else if (userSaid(transcript, ["hello", "hi", "hey"])) {
+      response = "hello";
+    }
+    if (response) {
+      this.get("npcContext").get("context").setContent(response);
+    }
   },
 
   updateOptions() {

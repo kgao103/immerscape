@@ -174,11 +174,11 @@ var setupUserInterface = function () {
   //drawSpeechBubble2();
   //drawImageWithText(speechBubble1);
   //capybaraSpeechOptions.draw();
-  capybaraSpeechOptions.set("speechOptions", [
+  /*capybaraSpeechOptions.set("speechOptions", [
     "Hello. I am Cabbage!",
     "Say something!",
     "I am a capybara. I am a cute little animal.",
-  ]);
+  ]);*/
   capybaraSpeechOptions.updateOptions();
   tooltipContext.setProperties({ "opacity": 0 });
 
