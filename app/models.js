@@ -28,6 +28,13 @@ var View = Backbone.Model.extend({
     console.log(this.get("items"));
   },
 
+  addItem: function (item) {
+    let items = this.get("items");
+    items.push(item);
+    this.set("items", items);
+    console.log(this.get("items"));
+  },
+
   hide: function () {
     this.get("items").forEach((item) => {
       item.hide();
