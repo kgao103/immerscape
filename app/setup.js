@@ -46,7 +46,12 @@ function drawImage(image, size, position) {
 function drawView(view) {
   drawBackground(view.get("background"));
   view.get("items").forEach((item) => {
+    // if (!item.get("isHidden")) {
     item.draw();
+    // }
+    // } else {
+    //   item.set("rendered", false);
+    // }
   });
   //inventory.draw();
 }
@@ -84,15 +89,15 @@ function drawToolTip() {
       borderRadius: "20px",
       color: "white",
       zIndex: 95,
-    }
+    },
   });
-  
 
   var tileTranslateModifier = new Modifier({
     transform: Transform.translate(
-      (0.5 - wItem)/2 * w,
-      (1 - hItem)/2 * h, 
-      0),
+      ((0.5 - wItem) / 2) * w,
+      ((1 - hItem) / 2) * h,
+      0
+    ),
   });
 
   tooltipView.add(tileTranslateModifier).add(itemImage);
@@ -103,15 +108,16 @@ function drawToolTip() {
     properties: {
       backgroundColor: "black",
       color: "white",
-      zIndex: 95,    
-    }
+      zIndex: 95,
+    },
   });
 
   var tileTranslateModifier = new Modifier({
     transform: Transform.translate(
-      (1.5 - wItem)/2 * w,
-      (1 - hItem)/2 * h, 
-      0),
+      ((1.5 - wItem) / 2) * w,
+      ((1 - hItem) / 2) * h,
+      0
+    ),
   });
 
   tooltipView.add(tileTranslateModifier).add(itemText);
@@ -120,7 +126,7 @@ function drawToolTip() {
     transform: Transform.translate(x, y, 0),
     opacity: function () {
       return 0;
-    }
+    },
   });
 
   tooltipContext = tooltipView;
@@ -138,7 +144,7 @@ var setupUserInterface = function () {
   drawView(wall1);
   inventory.draw();
   drawToolTip();
-  tooltipContext.setProperties({"opacity": 0});
+  tooltipContext.setProperties({ opacity: 0 });
 
   // Draw the cursor
   var cursorSurface = new Surface({

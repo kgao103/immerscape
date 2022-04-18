@@ -25,6 +25,7 @@ var View = Backbone.Model.extend({
     let index = items.indexOf(item);
     items.splice(index, 1);
     this.set("items", items);
+    console.log(this.get("items"));
   },
 
   hide: function () {

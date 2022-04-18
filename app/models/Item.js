@@ -60,6 +60,7 @@ var Item = Backbone.Model.extend({
     number: -1,
     isPressed: false,
     pressable: false,
+    isHidden: false,
   },
 
   // useOn: function (item) {
@@ -134,6 +135,12 @@ var Item = Backbone.Model.extend({
   },
 
   draw: function () {
+    // if (this.get("isHidden")) {
+    //   this.set("opacity", 0);
+    // } else {
+    //   this.set("opacity", 1);
+    // }
+    // if (!this.get("isHidden")) {
     this.set("opacity", 1);
     if (this.get("rendered")) {
       return;
@@ -141,10 +148,17 @@ var Item = Backbone.Model.extend({
       this.set("rendered", true);
       drawItem(this);
     }
+    // }
   },
 
   hide: function () {
     this.set("opacity", 0);
+    this.set("isHidden", true);
+  },
+
+  appear: function () {
+    this.set("opacity", 1);
+    this.set("isHidden", false);
   },
 });
 

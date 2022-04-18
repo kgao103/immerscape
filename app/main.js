@@ -7,6 +7,7 @@ var doorUnlockingSound = new Audio("sound/door_unlock.mp3");
 var mouseCry = new Audio("sound/mouse_cry.mp3");
 var mouseHappySound = new Audio("sound/mouse_happy.m4a");
 var grandmaDeadGrandson = new Audio("sound/grandma.m4a");
+var watermelonEating = new Audio("sound/watermelon_eating.mp3");
 var safeUnlock = new Audio("sound/safe_unlock.mp3");
 var safeBeep = new Audio("sound/safe_beep.mp3");
 var safeIncorrect = new Audio("sound/safe_incorrect.mp3");
@@ -54,10 +55,26 @@ Leap.loop({
     if (isPointing) {
       console.log("pointing");
     }
+    // point to press button
     if (isPointing && hoveredItem && hoveredItem.isPressable()) {
       console.log("pointing at pressable key");
       hoveredItem.set("isPressed", true);
       registerPress(hoveredItem);
+    }
+
+    // pinch to zoom in
+    if (
+      !isZoomedIn &&
+      hand.pinchStrength > 0.8 &&
+      hand.grabStrength < 0.2 &&
+      !cursorFrozen &&
+      hoveredItem &&
+      !hoveredItem.get("isHidden")
+    ) {
+      isZoomedIn = true;
+      processed = true;
+      zoomedInObject = hoveredItem;
+      currentRoom.transition("zoom_in");
     }
 
     if (!cursorFrozen) {
@@ -182,13 +199,30 @@ function unfreezeCursor() {
 
 function tryOpenHoveredItem() {
   if (hoveredItem && hoveredItem.isOpenable()) {
-    hoveredItem.open();
+    if (hoveredItem.get("name") == "painting") {
+      painting.hide();
+      safe.appear();
+      currentRoom.getView().removeItem(painting);
+      hoveredItem.get("openSound").play();
+      generateSpeech("You opened the painting and discovered a safe!");
+    } else {
+      hoveredItem.open();
+    }
     if (
       hoveredItem.get("name") == "fridge" &&
       !inventory.get("items").includes(watermelon)
     ) {
       inventory.addItem(watermelon);
-      generateSpeech("You opened the fridge and obtain a piece of watermelon");
+      generateSpeech(
+        "You opened the fridge and obtained a piece of watermelon"
+      );
+      currentRoom.drawView();
+    } else if (
+      hoveredItem.get("name") == "dresser" &&
+      !inventory.get("items").includes(flashlight)
+    ) {
+      inventory.addItem(flashlight);
+      generateSpeech("You opened the dresser and obtained a flashlight");
       currentRoom.drawView();
     }
   }
@@ -270,11 +304,15 @@ var processSpeech = function (transcript) {
     }
 
     console.log("i'm a piece of shit");
+
+    hoveredItem = getHoveredItem(cursorPosition);
+    // console.log("hovered item name", hoveredItem.get("name"));
     if (userSaid(transcript, ["look"]) && hoveredItem) {
       isZoomedIn = true;
       processed = true;
       zoomedInObject = hoveredItem;
       currentRoom.transition("zoom_in");
+      console.log("hiii");
       //zoomInObject(hoveredItem);
     } else if (hoveredItem && usedItem) {
       processed = true;
@@ -324,6 +362,7 @@ function registerPress(item) {
       safe_screen.get("context").setContent(passwordSafe);
       safeUnlock.play();
       generateSpeech("Congrats! you unlocked the safe and obtained a hammer.");
+      currentRoom.transition("zoom_out");
       inventory.addItem(hammer);
       currentRoom.drawView();
     } else {
@@ -385,7 +424,7 @@ function zoomInObject(object) {
 
 function getHoveredItem(cursorPosition) {
   hoveredItems = currentRoom.getItems().filter(function (item) {
-    return item.isHovered(cursorPosition);
+    return item.isHovered(cursorPosition) && item.get("isHidden") == false;
   });
   grabbableHoveredItems = hoveredItems.filter(function (item) {
     return item.get("grabbable");
@@ -454,7 +493,7 @@ function useObjectOnItem(object, item) {
         item.setContent("img/window_broken.png");
         windowBreakingSound.play();
         generateSpeech(
-          "You broke the window. However, the glass is too strong and won't break completely. You'll need to find another way to get through."
+          "You broke the window. However, the hole you made is too small for you to fit through. Should have gone to less boba events bro. You'll need to find another way to get through."
         );
         currentRoom.drawView();
         return false;
@@ -535,6 +574,49 @@ function useObjectOnItem(object, item) {
         );
         return false;
       }
+    } else {
+      generateSpeech(
+        "You can't use the " +
+          object.get("name") +
+          " on the " +
+          item.get("name")
+      );
+      return false;
+    }
+  } else if (object.get("name") == "watermelon") {
+    if (item.get("name") == "capybara") {
+      watermelonEating.play();
+      sleep(2000).then(() => {
+        generateSpeech(
+          "The capybara ate the watermelon and thanks you. He gives you permission to pet and hold him. You've just made a friend!"
+        );
+      });
+      item.set("grabbable", true);
+      currentRoom.drawView();
+      return true;
+    } else {
+      generateSpeech(
+        "You can't use the " +
+          object.get("name") +
+          " on the " +
+          item.get("name")
+      );
+      return false;
+    }
+  } else if (object.get("name") == "capybara") {
+    if (item.get("name") == "window" && item.get("isBroken")) {
+      // watermelonEating.play();
+      // sleep(2000).then(() => {
+      door.set("isOpen", true);
+      door.setContent("img/door_open.png");
+      doorUnlockingSound.play();
+      generateSpeech(
+        "The capybara jumped out through the window and opened the door from the outside for you. Congrats on solving the escape room and reuniting the grandma with her grandson!"
+      );
+      // });
+
+      currentRoom.transition("right");
+      return true;
     } else {
       generateSpeech(
         "You can't use the " +
