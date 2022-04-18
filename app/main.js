@@ -23,7 +23,6 @@ var isGrabbing = false;
 
 // global variables for our game
 var currentRoom = room;
-var currentWall = 1;
 var isZoomedIn = false;
 var zoomedInObject = false;
 
@@ -38,11 +37,26 @@ var lightOn = true;
 var cursorPosition = [0, 0];
 var passwordSafe = "";
 
+var movingForward = false;
+var movingBackward = false;
+var movingUp = false;
+var movingDown = false;
+var movingLeft = false;
+var movingRight = false;
+
 // MAIN GAME LOOP
 // Called every time the Leap provides a new frame of data
 Leap.loop({
   hand: function (hand) {
     //console.log(hand);
+
+    movingRight = hand.palmVelocity[0] > 200;
+    movingLeft = hand.palmVelocity[0] < -200;
+    movingUp = hand.palmVelocity[1] > 200;
+    movingDown = hand.palmVelocity[1] < -200;
+    movingForward = hand.palmVelocity[2] > 200;
+    movingBackward = hand.palmVelocity[2] < -200;
+    console.log(movingRight, movingLeft, movingUp, movingDown, movingForward, movingBackward);
     // Use the hand data to control the cursor's screen position
 
     isPointing =
@@ -53,7 +67,7 @@ Leap.loop({
       !hand.fingers[4].extended;
 
     if (isPointing) {
-      console.log("pointing");
+      //console.log("pointing");
     }
     // point to press button
     if (isPointing && hoveredItem && hoveredItem.isPressable()) {
@@ -100,7 +114,7 @@ Leap.loop({
 
       isGrabbing = hand.grabStrength > 0.5;
       if (isGrabbing) {
-        console.log("isGrabbing");
+        //console.log("isGrabbing");
         if (tryGrab()) {
         }
       }
@@ -303,8 +317,6 @@ var processSpeech = function (transcript) {
       }
     }
 
-    console.log("i'm a piece of shit");
-
     hoveredItem = getHoveredItem(cursorPosition);
     // console.log("hovered item name", hoveredItem.get("name"));
     if (userSaid(transcript, ["look"]) && hoveredItem) {
@@ -312,7 +324,6 @@ var processSpeech = function (transcript) {
       processed = true;
       zoomedInObject = hoveredItem;
       currentRoom.transition("zoom_in");
-      console.log("hiii");
       //zoomInObject(hoveredItem);
     } else if (hoveredItem && usedItem) {
       processed = true;
@@ -323,17 +334,16 @@ var processSpeech = function (transcript) {
         inventory.draw();
       }
     }
-    console.log("currentWall: ", currentWall);
   } else {
     hoveredItem = getHoveredItem(cursorPosition);
     if (userSaid(transcript, ["zoom out", "out"])) {
-      console.log("hiiiiiiyoooo");
       isZoomedIn = false;
       processed = true;
       currentRoom.transition("zoom_out");
       zoomedInObject = false;
     } else if (
-      userSaid(transcript, ["press"]) &&
+      userSaid(transcript, 
+        ["press", "price", "bass", "fast", "harass", "bratz", "fatz", "pratt", "grass", "pass"]) &&
       hoveredItem &&
       hoveredItem.isPressable()
     ) {
