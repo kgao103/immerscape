@@ -1,34 +1,38 @@
 function drawItem(item) {
-  image = item.get('source');
-  zIndex = item.get('grabbable') ? 60 : 0;
+  image = item.get("source");
+  zIndex = item.get("grabbable") ? 60 : 0;
   var itemView;
   if (image) {
     itemView = new ImageSurface({
       content: image,
       properties: {
         zIndex: zIndex,
-      }
+      },
     });
   } else {
     itemView = new Surface({
-      content: "test",
+      content: "",
       properties: {
-        backgroundColor: "black",
-        color: "white",
-      }
+        // backgroundColor: "black",
+        background: "url('img/safe_screen.png')",
+        color: "#212b1d",
+        fontSize: "160px",
+        paddingLeft: "20px",
+        // paddingBottom: "40px",
+      },
     });
   }
 
   var itemTranslateModifier = new Modifier({
     transform: function () {
-      let position = item.get('position');
+      let position = item.get("position");
       return Transform.translate(position[0], position[1], 0);
     },
     opacity: function () {
-      return item.get('opacity');
+      return item.get("opacity");
     },
     size: function () {
-      return item.get('size');
+      return item.get("size");
     },
   });
 
@@ -54,6 +58,8 @@ var Item = Backbone.Model.extend({
     opacity: 1,
     rendered: false,
     number: -1,
+    isPressed: false,
+    pressable: false,
   },
 
   // useOn: function (item) {
@@ -99,6 +105,10 @@ var Item = Backbone.Model.extend({
 
   isOnable: function () {
     return this.get("switchedOnable") && !this.get("isOn");
+  },
+
+  isPressable: function () {
+    return this.get("pressable") && !this.get("isPressed");
   },
 
   isOffable: function () {

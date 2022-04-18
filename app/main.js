@@ -54,6 +54,10 @@ Leap.loop({
     if (isPointing) {
       console.log("pointing");
     }
+    if (isPointing && hoveredItem && hoveredItem.isPressable()) {
+      console.log("pointing at pressable key");
+      // registerPress(hoveredItem);
+    }
 
     if (!cursorFrozen) {
       cursorPosition = [
@@ -178,6 +182,14 @@ function unfreezeCursor() {
 function tryOpenHoveredItem() {
   if (hoveredItem && hoveredItem.isOpenable()) {
     hoveredItem.open();
+    if (
+      hoveredItem.get("name") == "fridge" &&
+      !inventory.get("items").includes(watermelon)
+    ) {
+      inventory.addItem(watermelon);
+      generateSpeech("You opened the fridge and obtain a piece of watermelon");
+      currentRoom.drawView();
+    }
   }
 }
 
@@ -281,7 +293,11 @@ var processSpeech = function (transcript) {
       processed = true;
       currentRoom.transition("zoom_out");
       zoomedInObject = false;
-    } else if (userSaid(transcript, ["press"]) && hoveredItem) {
+    } else if (
+      userSaid(transcript, ["press"]) &&
+      hoveredItem &&
+      hoveredItem.isPressable()
+    ) {
       processed = true;
       console.log("hiaaaaa");
       registerPress(hoveredItem);
@@ -299,28 +315,26 @@ function registerPress(item) {
     safeDelete.play();
     passwordSafe = passwordSafe.slice(0, -1);
     console.log(passwordSafe);
-    safe.get("context").setContent(passwordSafe);
+    safe_screen.get("context").setContent(passwordSafe);
     currentRoom.drawView();
   } else if (item.get("name") == "button_enter" && passwordSafe.length == 3) {
     if (passwordSafe == "245") {
       console.log("correct password");
-      safe.get("context").setContent(passwordSafe);
+      safe_screen.get("context").setContent(passwordSafe);
       safeUnlock.play();
-      generateSpeech(
-        "you unlocked the safe and obtained a golden key. congrats!"
-      );
-      inventory.addItem(key);
+      generateSpeech("Congrats! you unlocked the safe and obtained a hammer.");
+      inventory.addItem(hammer);
       currentRoom.drawView();
     } else {
       console.log("incorrect password");
-      safe.get("context").setContent(passwordSafe);
+      safe_screen.get("context").setContent(passwordSafe);
       safeIncorrect.play();
       generateSpeech("wrong password. Please try again");
       passwordSafe = "";
     }
   } else {
-    safe.get("context").setContent(passwordSafe);
     passwordSafe += item.get("number").toString();
+    safe_screen.get("context").setContent(passwordSafe);
     console.log(passwordSafe);
     safeBeep.play();
     currentRoom.drawView();
