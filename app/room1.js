@@ -270,7 +270,7 @@ button_enter = new Item({
 });
 
 painting2 = new Item({
-  source: "img/painting2.jpeg",
+  source: "img/painting2.png",
   size: [window.innerWidth * 0.24, window.innerWidth * 0.15],
   name: "painting2",
   position: [window.innerWidth * 0.2, window.innerHeight * 0.25],
@@ -280,7 +280,7 @@ painting2 = new Item({
   openable: true,
   isOpen: false,
   sourceOpened: "img/painting_opened.png",
-  sourceClosed: "img/painting2.jpeg",
+  sourceClosed: "img/painting2.png",
   openSound: new Audio("sound/painting_opening.mp3"),
   closingSound: new Audio("sound/painting_closing.mp3"),
 });
