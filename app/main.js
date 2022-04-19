@@ -300,10 +300,8 @@ var processSpeech = function (transcript) {
         currentRoom.transition("bye");
       });
     }
-    capybaraSpeechOptions.processSpeech(transcript);
-  }
-
-  else if (!isZoomedIn) {
+    processed = capybaraSpeechOptions.processSpeech(transcript) | processed;
+  } else if (!isZoomedIn) {
     if (userSaid(transcript, ["left"])) {
       currentRoom.transition("left");
       processed = true;
@@ -319,7 +317,7 @@ var processSpeech = function (transcript) {
       }
       processed = true;
     }
-    
+
     var usedItem = inventory.getInventoryItem(transcript);
     // console.log("screen position", cursor.get("screenPosition"));
     // console.log("hovered item name: ", hoveredItem.get("name"));
@@ -343,7 +341,11 @@ var processSpeech = function (transcript) {
 
     hoveredItem = getHoveredItem(cursorPosition);
     // console.log("hovered item name", hoveredItem.get("name"));
-    if (userSaid(transcript, ["look"]) && hoveredItem) {
+    if (
+      userSaid(transcript, ["look"]) &&
+      hoveredItem &&
+      hoveredItem.get("name") == "safe"
+    ) {
       isZoomedIn = true;
       processed = true;
       zoomedInObject = hoveredItem;

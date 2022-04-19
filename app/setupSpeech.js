@@ -6,15 +6,13 @@ var debouncedProcessSpeech = _.debounce(processSpeech, 500);
 var recognition = new webkitSpeechRecognition();
 recognition.continuous = true;
 recognition.interimResults = true;
-recognition.onresult = function(event) {
+recognition.onresult = function (event) {
   // Build the interim transcript, so we can process speech faster
-  var transcript = '';
+  var transcript = "";
   var hasFinal = false;
   for (var i = event.resultIndex; i < event.results.length; ++i) {
-    if (event.results[i].isFinal)
-      hasFinal = true;
-    else
-      transcript += event.results[i][0].transcript;
+    if (event.results[i].isFinal) hasFinal = true;
+    else transcript += event.results[i][0].transcript;
   }
 
   if (DEBUGSPEECH) {
@@ -34,17 +32,16 @@ recognition.onresult = function(event) {
   }
 };
 // Restart recognition if it has stopped
-recognition.onend = function(event) {
-  setTimeout(function() {
+recognition.onend = function (event) {
+  setTimeout(function () {
     /*
     if (DEBUGSPEECH)
       otherFeedback.setContent("SPEECH DEBUG: ready");
     */
     recognition.start();
-  }, 0);
+  }, 1000);
 };
 recognition.start();
 /*****************************************************************/
 /******** END OF SPEECH RECOG SETUP ******************************/
 /*****************************************************************/
-

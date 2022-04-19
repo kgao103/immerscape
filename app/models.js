@@ -58,8 +58,8 @@ speechBubble1 = new Item({
     zIndex: 95,
     fontSize: "20px",
     padding: window.innerWidth * 0.05 + "px",
-  }
-})
+  },
+});
 
 var Conversation = Backbone.Model.extend({
   defaults: {
@@ -72,24 +72,30 @@ var Conversation = Backbone.Model.extend({
     speechOptions: [
       "(Ask about the MOUSE)",
       "(Ask about the SAFE CODE)",
+      "(Ask about something else)",
       "(Say BYE)",
-    ]
+    ],
   },
 
   processSpeech(transcript) {
     let speechOptions = this.get("speechOptions");
     response = null;
-    if (userSaid(transcript, ["mouse"], ["rat"])) {
-      response = "steve is a mouse";
-    } else if (userSaid(transcript, ["safe", "code"])) {
-      response = "the code is 123";
+    if (userSaid(transcript, ["mouse", "rat", "mouth", "maps"])) {
+      response =
+        "Oh my friend Steve the mouse has been craving some cheese to go with his grapes for days. Poor Steve.";
+    } else if (userSaid(transcript, ["safe", "code", "save"])) {
+      response = "I think it starts with the number 2";
     } else if (userSaid(transcript, ["bye", "by", "goodbye"])) {
       response = "goodbye!";
     } else if (userSaid(transcript, ["hello", "hi", "hey"])) {
-      response = "hello";
+      response = "hey what's up?";
     }
     if (response) {
       this.get("npcContext").get("context").setContent(response);
+      generateSpeech(response, () => {}, 21);
+      return true;
+    } else {
+      return false;
     }
   },
 
@@ -126,16 +132,14 @@ var Conversation = Backbone.Model.extend({
       h = window.innerHeight * 0.15;
       s = window.innerWidth * 0.015;
 
-      optionsView = new ContainerSurface({
-
-      });
+      optionsView = new ContainerSurface({});
 
       var optionsTranslateModifier = new Modifier({
         transform: Transform.translate(x, y, 0),
         opacity: function () {
           return this.get("opacity");
         }.bind(this),
-      })
+      });
 
       mainContext.add(optionsTranslateModifier).add(optionsView);
       this.set("context", optionsView);
@@ -153,20 +157,24 @@ var Conversation = Backbone.Model.extend({
             color: "black",
             zIndex: 95,
             fontSize: "20px",
-            padding: 
-              window.innerWidth * 0.015 + "px " +
-              window.innerWidth * 0.05 + "px " +
-              window.innerWidth * 0.015 + "px " +
-              window.innerWidth * 0.015 + "px ",
-          }
+            padding:
+              window.innerWidth * 0.015 +
+              "px " +
+              window.innerWidth * 0.05 +
+              "px " +
+              window.innerWidth * 0.015 +
+              "px " +
+              window.innerWidth * 0.015 +
+              "px ",
+          },
         });
-        
+
         let item = speechOption;
         speechView = new Surface({
           content: item.get("content"),
           properties: item.get("properties"),
         });
-      
+
         var itemTranslateModifier = new Modifier({
           transform: function () {
             let position = item.get("position");
@@ -179,13 +187,13 @@ var Conversation = Backbone.Model.extend({
             return item.get("size");
           },
         });
-        
+
         speechOption.context = speechView;
-        optionsView.add(itemTranslateModifier).add(speechView); 
+        optionsView.add(itemTranslateModifier).add(speechView);
         this.get("subcontext").push(speechOption);
       }
     }
   },
-})
+});
 
 capybaraSpeechOptions = new Conversation({});

@@ -415,9 +415,9 @@ wall2 = new View({
 });
 
 wall3 = new View({
-  background: "img/green_wall.png",
-  background_light: "img/green_wall.png",
-  background_dark: "img/green_wall_dark.png",
+  background: "img/green_wall_bed.png",
+  background_light: "img/green_wall_bed.png",
+  background_dark: "img/green_wall_bed_dark.png",
   items: [bedtable, painting2, cat],
 });
 
@@ -431,6 +431,7 @@ wall4 = new View({
 capybaraConversation = new View({
   items: [talkingCapybara],
   special: [capybaraSpeechOptions],
+  background: "img/capybara_background.png",
 });
 
 zoomedSafe = new View({
