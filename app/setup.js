@@ -16,15 +16,6 @@ var mainContext = Engine.createContext();
 var inventory = new Inventory();
 
 function drawBackground(imagePath) {
-  /*
-  var itemView = new ImageSurface({
-    size: [window.innerWidth, window.innerHeight],
-    content: imagePath,
-    classes: ["background"],
-  });
-
-  mainContext.add(itemView);
-  */
   background.setContent(imagePath);
 }
 
@@ -46,14 +37,11 @@ function drawImage(image, size, position) {
 function drawView(view) {
   drawBackground(view.get("background"));
   view.get("items").forEach((item) => {
-    // if (!item.get("isHidden")) {
     item.draw();
-    // }
-    // } else {
-    //   item.set("rendered", false);
-    // }
   });
-  //inventory.draw();
+  view.get("special").forEach((item) => {
+    item.draw();
+  });
 }
 
 var tooltipContext;
@@ -133,20 +121,6 @@ function drawToolTip() {
   mainContext.add(tileTranslateModifier).add(tooltipView);
 }
 
-speechBubble1 = new Item({
-  content: "Hello. I am Cabbage!",
-  position: [window.innerWidth * 0.3, window.innerHeight * 0.1],
-  size: [window.innerWidth * 0.3, window.innerHeight * 0.4],
-  properties: {
-    backgroundImage: "url(img/speech_bubble.webp)",
-    backgroundSize: "100% 100%",
-    color: "black",
-    zIndex: 95,
-    fontSize: "20px",
-    padding: window.innerWidth * 0.05 + "px",
-  }
-})
-
 optionsHeader = new Item({
   content: "Say something!",
   position: [window.innerWidth * 0.3, window.innerHeight * 0.2],
@@ -160,57 +134,6 @@ optionsHeader = new Item({
     padding: window.innerWidth * 0.05 + "px",
   }
 })
-
-function drawSpeechOptions() {
-  x = window.innerWidth * 0.6;
-  y = window.innerHeight * 0.1;
-  w = window.innerWidth * 0.3;
-  h = window.innerHeight * 0.15;
-  s = window.innerWidth * 0.015;
-  speechOptions = [
-    "Who is Steve?",
-    "Who are you?",
-    "Who am I?",
-    "Goodbye!",
-  ]
-  for (let i = 0; i < speechOptions.length; i++) {
-    speechOption = new Item({
-      content: speechOptions[i],
-      position: [x, y + i * (h + s)],
-      size: [w, h],
-      properties: {
-        backgroundImage: "url(img/speech_bubble_right.png)",
-        backgroundSize: "100% 100%",
-        color: "black",
-        zIndex: 95,
-        fontSize: "20px",
-        padding: window.innerWidth * 0.015 + "px",
-      }
-    })
-    
-    let item = speechOption;
-    speechView = new Surface({
-      content: item.get("content"),
-      properties: item.get("properties"),
-    });
-  
-    var itemTranslateModifier = new Modifier({
-      transform: function () {
-        let position = item.get("position");
-        return Transform.translate(position[0], position[1], 0);
-      },
-      opacity: function () {
-        return item.get("opacity");
-      },
-      size: function () {
-        return item.get("size");
-      },
-    });
-    
-    //.add(itemTranslateModifier).add(itemView);
-  }
-}
-
 
 function drawImageWithText(item) {
   itemView = new Surface({
@@ -246,10 +169,17 @@ var setupUserInterface = function () {
   room.drawView();
   inventory.draw();
   drawToolTip();
+  //speechBubble1.draw();
   //drawSpeechBubble();
   //drawSpeechBubble2();
   //drawImageWithText(speechBubble1);
-  //drawSpeechOptions();
+  //capybaraSpeechOptions.draw();
+  /*capybaraSpeechOptions.set("speechOptions", [
+    "Hello. I am Cabbage!",
+    "Say something!",
+    "I am a capybara. I am a cute little animal.",
+  ]);*/
+  capybaraSpeechOptions.updateOptions();
   tooltipContext.setProperties({ "opacity": 0 });
 
   // Draw the cursor
