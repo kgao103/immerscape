@@ -48,8 +48,8 @@ var View = Backbone.Model.extend({
 
 speechBubble1 = new Item({
   text: "",
-  position: [window.innerWidth * 0.3, window.innerHeight * 0.1],
-  size: [window.innerWidth * 0.3, window.innerHeight * 0.4],
+  position: [window.innerWidth * 0.22, window.innerHeight * 0.05],
+  size: [window.innerWidth * 0.4, window.innerHeight * 0.55],
   opacity: 1,
   properties: {
     backgroundImage: "url(img/speech_bubble.webp)",
@@ -57,9 +57,15 @@ speechBubble1 = new Item({
     color: "black",
     zIndex: 95,
     fontSize: "20px",
-    padding: window.innerWidth * 0.05 + "px",
+    padding: window.innerWidth * 0.07 + "px",
+    fontFamily: "Trebuchet MS",
   },
 });
+
+function restartRecognition() {
+  recognitionDisabled = false;
+  recognition.start();
+}
 
 var Conversation = Backbone.Model.extend({
   defaults: {
@@ -70,10 +76,11 @@ var Conversation = Backbone.Model.extend({
     rendered: false,
     opacity: 0,
     speechOptions: [
-      "(Ask about the MOUSE)",
-      "(Ask about the SAFE CODE)",
-      "(Ask about something else)",
-      "(Say BYE)",
+      "( Ask about the MOUSE )",
+      "( Ask about the SECRET )",
+      "( Ask about the SAFE CODE )",
+      "( Ask about something else )",
+      "( Say BYE )",
     ],
   },
 
@@ -82,17 +89,36 @@ var Conversation = Backbone.Model.extend({
     response = null;
     if (userSaid(transcript, ["mouse", "rat", "mouth", "maps"])) {
       response =
-        "Oh my friend Steve the mouse has been craving some cheese to go with his grapes for days. Poor Steve.";
+        "Oh my friend STEVE the mouse has been craving some CHEESE to go with his grapes for days. Poor Steve.";
     } else if (userSaid(transcript, ["safe", "code", "save"])) {
-      response = "I think it starts with the number 2";
+      response =
+        "I don't remember all of it but I think it starts with the number two. Might be helpful to turn off the light";
     } else if (userSaid(transcript, ["bye", "by", "goodbye"])) {
-      response = "goodbye!";
+      response = "Goodbye!";
     } else if (userSaid(transcript, ["hello", "hi", "hey"])) {
-      response = "hey what's up?";
+      response = "Hola";
+    } else if (userSaid(transcript, ["cheese"])) {
+      response = "I think you can find some on top of the FRIDGE";
+    } else if (userSaid(transcript, ["fridge"])) {
+      response =
+        "My friend STEVE might have taken the fridge key the other day";
+    } else if (userSaid(transcript, ["Steve", "steve"])) {
+      response = "Oh STEVE is my friend the MOUSE!";
+    } else if (userSaid(transcript, ["hungry", "food"])) {
+      response = "I've been craving some WATERMELON. Can you get me some?";
+    } else if (userSaid(transcript, ["watermelon"])) {
+      response = "I think there might be some in the FRIDGE actually";
+    } else if (userSaid(transcript, ["secret", "secrets"])) {
+      response = "Try opening some of the paintings";
+    } else if (userSaid(transcript, ["s***", "f***", "b****", "motherfuker"])) {
+      response =
+        "Pendejo how dare you swear at me you piece of shiitake mushroom. Puta madre!";
     }
     if (response) {
       this.get("npcContext").get("context").setContent(response);
-      generateSpeech(response, () => {}, 21);
+      recognitionDisabled = true;
+      recognition.stop();
+      generateSpeech(response, restartRecognition, 14);
       return true;
     } else {
       return false;
@@ -126,10 +152,10 @@ var Conversation = Backbone.Model.extend({
       return;
     } else {
       this.set("rendered", true);
-      x = window.innerWidth * 0.6;
+      x = window.innerWidth * 0.68;
       y = window.innerHeight * 0.1;
       w = window.innerWidth * 0.3;
-      h = window.innerHeight * 0.15;
+      h = window.innerHeight * 0.1;
       s = window.innerWidth * 0.015;
 
       optionsView = new ContainerSurface({});
@@ -154,6 +180,7 @@ var Conversation = Backbone.Model.extend({
           properties: {
             backgroundImage: "url(img/speech_bubble_right.png)",
             backgroundSize: "100% 100%",
+            fontFamily: "Trebuchet MS",
             color: "black",
             zIndex: 95,
             fontSize: "20px",

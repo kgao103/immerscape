@@ -137,8 +137,8 @@ bedtable = new Item({
   size: [window.innerWidth * 0.12, window.innerWidth * 0.12],
   name: "bedtable",
   position: [window.innerWidth * 0.3, window.innerHeight * 0.6],
-  openSound: new Audio("sound/drawer_opening.mp3"),
-  closingSound: new Audio("sound/drawer_closing.wav"),
+  openSound: new Audio("sound/cabinet_opening.wav"),
+  closingSound: new Audio("sound/cabinet_closing.wav"),
 });
 
 safe = new Item({
@@ -270,17 +270,19 @@ button_enter = new Item({
 });
 
 painting2 = new Item({
-  source: "img/painting2.png",
-  size: [window.innerWidth * 0.24, window.innerWidth * 0.15],
+  source: "img/painting_mouse.jpeg",
+  size: [window.innerWidth * 0.12, window.innerWidth * 0.15],
   name: "painting2",
-  position: [window.innerWidth * 0.2, window.innerHeight * 0.25],
+  position: [window.innerWidth * 0.3, window.innerHeight * 0.25],
   get source() {
-    return this.isOpen ? "img/painting_opened.png" : "img/painting2.png";
+    return this.isOpen
+      ? "img/painting_mouse_opened.png"
+      : "img/painting_mouse.jpeg";
   },
   openable: true,
   isOpen: false,
-  sourceOpened: "img/painting_opened.png",
-  sourceClosed: "img/painting2.png",
+  sourceOpened: "img/painting_mouse_opened.png",
+  sourceClosed: "img/painting_mouse.jpeg",
   openSound: new Audio("sound/painting_opening.mp3"),
   closingSound: new Audio("sound/painting_closing.mp3"),
 });
@@ -394,7 +396,7 @@ hammer = new Item({
 talkingCapybara = new Item({
   source: "img/capybara.png",
   size: [window.innerWidth * 0.3, window.innerHeight * 0.6],
-  position: [window.innerWidth * 0.1, window.innerHeight * 0.3],
+  position: [window.innerWidth * 0.02, window.innerHeight * 0.3],
   name: "capybara",
 });
 

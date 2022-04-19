@@ -2,6 +2,7 @@
 /******** SPEECH RECOGNITION SETUP YOU CAN IGNORE ****************/
 /*****************************************************************/
 var debouncedProcessSpeech = _.debounce(processSpeech, 500);
+var recognitionDisabled = false;
 
 var recognition = new webkitSpeechRecognition();
 recognition.continuous = true;
@@ -33,13 +34,15 @@ recognition.onresult = function (event) {
 };
 // Restart recognition if it has stopped
 recognition.onend = function (event) {
-  setTimeout(function () {
-    /*
-    if (DEBUGSPEECH)
-      otherFeedback.setContent("SPEECH DEBUG: ready");
-    */
-    recognition.start();
-  }, 1000);
+  if (!recognitionDisabled) {
+    setTimeout(function () {
+      /*
+      if (DEBUGSPEECH)
+        otherFeedback.setContent("SPEECH DEBUG: ready");
+      */
+      recognition.start();
+    }, 1000);
+  }
 };
 recognition.start();
 /*****************************************************************/

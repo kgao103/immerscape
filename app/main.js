@@ -342,9 +342,9 @@ var processSpeech = function (transcript) {
     hoveredItem = getHoveredItem(cursorPosition);
     // console.log("hovered item name", hoveredItem.get("name"));
     if (
-      userSaid(transcript, ["look"]) &&
+      userSaid(transcript, ["look", "lock", "luck"]) &&
       hoveredItem &&
-      hoveredItem.get("name") == "safe"
+      hoveredItem.get("name") === "safe"
     ) {
       isZoomedIn = true;
       processed = true;
