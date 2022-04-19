@@ -25,9 +25,18 @@ var generateSpeech = function (message, callback, voiceIndex = VOICEINDEX) {
   }
 };
 
+/*
 var userSaid = function (str, commands) {
   for (var i = 0; i < commands.length; i++) {
     if (str.indexOf(commands[i]) > -1) return true;
+  }
+  return false;
+};
+*/
+
+var userSaid = function (str, commands) {
+  for (var i = 0; i < commands.length; i++) {
+    if (str.split(" ").includes(commands[i])) return true;
   }
   return false;
 };
