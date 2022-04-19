@@ -12,6 +12,7 @@ var safeUnlock = new Audio("sound/safe_unlock.mp3");
 var safeBeep = new Audio("sound/safe_beep.mp3");
 var safeIncorrect = new Audio("sound/safe_incorrect.mp3");
 var safeDelete = new Audio("sound/safe_delete.mp3");
+var fridgeUnlockingSound = new Audio("sound/fridge_unlocking.wav");
 
 // UI SETUP
 setupUserInterface();
@@ -226,12 +227,13 @@ function tryOpenHoveredItem() {
       hoveredItem.get("openSound").play();
       currentRoom.drawView();
       generateSpeech("You opened the painting and discovered a safe!");
-    } else {
+    } else if (!hoveredItem.get("isLocked")) {
       hoveredItem.open();
     }
     if (
       hoveredItem.get("name") == "fridge" &&
-      !inventory.get("items").includes(watermelon)
+      !inventory.get("items").includes(watermelon) &&
+      !fridge.get("isLocked")
     ) {
       inventory.addItem(watermelon);
       generateSpeech(
@@ -330,10 +332,7 @@ var processSpeech = function (transcript) {
 
     hoveredItem = getHoveredItem(cursorPosition);
     // console.log("hovered item name", hoveredItem.get("name"));
-    if (
-      userSaid(transcript, ["look"]) &&
-      hoveredItem
-    ) {
+    if (userSaid(transcript, ["look"]) && hoveredItem) {
       isZoomedIn = true;
       processed = true;
       zoomedInObject = hoveredItem;
@@ -458,7 +457,7 @@ function zoomInObject(object) {
 
 function getHoveredItem(cursorPosition) {
   hoveredItems = currentRoom.getItems().filter(function (item) {
-    return item.isHovered(cursorPosition);
+    return item.isHovered(cursorPosition) && !item.get("isLocked");
   });
   grabbableHoveredItems = hoveredItems.filter(function (item) {
     return item.get("grabbable");
@@ -515,6 +514,26 @@ function useObjectOnItem(object, item) {
       );
       return false;
     }
+  } else if (object.get("name") == "fridge key") {
+    if (item.get("name") == "fridge lock") {
+      fridge_lock.hide();
+      fridge.set("isLocked", false);
+      currentRoom.getView().removeItem(fridge_lock);
+      fridgeUnlockingSound.play();
+
+      sleep(1000).then(() => {
+        generateSpeech("You unlocked the fridge");
+      });
+      currentRoom.drawView();
+      return true;
+    } else {
+      generateSpeech(
+        "You can't use the " +
+          object.get("name") +
+          " on the " +
+          item.get("name")
+      );
+    }
   } else if (object.get("name") == "hammer") {
     if (item.get("name") == "window") {
       if (item.get("isBroken")) {
@@ -532,20 +551,20 @@ function useObjectOnItem(object, item) {
         currentRoom.drawView();
         return false;
       }
-    } else if (item.get("name") == "door") {
-      if (item.get("isOpen")) {
-        generateSpeech("The door is already open");
-        return false;
-      } else {
-        item.set("isOpen", true);
-        item.setContent("img/door_open.png");
-        doorUnlockingSound.play();
-        generateSpeech(
-          "You broke the lock with the hammer unlocked the door! Congrats on solving the escape room and reuniting the grandma with her grandson!"
-        );
-        currentRoom.drawView();
-        return true;
-      }
+      // } else if (item.get("name") == "door") {
+      //   if (item.get("isOpen")) {
+      //     generateSpeech("The door is already open");
+      //     return false;
+      //   } else {
+      //     item.set("isOpen", true);
+      //     item.setContent("img/door_open.png");
+      //     doorUnlockingSound.play();
+      //     generateSpeech(
+      //       "You broke the lock with the hammer unlocked the door! Congrats on solving the escape room and reuniting the grandma with her grandson!"
+      //     );
+      //     currentRoom.drawView();
+      //     return true;
+      //   }
     } else {
       generateSpeech(
         "You can't use the " +
@@ -563,10 +582,10 @@ function useObjectOnItem(object, item) {
         mouseHappySound.play();
         sleep(2000).then(() => {
           generateSpeech(
-            "The mouse ate the cheese and thanks you for the cheese. As a reward, it hands you a golden key."
+            "The mouse ate the cheese and thanks you for the cheese. As a reward, it hands you a small black key."
           );
         });
-        inventory.addItem(key);
+        inventory.addItem(fridge_key);
         console.log(key);
         console.log("items:", inventory.get("items"));
         currentRoom.drawView();

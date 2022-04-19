@@ -47,6 +47,7 @@ clock = new Item({
 });
 
 fridge = new Item({
+  isLocked: true,
   size: [220, 220],
   name: "fridge",
   isOpen: false,
@@ -63,6 +64,13 @@ fridge = new Item({
   position: [window.innerWidth * 0.65, window.innerHeight * 0.55],
   openSound: new Audio("sound/fridge_open.wav"),
   closingSound: new Audio("sound/fridge_close.wav"),
+});
+
+fridge_lock = new Item({
+  size: [150, 150],
+  name: "fridge lock",
+  source: "img/fridge_lock.png",
+  position: [window.innerWidth * 0.68, window.innerHeight * 0.57],
 });
 
 dresser = new Item({
@@ -119,17 +127,18 @@ lamp = new Item({
 });
 
 bedtable = new Item({
-  source: "img/bedtable.png",
+  openable: true,
+  isOpen: false,
+  get source() {
+    return this.isOpen ? "img/bedtable_opened.png" : "img/bedtable.png";
+  },
+  sourceOpened: "img/bedtable_opened.png",
+  sourceClosed: "img/bedtable.png",
   size: [window.innerWidth * 0.12, window.innerWidth * 0.12],
   name: "bedtable",
   position: [window.innerWidth * 0.3, window.innerHeight * 0.6],
-});
-
-bed = new Item({
-  source: "img/bed.png",
-  size: [500, 300],
-  name: "bed",
-  position: [window.innerWidth * 0.4, window.innerHeight * 0.5],
+  openSound: new Audio("sound/drawer_opening.mp3"),
+  closingSound: new Audio("sound/drawer_closing.wav"),
 });
 
 safe = new Item({
@@ -262,9 +271,18 @@ button_enter = new Item({
 
 painting2 = new Item({
   source: "img/painting2.jpeg",
-  size: [window.innerWidth * 0.12, window.innerWidth * 0.15],
+  size: [window.innerWidth * 0.24, window.innerWidth * 0.15],
   name: "painting2",
-  position: [window.innerWidth * 0.3, window.innerHeight * 0.2],
+  position: [window.innerWidth * 0.2, window.innerHeight * 0.25],
+  get source() {
+    return this.isOpen ? "img/painting_opened.png" : "img/painting2.png";
+  },
+  openable: true,
+  isOpen: false,
+  sourceOpened: "img/painting_opened.png",
+  sourceClosed: "img/painting2.jpeg",
+  openSound: new Audio("sound/painting_opening.mp3"),
+  closingSound: new Audio("sound/painting_closing.mp3"),
 });
 
 windowLarge = new Item({
@@ -357,6 +375,14 @@ key = new Item({
   name: "key",
 });
 
+fridge_key = new Item({
+  source: "img/fridge_key.png",
+  size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
+  position: [window.innerWidth * 0.45, window.innerHeight * 0.3],
+  grabbable: true,
+  name: "fridge key",
+});
+
 hammer = new Item({
   source: "img/hammer.png",
   size: [window.innerWidth * 0.09, window.innerWidth * 0.05],
@@ -385,14 +411,14 @@ wall2 = new View({
   background: "img/pink_wall.png",
   background_light: "img/pink_wall.png",
   background_dark: "img/pink_wall_dark.png",
-  items: [fridge, lamp, painting, cheese],
+  items: [fridge, fridge_lock, lamp, painting, cheese],
 });
 
 wall3 = new View({
   background: "img/green_wall.png",
   background_light: "img/green_wall.png",
   background_dark: "img/green_wall_dark.png",
-  items: [bedtable, bed, painting2, cat],
+  items: [bedtable, painting2, cat],
 });
 
 wall4 = new View({

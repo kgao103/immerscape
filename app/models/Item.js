@@ -56,6 +56,7 @@ var Item = Backbone.Model.extend({
     isPressed: false,
     pressable: false,
     isHidden: false,
+    isLocked: false,
   },
 
   // useOn: function (item) {
