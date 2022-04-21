@@ -24,8 +24,6 @@ var isGrabbing = false;
 
 // global variables for our game
 var currentRoom = room;
-var isZoomedIn = false;
-var zoomedInObject = false;
 
 var isHovering = false; // if hovering over some object
 var hoveringObject = null; // object hovering over
@@ -44,6 +42,8 @@ var movingUp = false;
 var movingDown = false;
 var movingLeft = false;
 var movingRight = false;
+
+var usedItem = null;
 
 var inConversation = false;
 
@@ -88,15 +88,11 @@ Leap.loop({
 
     // pinch to zoom in
     if (
-      !isZoomedIn &&
       hand.pinchStrength > 0.8 &&
       hand.grabStrength < 0.2 &&
       !cursorFrozen &&
       hoveredItem
     ) {
-      isZoomedIn = true;
-      processed = true;
-      zoomedInObject = hoveredItem;
       currentRoom.transition("zoom_in");
     }
 
@@ -301,7 +297,7 @@ var processSpeech = function (transcript) {
       });
     }
     processed = capybaraSpeechOptions.processSpeech(transcript) | processed;
-  } else if (!isZoomedIn) {
+  } else {
     if (userSaid(transcript, ["left"])) {
       currentRoom.transition("left");
       processed = true;
@@ -317,8 +313,12 @@ var processSpeech = function (transcript) {
       }
       processed = true;
     }
+    if (userSaid(transcript, ["zoom out", "out"])) {
+      currentRoom.transition("zoom_out");
+      processed = true;
+    }
 
-    var usedItem = inventory.getInventoryItem(transcript);
+    usedItem = inventory.getInventoryItem(transcript);
     // console.log("screen position", cursor.get("screenPosition"));
     // console.log("hovered item name: ", hoveredItem.get("name"));
 
@@ -330,6 +330,7 @@ var processSpeech = function (transcript) {
       [["close"], tryCloseHoveredItem],
       [["on"], tryTurnOnHoveredItem],
       [["off"], tryTurnOffHoveredItem],
+      [["press", "price", "bass", "fast", "harass", "bratz", "fatz", "pratt", "grass", "pass"], tryPressHoveredItem],
     ];
 
     for (command of commands) {
@@ -346,50 +347,36 @@ var processSpeech = function (transcript) {
       hoveredItem &&
       hoveredItem.get("name") === "safe"
     ) {
-      isZoomedIn = true;
       processed = true;
-      zoomedInObject = hoveredItem;
       currentRoom.transition("zoom_in");
       //zoomInObject(hoveredItem);
     } else if (hoveredItem && usedItem) {
       processed = true;
-      var objectWasUsed = useObjectOnItem(usedItem, hoveredItem);
-      if (objectWasUsed) {
-        usedItem.hide();
-        inventory.removeItem(usedItem, 1);
-        inventory.draw();
-      }
-    }
-  } else {
-    hoveredItem = getHoveredItem(cursorPosition);
-    if (userSaid(transcript, ["zoom out", "out"])) {
-      isZoomedIn = false;
-      processed = true;
-      currentRoom.transition("zoom_out");
-      zoomedInObject = false;
-    } else if (
-      userSaid(transcript, [
-        "press",
-        "price",
-        "bass",
-        "fast",
-        "harass",
-        "bratz",
-        "fatz",
-        "pratt",
-        "grass",
-        "pass",
-      ]) &&
-      hoveredItem &&
-      hoveredItem.isPressable()
-    ) {
-      processed = true;
-      console.log("hiaaaaa");
-      registerPress(hoveredItem);
+      tryUseItem();
     }
   }
   return processed;
 };
+
+function tryUseItem() {
+  if (hoveredItem && usedItem) {
+    var objectWasUsed = useObjectOnItem(usedItem, hoveredItem);
+    if (objectWasUsed) {
+      usedItem.hide();
+      inventory.removeItem(usedItem, 1);
+      inventory.draw();
+    }
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function tryPressHoveredItem () {
+  if (hoveredItem && hoveredItem.isPressable()) {
+    registerPress(hoveredItem);
+  }
+}
 
 function registerPress(item) {
   // if (item.get("pressable")) {
@@ -457,17 +444,6 @@ function registerPress(item) {
   // }
 }
 
-function zoomInObject(object) {
-  var x = object.get("position").x;
-  var y = object.get("position").y;
-  var z = object.get("position").z;
-  var scale = object.get("scale");
-  var newScale = scale * 1.5;
-  object.set("scale", newScale);
-  object.set("position", { x: x, y: y, z: z });
-  console.log("zoomed in on object" + object);
-}
-
 function getHoveredItem(cursorPosition) {
   hoveredItems = currentRoom.getItems().filter(function (item) {
     return item.isHovered(cursorPosition) && !item.get("isLocked");
@@ -484,245 +460,192 @@ function getHoveredItem(cursorPosition) {
   }
 }
 
-// returns true if object was used, false otherwise
-function useObjectOnItem(object, item) {
-  if (object.get("name") == "key") {
-    if (item.get("name") == "door") {
-      if (item.get("isOpen")) {
-        generateSpeech("The door is already open");
-        return false;
-      } else {
-        item.set("isOpen", true);
-        item.setContent("img/door_open.png");
-        doorUnlockingSound.play();
-
-        sleep(1000).then(() => {
-          if (mousehole.get("state") === "dead") {
-            generateSpeech(
-              "You unlocked the door. You see the mouse's grandnma waiting for him outside. Congrats on solving the escape room and killing the grandson you sick bastard.",
-              () => {
-                grandmaDeadGrandson.play();
-              }
-            );
-          } else {
-            generateSpeech(
-              "You unlocked the door. You see the mouse's grandnma waiting for him outside. Congrats on solving the escape room"
-            );
-          }
-        });
-        if (mousehole.get("state") === "dead") {
-          sleep(8000).then(() => {
-            grandmaDeadGrandson.play();
-          });
-        }
-        currentRoom.drawView();
-        return true;
-      }
-    } else {
-      generateSpeech(
-        "You can't use the " +
-          object.get("name") +
-          " on the " +
-          item.get("name")
-      );
-      return false;
-    }
-  } else if (object.get("name") == "fridge key") {
-    if (item.get("name") == "fridge lock") {
-      fridge_lock.hide();
-      fridge.set("isLocked", false);
-      currentRoom.getView().removeItem(fridge_lock);
-      fridgeUnlockingSound.play();
-
-      sleep(1000).then(() => {
-        generateSpeech("You unlocked the fridge");
-      });
-      currentRoom.drawView();
+function useItemHandler(itemName, targetName, handler) {
+  return function (item, target) {
+    if (item.get("name") === itemName && target.get("name") === targetName) {
+      handler(item, target);
       return true;
     } else {
-      generateSpeech(
-        "You can't use the " +
-          object.get("name") +
-          " on the " +
-          item.get("name")
-      );
-    }
-  } else if (object.get("name") == "hammer") {
-    if (item.get("name") == "window") {
-      if (item.get("isBroken")) {
-        generateSpeech(
-          "You already tried breaking the window, it won't shatter enough for you to fit through."
-        );
-        return false;
-      } else {
-        item.set("isBroken", true);
-        item.setContent("img/window_broken.png");
-        windowBreakingSound.play();
-        generateSpeech(
-          "You broke the window. However, the hole you made is too small for you to fit through. Should have gone to less boba events bro. You'll need to find another way to get through."
-        );
-        currentRoom.drawView();
-        return false;
-      }
-      // } else if (item.get("name") == "door") {
-      //   if (item.get("isOpen")) {
-      //     generateSpeech("The door is already open");
-      //     return false;
-      //   } else {
-      //     item.set("isOpen", true);
-      //     item.setContent("img/door_open.png");
-      //     doorUnlockingSound.play();
-      //     generateSpeech(
-      //       "You broke the lock with the hammer unlocked the door! Congrats on solving the escape room and reuniting the grandma with her grandson!"
-      //     );
-      //     currentRoom.drawView();
-      //     return true;
-      //   }
-    } else {
-      generateSpeech(
-        "You can't use the " +
-          object.get("name") +
-          " on the " +
-          item.get("name")
-      );
       return false;
     }
-  } else if (object.get("name") == "cheese") {
-    if (item.get("name") == "mousehole") {
-      if (item.get("state") == "sad") {
-        item.set("state", "happy");
-        item.setContent("img/mousehole_happy.png");
-        mouseHappySound.play();
-        sleep(2000).then(() => {
-          generateSpeech(
-            "The mouse ate the cheese and thanks you for the cheese. As a reward, it hands you a small black key."
-          );
-        });
-        inventory.addItem(fridge_key);
-        console.log(key);
-        console.log("items:", inventory.get("items"));
-        currentRoom.drawView();
-        return true;
-      } else if (item.get("state") == "happy") {
-        generateSpeech("The mouse is already happy");
-        return true;
-      } else if (item.get("state") == "dead") {
-        generateSpeech(
-          "The mouse is dead. It can't eat the cheese anymore you idiot."
-        );
-        return false;
-      }
-    } else {
-      generateSpeech(
-        "You can't use the " +
-          object.get("name") +
-          " on the " +
-          item.get("name")
-      );
-      return false;
-    }
-  } else if (object.get("name") == "mashed potatoes") {
-    if (item.get("name") == "mousehole") {
-      if (item.get("state") !== "dead") {
-        mouseCry.play();
-        sleep(2000).then(() => {
-          generateSpeech(
-            "The mouse ate the mashed potatoes and instantly dies."
-          );
-        });
-        item.set("state", "dead");
-        item.setContent("img/mousehole_dead.png");
-        currentRoom.drawView();
-        return true;
-      } else {
-        generateSpeech(
-          "The mouse is already dead. It can't eat the mashed potatoes anymore you idiot. "
-        );
-        return false;
-      }
-    } else {
-      generateSpeech(
-        "You can't use the " +
-          object.get("name") +
-          " on the " +
-          item.get("name")
-      );
-      return false;
-    }
-  } else if (object.get("name") == "watermelon") {
-    if (item.get("name") == "capybara") {
-      watermelonEating.play();
-      sleep(2000).then(() => {
-        generateSpeech(
-          "The capybara ate the watermelon and thanks you. He gives you permission to pet and hold him. You've just made a friend!"
-        );
-      });
-      item.set("grabbable", true);
-      currentRoom.drawView();
-      return true;
-    } else {
-      generateSpeech(
-        "You can't use the " +
-          object.get("name") +
-          " on the " +
-          item.get("name")
-      );
-      return false;
-    }
-  } else if (object.get("name") == "capybara") {
-    if (item.get("name") == "window" && item.get("isBroken")) {
-      // watermelonEating.play();
-      // sleep(2000).then(() => {
-      door.set("isOpen", true);
-      door.setContent("img/door_open.png");
-      doorUnlockingSound.play();
-      generateSpeech(
-        "The capybara jumped out through the window and opened the door from the outside for you. Congrats on solving the escape room and reuniting the grandma with her grandson!"
-      );
-      // });
+  }
+}
 
-      currentRoom.transition("right");
-      return true;
-    } else {
-      generateSpeech(
-        "You can't use the " +
-          object.get("name") +
-          " on the " +
-          item.get("name")
-      );
-      return false;
-    }
-  } else if (object.get("name") == "cat") {
-    if (item.get("name") == "mousehole") {
-      if (item.get("state") !== "dead") {
-        mouseCry.play();
-        sleep(2000).then(() => {
-          generateSpeech("The cat eats the mouse with no remorse.");
-        });
-        item.set("state", "dead");
-        item.setContent("img/mousehole_dead.png");
-        currentRoom.drawView();
-        return true;
-      } else {
-        generateSpeech(
-          "The mouse is already dead. The cat can't kill it again you idiot. "
-        );
-        return false;
-      }
-    } else {
-      generateSpeech(
-        "You can't use the " +
-          object.get("name") +
-          " on the " +
-          item.get("name")
-      );
-      return false;
-    }
+function useKeyOnDoor(object, item) {
+  if (item.get("isOpen")) {
+    generateSpeech("The door is already open");
+    return false;
   } else {
+    item.set("isOpen", true);
+    item.setContent("img/door_open.png");
+    doorUnlockingSound.play();
+
+    sleep(1000).then(() => {
+      if (mousehole.get("state") === "dead") {
+        generateSpeech(
+          "You unlocked the door. You see the mouse's grandnma waiting for him outside. Congrats on solving the escape room and killing the grandson you sick bastard.",
+          () => {
+            grandmaDeadGrandson.play();
+          }
+        );
+      } else {
+        generateSpeech(
+          "You unlocked the door. You see the mouse's grandnma waiting for him outside. Congrats on solving the escape room"
+        );
+      }
+    });
+    if (mousehole.get("state") === "dead") {
+      sleep(8000).then(() => {
+        grandmaDeadGrandson.play();
+      });
+    }
+    currentRoom.drawView();
+    return true;
+  }
+}
+
+function useCheeseOnMousehole(object, item) {
+  if (item.get("state") == "sad") {
+    item.set("state", "happy");
+    item.setContent("img/mousehole_happy.png");
+    mouseHappySound.play();
+    sleep(2000).then(() => {
+      generateSpeech(
+        "The mouse ate the cheese and thanks you for the cheese. As a reward, it hands you a small black key."
+      );
+    });
+    inventory.addItem(fridge_key);
+    console.log(key);
+    console.log("items:", inventory.get("items"));
+    currentRoom.drawView();
+    return true;
+  } else if (item.get("state") == "happy") {
+    generateSpeech("The mouse is already happy");
+    return true;
+  } else if (item.get("state") == "dead") {
     generateSpeech(
-      "You can't use the " + object.get("name") + " on the " + item.get("name")
+      "The mouse is dead. It can't eat the cheese anymore you idiot."
     );
     return false;
   }
+}
+
+function useFridgeKeyOnFridgeLock(object, item) {
+  fridge_lock.hide();
+  fridge.set("isLocked", false);
+  currentRoom.getView().removeItem(fridge_lock);
+  fridgeUnlockingSound.play();
+
+  sleep(1000).then(() => {
+    generateSpeech("You unlocked the fridge");
+  });
+  currentRoom.drawView();
   return true;
+}
+
+function useHammerOnWindow(object, item) {
+  if (item.get("isBroken")) {
+    generateSpeech(
+      "You already tried breaking the window, it won't shatter enough for you to fit through."
+    );
+    return false;
+  } else {
+    item.set("isBroken", true);
+    item.setContent("img/window_broken.png");
+    windowBreakingSound.play();
+    generateSpeech(
+      "You broke the window. However, the hole you made is too small for you to fit through. Should have gone to less boba events bro. You'll need to find another way to get through."
+    );
+    currentRoom.drawView();
+    return false;
+  }
+}
+
+function useWatermelonOnCapybara(object, item) {
+  watermelonEating.play();
+  sleep(2000).then(() => {
+    generateSpeech(
+      "The capybara ate the watermelon and thanks you. He gives you permission to pet and hold him. You've just made a friend!"
+    );
+  });
+  item.set("grabbable", true);
+  currentRoom.drawView();
+  return true;
+}
+
+function useCapybaraOnWindow(object, item) {
+  if (item.get("isBroken")) {
+    door.set("isOpen", true);
+    door.setContent("img/door_open.png");
+    doorUnlockingSound.play();
+    generateSpeech(
+      "The capybara jumped out through the window and opened the door from the outside for you. Congrats on solving the escape room and reuniting the grandma with her grandson!"
+    );
+    currentRoom.transition("right");
+    return true;
+  }
+}
+
+function useCatOnMousehole(object, item) {
+  if (item.get("state") !== "dead") {
+    mouseCry.play();
+    sleep(2000).then(() => {
+      generateSpeech("The cat eats the mouse with no remorse.");
+    });
+    item.set("state", "dead");
+    item.setContent("img/mousehole_dead.png");
+    currentRoom.drawView();
+    return true;
+  } else {
+    generateSpeech(
+      "The mouse is already dead. The cat can't kill it again you idiot. "
+    );
+    return false;
+  }
+}
+
+function useMashedPotatoesOnMousehole(object, item) {
+  if (item.get("state") !== "dead") {
+    mouseCry.play();
+    sleep(2000).then(() => {
+      generateSpeech(
+        "The mouse ate the mashed potatoes and instantly dies."
+      );
+    });
+    item.set("state", "dead");
+    item.setContent("img/mousehole_dead.png");
+    currentRoom.drawView();
+    return true;
+  } else {
+    generateSpeech(
+      "The mouse is already dead. It can't eat the mashed potatoes anymore you idiot. "
+    );
+    return false;
+  }
+}
+
+// returns true if object was used, false otherwise
+function useObjectOnItem(object, item) {
+  let r = false;
+  let itemHandlers = [
+    useItemHandler("key", "door", useKeyOnDoor),
+    useItemHandler("cheese", "mousehole", useCheeseOnMousehole),
+    useItemHandler("fridge key", "fridge lock", useFridgeKeyOnFridgeLock),
+    useItemHandler("hammer", "window", useHammerOnWindow),
+    useItemHandler("watermelon", "capybara", useWatermelonOnCapybara),
+    useItemHandler("capybara", "window", useCapybaraOnWindow),
+    useItemHandler("cat", "mousehole", useCatOnMousehole),
+    useItemHandler("mashed potatoes", "mousehole", useMashedPotatoesOnMousehole)
+  ];
+  for (handler of itemHandlers) {
+    if (handler(object, item)) {
+      return true;
+    }
+  }
+  /*
+  generateSpeech(
+    "You can't use the " + object.get("name") + " on the " + item.get("name")
+  );
+  */
+  return false;
 }
