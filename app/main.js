@@ -62,10 +62,6 @@ Leap.loop({
     //console.log(movingRight, movingLeft, movingUp, movingDown, movingForward, movingBackward);
     // Use the hand data to control the cursor's screen position
 
-    if (movingForward) {
-      //console.log("moving forward");
-    }
-
     isPointing =
       !hand.fingers[0].extended &&
       hand.fingers[1].extended &&
@@ -73,27 +69,17 @@ Leap.loop({
       !hand.fingers[3].extended &&
       !hand.fingers[4].extended;
 
-    if (isPointing) {
-      if (movingForward) {
-        console.log("pressing");
-      }
-      //console.log("pointing");
-    }
-    // point to press button
-    if (isPointing && hoveredItem && hoveredItem.isPressable()) {
-      console.log("pointing at pressable key");
-      hoveredItem.set("isPressed", true);
-      registerPress(hoveredItem);
-    }
 
     // pinch to zoom in
-    if (
+    isPinching =  
       hand.pinchStrength > 0.8 &&
-      hand.grabStrength < 0.2 &&
+      hand.grabStrength < 0.2;
+    
+    if (isPinching &&
       !cursorFrozen &&
       hoveredItem
     ) {
-      currentRoom.transition("zoom_in");
+      transitionZoomIn();
     }
 
     if (!cursorFrozen) {
@@ -119,9 +105,7 @@ Leap.loop({
 
       isGrabbing = hand.grabStrength > 0.5;
       if (isGrabbing) {
-        //console.log("isGrabbing");
-        if (tryGrab()) {
-        }
+        tryGrab();
       }
 
       if (!disableTransition) {
@@ -143,10 +127,7 @@ Leap.loop({
           }
         }
       }
-      // console.log("hand screen position" + hand.screenPosition());
-      // if (hand.screenPosition()[2] < 0) {
-      //   console.log("hand below zero");
-      // }
+
       hoveredItem = getHoveredItem(cursorPosition);
       var isOpening = hand.grabStrength > 0.5 && hand.screenPosition()[2] > 300;
       var isClosing = hand.grabStrength < 0.5 && hand.screenPosition()[2] < 0;
@@ -155,6 +136,9 @@ Leap.loop({
       }
       if (isClosing) {
         tryCloseHoveredItem();
+      }
+      if (isPressing) {
+        tryPressHoveredItem();
       }
 
       if (!grabbedItem && isGrabbing) {
@@ -277,6 +261,30 @@ function tryTurnOnHoveredItem() {
   }
 }
 
+function transitionLeft() {
+  currentRoom.transition("left");
+}
+
+function transitionRight() {
+  currentRoom.transition("right");
+}
+
+function transitionZoomOut() {
+  currentRoom.transition("zoom_out");
+}
+
+function transitionZoomIn() {
+  currentRoom.transition("zoom_in");
+}
+
+
+function transitionBye() {
+  inConversation = false;
+  sleep(1000).then(() => {
+    currentRoom.transition("bye");
+  });
+}
+
 // processSpeech(transcript)
 //  Is called anytime speech is recognized by the Web Speech API
 // Input:
@@ -289,32 +297,13 @@ var processSpeech = function (transcript) {
 
   var processed = false;
   if (inConversation) {
-    if (userSaid(transcript, ["bye", "goodbye", "by", "buy"])) {
-      inConversation = false;
-      processed = true;
-      sleep(1000).then(() => {
-        currentRoom.transition("bye");
-      });
-    }
     processed = capybaraSpeechOptions.processSpeech(transcript) | processed;
   } else {
-    if (userSaid(transcript, ["left"])) {
-      currentRoom.transition("left");
-      processed = true;
-    }
-    if (userSaid(transcript, ["right"])) {
-      currentRoom.transition("right");
-      processed = true;
-    }
     if (userSaid(transcript, ["hello", "hi", "hey"])) {
       if (currentRoom.transition("talk")) {
         inConversation = true;
         capybaraSpeechOptions.processSpeech("hello");
       }
-      processed = true;
-    }
-    if (userSaid(transcript, ["zoom out", "out"])) {
-      currentRoom.transition("zoom_out");
       processed = true;
     }
 
@@ -323,6 +312,10 @@ var processSpeech = function (transcript) {
     // console.log("hovered item name: ", hoveredItem.get("name"));
 
     var commands = [
+      [["left"], transitionLeft],
+      [["right"], transitionRight]
+      [["zoom out", "out"], transitionZoomOut],
+      [["bye", "goodbye", "by", "buy"], transitionBye],
       [["stay", "freeze"], freezeCursor],
       [["move", "unfreeze"], unfreezeCursor],
       [["grab"], tryGrab],
