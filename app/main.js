@@ -69,8 +69,6 @@ Leap.loop({
       !hand.fingers[3].extended &&
       !hand.fingers[4].extended;
 
-
-    // pinch to zoom in
     isPinching =  
       hand.pinchStrength > 0.8 &&
       hand.grabStrength < 0.2;
@@ -90,7 +88,6 @@ Leap.loop({
       cursor.setScreenPosition(cursorPosition);
     }
 
-    // SETUP mode
     if (gameState.get("state") == "playing") {
       cursorObject.setProperties({ backgroundColor: "pink" });
       currentRoom.getItems().forEach((item) => {
@@ -129,6 +126,7 @@ Leap.loop({
       }
 
       hoveredItem = getHoveredItem(cursorPosition);
+      isPressing = isPointing && hoveredItem && hoveredItem.isPressable()
       var isOpening = hand.grabStrength > 0.5 && hand.screenPosition()[2] > 300;
       var isClosing = hand.grabStrength < 0.5 && hand.screenPosition()[2] < 0;
       if (isOpening) {
@@ -175,7 +173,6 @@ Leap.loop({
 
 function grabItem(item) {
   inventory.addItem(item);
-  console.log("grabbed object");
   currentRoom.getView().removeItem(item);
   currentRoom.drawView();
 }
@@ -187,7 +184,6 @@ function tryGrab() {
     generateSpeech("You've just obtained the " + hoveredItem.get("name"));
     return true;
   } else {
-    // generateSpeech("oops, please try again");
     return false;
   }
 }
