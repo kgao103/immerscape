@@ -208,6 +208,8 @@ function tryOpenHoveredItem() {
     } else if (!hoveredItem.get("isLocked")) {
       hoveredItem.open();
     }
+    // TODO: fix bug - can get another invisible watermelon
+    // after feeding the capybara
     if (
       hoveredItem.get("name") == "fridge" &&
       !inventory.get("items").includes(watermelon) &&
@@ -309,7 +311,7 @@ var processSpeech = function (transcript) {
 
     var commands = [
       [["left"], transitionLeft],
-      [["right"], transitionRight]
+      [["right"], transitionRight],
       [["zoom out", "out"], transitionZoomOut],
       [["bye", "goodbye", "by", "buy"], transitionBye],
       [["stay", "freeze"], freezeCursor],

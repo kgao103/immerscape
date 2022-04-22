@@ -18,7 +18,7 @@ mousehole = new Item({
       : "img/mousehole_dead.png";
   },
   size: [130, 100],
-  position: [window.innerWidth * 0.5, window.innerHeight * 0.603],
+  posRel: [0.5, 0.603],
   name: "mousehole",
   get description() {
     return this.state === "sad"
@@ -43,7 +43,7 @@ clock = new Item({
   source: "img/clock.png",
   size: [100, 100],
   name: "clock",
-  position: [window.innerWidth * 0.6, window.innerHeight * 0.22],
+  posRel: [0.6, 0.22],
 });
 
 fridge = new Item({
@@ -61,7 +61,7 @@ fridge = new Item({
   //   this.set("isOpen", true);
   //   generateSpeech("there's nothing in the fridge you dummy");
   // },
-  position: [window.innerWidth * 0.65, window.innerHeight * 0.55],
+  posRel: [0.65, 0.55],
   openSound: new Audio("sound/fridge_open.wav"),
   closingSound: new Audio("sound/fridge_close.wav"),
 });
@@ -70,7 +70,7 @@ fridge_lock = new Item({
   size: [150, 150],
   name: "fridge lock",
   source: "img/fridge_lock.png",
-  position: [window.innerWidth * 0.68, window.innerHeight * 0.57],
+  posRel: [0.68, 0.57],
 });
 
 dresser = new Item({
@@ -83,7 +83,7 @@ dresser = new Item({
   sourceClosed: "img/dresser.png",
   size: [window.innerWidth * 0.4, window.innerWidth * 0.25],
   name: "dresser",
-  position: [window.innerWidth * 0.4, window.innerHeight * 0.4],
+  posRel: [0.4, 0.4],
   openSound: new Audio("sound/drawer_opening.mp3"),
   closingSound: new Audio("sound/drawer_closing.wav"),
 });
@@ -98,7 +98,7 @@ painting = new Item({
   name: "painting",
   sourceOpened: "img/painting_opened.png",
   sourceClosed: "img/painting.png",
-  position: [window.innerWidth * 0.4, window.innerHeight * 0.25],
+  posRel: [0.4, 0.25],
   openSound: new Audio("sound/painting_opening.mp3"),
   closingSound: new Audio("sound/drawer_closing.wav"),
 });
@@ -107,7 +107,7 @@ flashlight = new Item({
   name: "flashlight",
   source: "img/flashlight.png",
   size: [100, 100],
-  position: [window.innerWidth * 0.8, window.innerHeight * 0.22],
+  posRel: [0.8, 0.22],
   grabbable: true,
 });
 
@@ -146,14 +146,14 @@ safe = new Item({
   size: [window.innerWidth * 0.1, window.innerWidth * 0.08],
   name: "safe",
   isHidden: true,
-  position: [window.innerWidth * 0.425, window.innerHeight * 0.45],
+  posRel: [0.425, 0.45],
 });
 
 one = new Item({
   source: "img/button_one.png",
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "one",
-  position: [window.innerWidth * 0.4, window.innerHeight * 0.4],
+  posRel: [0.4, 0.4],
   number: 1,
   pressable: true,
 });
@@ -162,7 +162,7 @@ two = new Item({
   source: "img/button_two.png",
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "two",
-  position: [window.innerWidth * 0.52, window.innerHeight * 0.4],
+  posRel: [0.52, 0.4],
   number: 2,
   pressable: true,
 });
@@ -171,7 +171,7 @@ three = new Item({
   source: "img/button_three.png",
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "three",
-  position: [window.innerWidth * 0.625, window.innerHeight * 0.4],
+  posRel: [0.625, 0.4],
   number: 3,
   pressable: true,
 });
@@ -180,7 +180,7 @@ four = new Item({
   source: "img/button_four.png",
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "four",
-  position: [window.innerWidth * 0.4, window.innerHeight * 0.53],
+  posRel: [0.4, 0.53],
   number: 4,
   pressable: true,
 });
@@ -189,7 +189,7 @@ five = new Item({
   source: "img/button_five.png",
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "five",
-  position: [window.innerWidth * 0.52, window.innerHeight * 0.53],
+  posRel: [0.52, 0.53],
   number: 5,
   pressable: true,
 });
@@ -198,7 +198,7 @@ six = new Item({
   source: "img/button_six.png",
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "six",
-  position: [window.innerWidth * 0.625, window.innerHeight * 0.53],
+  posRel: [0.625, 0.53],
   number: 6,
   pressable: true,
 });
@@ -207,7 +207,7 @@ seven = new Item({
   source: "img/button_seven.png",
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "seven",
-  position: [window.innerWidth * 0.4, window.innerHeight * 0.66],
+  posRel: [0.4, 0.66],
   number: 7,
   pressable: true,
 });
@@ -216,7 +216,7 @@ eight = new Item({
   source: "img/button_eight.png",
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "eight",
-  position: [window.innerWidth * 0.52, window.innerHeight * 0.66],
+  posRel: [0.52, 0.66],
   number: 8,
   pressable: true,
 });
@@ -225,7 +225,7 @@ nine = new Item({
   source: "img/button_nine.png",
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "nine",
-  position: [window.innerWidth * 0.625, window.innerHeight * 0.66],
+  posRel: [0.625, 0.66],
   number: 9,
   pressable: true,
 });
@@ -234,7 +234,7 @@ zero = new Item({
   source: "img/button_zero.png",
   size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
   name: "zero",
-  position: [window.innerWidth * 0.73, window.innerHeight * 0.53],
+  posRel: [0.73, 0.53],
   number: 0,
   pressable: true,
 });

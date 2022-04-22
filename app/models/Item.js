@@ -40,7 +40,9 @@ var Item = Backbone.Model.extend({
     text: "",
     properties: {},
     size: [0, 0],
+    sizeRel: undefined,
     position: [0, 0],
+    posRel: undefined,
     grabbable: false,
     openSound: null,
     closingSound: null,
@@ -64,7 +66,15 @@ var Item = Backbone.Model.extend({
   //   return false;
   // },
 
-  initialize: function () {},
+  initialize: function () {
+    if (this.get("sizeRel")) {
+      this.set("size", [this.get("sizeRel")[0] * window.innerWidth, this.get("sizeRel")[1] * window.innerHeight]);
+    }
+
+    if (this.get("posRel")) {
+      this.set("position", [this.get("posRel")[0] * window.innerWidth, this.get("posRel")[1] * window.innerHeight]);
+    }
+  },
 
   setPosition: function (position) {
     this.set("position", position);
