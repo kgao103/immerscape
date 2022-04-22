@@ -5,7 +5,7 @@ tutorial = new Item({
   source: "img/help.png",
   displayed: false,
   size: [window.innerHeight * 1.2, window.innerHeight * 0.7],
-  position: [window.innerWidth * 0.2, window.innerHeight * 0.05],
+  posRel: [0.2, 0.05],
 });
 
 mousehole = new Item({
@@ -17,8 +17,8 @@ mousehole = new Item({
       ? "img/mousehole_happy.png"
       : "img/mousehole_dead.png";
   },
-  size: [130, 100],
-  posRel: [0.5, 0.603],
+  sizeRel: [0.12, 0.18],
+  posRel: [0.5, 0.575],
   name: "mousehole",
   get description() {
     return this.state === "sad"
@@ -34,21 +34,21 @@ door = new Item({
   get source() {
     return this.isOpen ? "img/door_open.png" : "img/door.png";
   },
-  size: [window.innerHeight * 0.27, window.innerHeight * 0.574],
+  sizeRel: [0.14, 0.574],
   name: "door",
-  position: [window.innerWidth * 0.25, window.innerHeight * 0.18],
+  posRel: [0.25, 0.18],
 });
 
 clock = new Item({
   source: "img/clock.png",
-  size: [100, 100],
+  sizeRel: [0.08, 0.15],
   name: "clock",
   posRel: [0.6, 0.22],
 });
 
 fridge = new Item({
   isLocked: true,
-  size: [220, 220],
+  sizeRel: [0.2, 0.35],
   name: "fridge",
   isOpen: false,
   openable: true,
@@ -67,7 +67,7 @@ fridge = new Item({
 });
 
 fridge_lock = new Item({
-  size: [150, 150],
+  sizeRel: [0.12, 0.25],
   name: "fridge lock",
   source: "img/fridge_lock.png",
   posRel: [0.68, 0.57],
@@ -81,9 +81,9 @@ dresser = new Item({
   },
   sourceOpened: "img/dresser_opened.png",
   sourceClosed: "img/dresser.png",
-  size: [window.innerWidth * 0.4, window.innerWidth * 0.25],
+  sizeRel: [0.4, 0.45],
   name: "dresser",
-  posRel: [0.4, 0.4],
+  posRel: [0.4, 0.41],
   openSound: new Audio("sound/drawer_opening.mp3"),
   closingSound: new Audio("sound/drawer_closing.wav"),
 });
@@ -94,7 +94,7 @@ painting = new Item({
   },
   openable: true,
   isOpen: false,
-  size: [182, 240],
+  sizeRel: [0.17, 0.4],
   name: "painting",
   sourceOpened: "img/painting_opened.png",
   sourceClosed: "img/painting.png",
@@ -118,10 +118,11 @@ lamp = new Item({
   },
   sourceOn: "img/lamp_on.png",
   sourceOff: "img/lamp_off.png",
-  size: [100, 350],
+  sizeRel: [0.09, 0.6],
   name: "lamp",
   switchedOnable: true,
-  position: [window.innerWidth * 0.2, window.innerHeight * 0.3],
+  // position: [window.innerWidth * 0.2, window.innerHeight * 0.3],
+  posRel: [0.2, 0.3],
   onSound: new Audio("sound/lamp_on.mov"),
   offSound: new Audio("sound/lamp_off.mov"),
 });
@@ -134,16 +135,16 @@ bedtable = new Item({
   },
   sourceOpened: "img/bedtable_opened.png",
   sourceClosed: "img/bedtable.png",
-  size: [window.innerWidth * 0.12, window.innerWidth * 0.12],
+  sizeRel: [0.12, 0.23],
   name: "bedtable",
-  position: [window.innerWidth * 0.3, window.innerHeight * 0.6],
+  posRel: [0.3, 0.6],
   openSound: new Audio("sound/cabinet_opening.wav"),
   closingSound: new Audio("sound/cabinet_closing.wav"),
 });
 
 safe = new Item({
   source: "img/safe.png",
-  size: [window.innerWidth * 0.1, window.innerWidth * 0.08],
+  sizeRel: [0.1, 0.13],
   name: "safe",
   isHidden: true,
   posRel: [0.425, 0.45],
@@ -151,7 +152,7 @@ safe = new Item({
 
 one = new Item({
   source: "img/button_one.png",
-  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  sizeRel: [0.1, 0.12],
   name: "one",
   posRel: [0.4, 0.4],
   number: 1,
@@ -160,16 +161,16 @@ one = new Item({
 
 two = new Item({
   source: "img/button_two.png",
-  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  sizeRel: [0.1, 0.12],
   name: "two",
-  posRel: [0.52, 0.4],
+  posRel: [0.513, 0.4],
   number: 2,
   pressable: true,
 });
 
 three = new Item({
   source: "img/button_three.png",
-  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  sizeRel: [0.1, 0.12],
   name: "three",
   posRel: [0.625, 0.4],
   number: 3,
@@ -178,7 +179,7 @@ three = new Item({
 
 four = new Item({
   source: "img/button_four.png",
-  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  sizeRel: [0.1, 0.12],
   name: "four",
   posRel: [0.4, 0.53],
   number: 4,
@@ -187,16 +188,16 @@ four = new Item({
 
 five = new Item({
   source: "img/button_five.png",
-  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  sizeRel: [0.1, 0.12],
   name: "five",
-  posRel: [0.52, 0.53],
+  posRel: [0.513, 0.53],
   number: 5,
   pressable: true,
 });
 
 six = new Item({
   source: "img/button_six.png",
-  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  sizeRel: [0.1, 0.12],
   name: "six",
   posRel: [0.625, 0.53],
   number: 6,
@@ -205,7 +206,7 @@ six = new Item({
 
 seven = new Item({
   source: "img/button_seven.png",
-  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  sizeRel: [0.1, 0.12],
   name: "seven",
   posRel: [0.4, 0.66],
   number: 7,
@@ -214,16 +215,16 @@ seven = new Item({
 
 eight = new Item({
   source: "img/button_eight.png",
-  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  sizeRel: [0.1, 0.12],
   name: "eight",
-  posRel: [0.52, 0.66],
+  posRel: [0.513, 0.66],
   number: 8,
   pressable: true,
 });
 
 nine = new Item({
   source: "img/button_nine.png",
-  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  sizeRel: [0.1, 0.12],
   name: "nine",
   posRel: [0.625, 0.66],
   number: 9,
@@ -232,7 +233,7 @@ nine = new Item({
 
 zero = new Item({
   source: "img/button_zero.png",
-  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  sizeRel: [0.1, 0.12],
   name: "zero",
   posRel: [0.73, 0.53],
   number: 0,
@@ -240,9 +241,9 @@ zero = new Item({
 });
 
 safe_screen = new Item({
-  size: [window.innerWidth * 0.395, window.innerHeight * 0.29],
+  sizeRel: [0.395, 0.29],
   name: "safe_screen",
-  position: [window.innerWidth * 0.42, window.innerHeight * 0.02],
+  posRel: [0.42, 0.02],
   properties: {
     // backgroundColor: "black",
     background: "url('img/safe_screen.png')",
@@ -255,25 +256,25 @@ safe_screen = new Item({
 
 button_delete = new Item({
   source: "img/button_x.png",
-  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  sizeRel: [0.1, 0.12],
   name: "button_delete",
-  position: [window.innerWidth * 0.73, window.innerHeight * 0.4],
+  posRel: [0.73, 0.4],
   pressable: true,
 });
 
 button_enter = new Item({
   source: "img/button_enter.png",
-  size: [window.innerWidth * 0.1, window.innerWidth * 0.07],
+  sizeRel: [0.1, 0.12],
   name: "button_enter",
-  position: [window.innerWidth * 0.73, window.innerHeight * 0.66],
+  posRel: [0.73, 0.66],
   pressable: true,
 });
 
 painting2 = new Item({
   source: "img/painting_mouse.jpeg",
-  size: [window.innerWidth * 0.12, window.innerWidth * 0.15],
-  name: "painting2",
-  position: [window.innerWidth * 0.3, window.innerHeight * 0.25],
+  sizeRel: [0.12, 0.29],
+  name: "mouse painting",
+  posRel: [0.3, 0.25],
   get source() {
     return this.isOpen
       ? "img/painting_mouse_opened.png"
@@ -292,15 +293,15 @@ windowLarge = new Item({
   get source() {
     return this.isOpen ? "img/window_broken.png" : "img/window.png";
   },
-  size: [window.innerWidth * 0.25, window.innerWidth * 0.18],
+  sizeRel: [0.25, 0.38],
   name: "window",
-  position: [window.innerWidth * 0.2, window.innerHeight * 0.2],
+  posRel: [0.2, 0.2],
 });
 
 mashedPotatoes = new Item({
   source: "img/mashed_potatoes.png",
-  size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
-  position: [window.innerWidth * 0.45, window.innerHeight * 0.33],
+  sizeRel: [0.04, 0.12],
+  posRel: [0.45, 0.33],
   grabbable: true,
   name: "mashed potatoes",
   // set useOn(item) {
@@ -332,8 +333,8 @@ mashedPotatoes = new Item({
 
 cheese = new Item({
   source: "img/cheese.png",
-  size: [window.innerWidth * 0.06, window.innerWidth * 0.05],
-  position: [window.innerWidth * 0.7, window.innerHeight * 0.488],
+  sizeRel: [0.06, 0.1],
+  posRel: [0.71, 0.5],
   grabbable: true,
   name: "cheese",
 });
@@ -341,7 +342,7 @@ cheese = new Item({
 watermelon = new Item({
   source: "img/watermelon.png",
   size: [window.innerWidth * 0.06, window.innerWidth * 0.05],
-  position: [window.innerWidth * 0.7, window.innerHeight * 0.488],
+  posRel: [0.7, 0.488],
   grabbable: true,
   name: "watermelon",
 });
@@ -349,30 +350,30 @@ watermelon = new Item({
 cat = new Item({
   source: "img/cat.png",
   grabbable: true,
-  size: [window.innerWidth * 0.07, window.innerWidth * 0.08],
-  position: [window.innerWidth * 0.2, window.innerHeight * 0.8],
+  sizeRel: [0.09, 0.18],
+  posRel: [0.15, 0.8],
   grabbable: true,
   name: "cat",
 });
 
 ceiling_fan = new Item({
   source: "img/ceiling_fan.gif",
-  size: [window.innerWidth * 0.25, window.innerWidth * 0.2],
-  position: [window.innerWidth * 0.35, -30],
+  sizeRel: [0.25, 0.3],
+  posRel: [0.35, -0.05],
   name: "ceiling fan",
 });
 
 capybara = new Item({
   source: "img/capybara.png",
-  size: [window.innerWidth * 0.15, window.innerHeight * 0.3],
-  position: [window.innerWidth * 0.1, window.innerHeight * 0.7],
+  sizeRel: [0.15, 0.3],
+  posRel: [0.1, 0.7],
   name: "capybara",
 });
 
 key = new Item({
   source: "img/key.png",
   size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
-  position: [window.innerWidth * 0.45, window.innerHeight * 0.3],
+  posRel: [0.45, 0.3],
   grabbable: true,
   name: "key",
 });
@@ -380,7 +381,7 @@ key = new Item({
 fridge_key = new Item({
   source: "img/fridge_key.png",
   size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
-  position: [window.innerWidth * 0.45, window.innerHeight * 0.3],
+  posRel: [0.45, 0.3],
   grabbable: true,
   name: "fridge key",
 });
@@ -388,15 +389,15 @@ fridge_key = new Item({
 hammer = new Item({
   source: "img/hammer.png",
   size: [window.innerWidth * 0.09, window.innerWidth * 0.05],
-  position: [window.innerWidth * 0.85, window.innerHeight * 0.8],
+  posRel: [0.85, 0.8],
   grabbable: true,
   name: "hammer",
 });
 
 talkingCapybara = new Item({
   source: "img/capybara.png",
-  size: [window.innerWidth * 0.3, window.innerHeight * 0.6],
-  position: [window.innerWidth * 0.02, window.innerHeight * 0.3],
+  sizeRel: [0.3, 0.6],
+  posRel: [0.02, 0.3],
   name: "capybara",
 });
 
@@ -460,7 +461,7 @@ zoomedSafe = new View({
 // ROOM
 
 room = new Room({
-  currentView: "wall1",
+  currentView: "wall3",
   views: {
     wall1: wall1,
     wall2: wall2,
