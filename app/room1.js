@@ -34,14 +34,14 @@ door = new Item({
   get source() {
     return this.isOpen ? "img/door_open.png" : "img/door.png";
   },
-  sizeRel: [0.14, 0.574],
+  size: [0.25 * window.innerHeight, 0.574 * window.innerHeight],
   name: "door",
   posRel: [0.25, 0.18],
 });
 
 clock = new Item({
   source: "img/clock.png",
-  sizeRel: [0.08, 0.15],
+  size: [0.08 * window.innerWidth, 0.08 * window.innerWidth],
   name: "clock",
   posRel: [0.6, 0.22],
 });
@@ -104,8 +104,8 @@ painting = new Item({
 });
 
 flashlight = new Item({
-  name: "flashlight",
-  source: "img/flashlight.png",
+  name: "UV flashlight",
+  source: "img/blacklight.png",
   size: [100, 100],
   posRel: [0.8, 0.22],
   grabbable: true,
@@ -461,7 +461,7 @@ zoomedSafe = new View({
 // ROOM
 
 room = new Room({
-  currentView: "wall3",
+  currentView: "wall1",
   views: {
     wall1: wall1,
     wall2: wall2,

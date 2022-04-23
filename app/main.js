@@ -69,14 +69,9 @@ Leap.loop({
       !hand.fingers[3].extended &&
       !hand.fingers[4].extended;
 
-    isPinching =  
-      hand.pinchStrength > 0.8 &&
-      hand.grabStrength < 0.2;
-    
-    if (isPinching &&
-      !cursorFrozen &&
-      hoveredItem
-    ) {
+    isPinching = hand.pinchStrength > 0.8 && hand.grabStrength < 0.2;
+
+    if (isPinching && !cursorFrozen && hoveredItem) {
       transitionZoomIn();
     }
 
@@ -126,7 +121,7 @@ Leap.loop({
       }
 
       hoveredItem = getHoveredItem(cursorPosition);
-      isPressing = isPointing && hoveredItem && hoveredItem.isPressable()
+      isPressing = isPointing && hoveredItem && hoveredItem.isPressable();
       var isOpening = hand.grabStrength > 0.5 && hand.screenPosition()[2] > 300;
       var isClosing = hand.grabStrength < 0.5 && hand.screenPosition()[2] < 0;
       if (isOpening) {
@@ -275,7 +270,6 @@ function transitionZoomIn() {
   currentRoom.transition("zoom_in");
 }
 
-
 function transitionBye() {
   inConversation = false;
   sleep(1000).then(() => {
@@ -310,18 +304,32 @@ var processSpeech = function (transcript) {
     // console.log("hovered item name: ", hoveredItem.get("name"));
 
     var commands = [
-      [["left"], transitionLeft],
+      [["left", "love", "live", "alive", "lap"], transitionLeft],
       [["right"], transitionRight],
       [["zoom out", "out"], transitionZoomOut],
       [["bye", "goodbye", "by", "buy"], transitionBye],
-      [["stay", "freeze"], freezeCursor],
+      [["stay", "say", "freeze", "breathe"], freezeCursor],
       [["move", "unfreeze"], unfreezeCursor],
-      [["grab"], tryGrab],
+      [["grab", "grav"], tryGrab],
       [["open"], tryOpenHoveredItem],
-      [["close"], tryCloseHoveredItem],
-      [["on"], tryTurnOnHoveredItem],
-      [["off"], tryTurnOffHoveredItem],
-      [["press", "price", "bass", "fast", "harass", "bratz", "fatz", "pratt", "grass", "pass"], tryPressHoveredItem],
+      [["close", "clothes"], tryCloseHoveredItem],
+      [["on", "I'm", "aunt"], tryTurnOnHoveredItem],
+      [["off", "IHOP", "Off"], tryTurnOffHoveredItem],
+      [
+        [
+          "press",
+          "price",
+          "bass",
+          "fast",
+          "harass",
+          "bratz",
+          "fatz",
+          "pratt",
+          "grass",
+          "pass",
+        ],
+        tryPressHoveredItem,
+      ],
     ];
 
     for (command of commands) {
@@ -363,7 +371,7 @@ function tryUseItem() {
   }
 }
 
-function tryPressHoveredItem () {
+function tryPressHoveredItem() {
   if (hoveredItem && hoveredItem.isPressable()) {
     registerPress(hoveredItem);
   }
@@ -459,7 +467,7 @@ function useItemHandler(itemName, targetName, handler) {
     } else {
       return false;
     }
-  }
+  };
 }
 
 function useKeyOnDoor(object, item) {
@@ -599,9 +607,7 @@ function useMashedPotatoesOnMousehole(object, item) {
   if (item.get("state") !== "dead") {
     mouseCry.play();
     sleep(2000).then(() => {
-      generateSpeech(
-        "The mouse ate the mashed potatoes and instantly dies."
-      );
+      generateSpeech("The mouse ate the mashed potatoes and instantly dies.");
     });
     item.set("state", "dead");
     item.setContent("img/mousehole_dead.png");
@@ -626,7 +632,11 @@ function useObjectOnItem(object, item) {
     useItemHandler("watermelon", "capybara", useWatermelonOnCapybara),
     useItemHandler("capybara", "window", useCapybaraOnWindow),
     useItemHandler("cat", "mousehole", useCatOnMousehole),
-    useItemHandler("mashed potatoes", "mousehole", useMashedPotatoesOnMousehole)
+    useItemHandler(
+      "mashed potatoes",
+      "mousehole",
+      useMashedPotatoesOnMousehole
+    ),
   ];
   for (handler of itemHandlers) {
     if (handler(object, item)) {
