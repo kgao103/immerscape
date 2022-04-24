@@ -290,70 +290,70 @@ var processSpeech = function (transcript) {
   var processed = false;
   if (inConversation) {
     processed = capybaraSpeechOptions.processSpeech(transcript) | processed;
-  } else {
-    if (userSaid(transcript, ["hello", "hi", "hey"])) {
-      if (currentRoom.transition("talk")) {
-        inConversation = true;
-        capybaraSpeechOptions.processSpeech("hello");
-      }
-      processed = true;
+  }
+  if (userSaid(transcript, ["hello", "hi", "hey"])) {
+    if (currentRoom.transition("talk")) {
+      inConversation = true;
+      capybaraSpeechOptions.processSpeech("hello");
     }
+    processed = true;
+  }
 
-    usedItem = inventory.getInventoryItem(transcript);
-    // console.log("screen position", cursor.get("screenPosition"));
-    // console.log("hovered item name: ", hoveredItem.get("name"));
+  usedItem = inventory.getInventoryItem(transcript);
+  // console.log("screen position", cursor.get("screenPosition"));
+  // console.log("hovered item name: ", hoveredItem.get("name"));
 
-    var commands = [
-      [["left", "love", "live", "alive", "lap"], transitionLeft],
-      [["right"], transitionRight],
-      [["zoom out", "out"], transitionZoomOut],
-      [["bye", "goodbye", "by", "buy"], transitionBye],
-      [["stay", "say", "freeze", "breathe"], freezeCursor],
-      [["move", "unfreeze"], unfreezeCursor],
-      [["grab", "grav"], tryGrab],
-      [["open"], tryOpenHoveredItem],
-      [["close", "clothes"], tryCloseHoveredItem],
-      [["on", "I'm", "aunt"], tryTurnOnHoveredItem],
-      [["off", "IHOP", "Off"], tryTurnOffHoveredItem],
+  var commands = [
+    [["left", "love", "live", "alive", "lap"], transitionLeft],
+    [["right"], transitionRight],
+    [["zoom out", "out"], transitionZoomOut],
+    [["bye", "goodbye", "by", "buy"], transitionBye],
+    [["stay", "say", "freeze", "breathe"], freezeCursor],
+    [["move", "unfreeze"], unfreezeCursor],
+    [["grab", "grav"], tryGrab],
+    [["open"], tryOpenHoveredItem],
+    [["close", "clothes"], tryCloseHoveredItem],
+    [["on", "I'm", "aunt"], tryTurnOnHoveredItem],
+    [["off", "IHOP", "Off"], tryTurnOffHoveredItem],
+    [
       [
-        [
-          "press",
-          "price",
-          "bass",
-          "fast",
-          "harass",
-          "bratz",
-          "fatz",
-          "pratt",
-          "grass",
-          "pass",
-        ],
-        tryPressHoveredItem,
+        "press",
+        "price",
+        "bass",
+        "fast",
+        "harass",
+        "bratz",
+        "fatz",
+        "pratt",
+        "grass",
+        "pass",
       ],
-    ];
+      tryPressHoveredItem,
+    ],
+  ];
 
-    for (command of commands) {
-      if (userSaid(transcript, command[0])) {
-        command[1]();
-        processed = true;
-      }
-    }
-
-    hoveredItem = getHoveredItem(cursorPosition);
-    // console.log("hovered item name", hoveredItem.get("name"));
-    if (
-      userSaid(transcript, ["look", "lock", "luck"]) &&
-      hoveredItem &&
-      hoveredItem.get("name") === "safe"
-    ) {
+  for (command of commands) {
+    if (userSaid(transcript, command[0])) {
+      command[1]();
       processed = true;
-      currentRoom.transition("zoom_in");
-      //zoomInObject(hoveredItem);
-    } else if (hoveredItem && usedItem) {
-      processed = true;
-      tryUseItem();
     }
   }
+
+  hoveredItem = getHoveredItem(cursorPosition);
+  // console.log("hovered item name", hoveredItem.get("name"));
+  if (
+    userSaid(transcript, ["look", "lock", "luck"]) &&
+    hoveredItem &&
+    hoveredItem.get("name") === "safe"
+  ) {
+    processed = true;
+    currentRoom.transition("zoom_in");
+    //zoomInObject(hoveredItem);
+  } else if (hoveredItem && usedItem) {
+    processed = true;
+    tryUseItem();
+  }
+
   return processed;
 };
 
@@ -389,7 +389,7 @@ function registerPress(item) {
     safe_screen.get("context").setContent(passwordSafe);
     currentRoom.drawView();
   } else if (item.get("name") == "button_enter" && passwordSafe.length >= 3) {
-    if (passwordSafe == "245") {
+    if (passwordSafe == "222") {
       console.log("correct password");
       safe_screen.get("context").setContent(passwordSafe);
       safeUnlock.play();
