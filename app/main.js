@@ -70,6 +70,9 @@ Leap.loop({
       !hand.fingers[4].extended;
 
     isPinching = hand.pinchStrength > 0.8 && hand.grabStrength < 0.2;
+    if (isPinching) {
+      console.log("pinching");
+    }
 
     if (isPinching && !cursorFrozen && hoveredItem) {
       transitionZoomIn();
@@ -372,15 +375,14 @@ function tryUseItem() {
 }
 
 function tryPressHoveredItem() {
-  if (hoveredItem && hoveredItem.isPressable()) {
+  if (hoveredItem && hoveredItem.isPressable() && !hoveredItem.get("isPressed")) {
     registerPress(hoveredItem);
   }
 }
 
 function registerPress(item) {
-  // if (item.get("pressable")) {
-  // item.get("pressSound").play();
-  // item.set("isPressed", true);
+  //item.get("pressSound").play();
+  item.set("isPressed", true);
   if (item.get("name") == "button_delete" && passwordSafe.length > 0) {
     console.log("deleted character");
     safeDelete.play();
@@ -389,7 +391,7 @@ function registerPress(item) {
     safe_screen.get("context").setContent(passwordSafe);
     currentRoom.drawView();
   } else if (item.get("name") == "button_enter" && passwordSafe.length >= 3) {
-    if (passwordSafe == "222") {
+    if (passwordSafe == "245") {
       console.log("correct password");
       safe_screen.get("context").setContent(passwordSafe);
       safeUnlock.play();
