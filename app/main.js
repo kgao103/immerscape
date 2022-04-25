@@ -59,7 +59,7 @@ Leap.loop({
     movingLeft = hand.palmVelocity[0] < -200;
     movingUp = hand.palmVelocity[1] > 200;
     movingDown = hand.palmVelocity[1] < -200;
-    movingForward = hand.palmVelocity[2] > 100;
+    movingForward = hand.palmVelocity[2] > 50;
     movingBackward = hand.palmVelocity[2] < -100;
     //console.log(movingRight, movingLeft, movingUp, movingDown, movingForward, movingBackward);
     // Use the hand data to control the cursor's screen position
@@ -126,7 +126,8 @@ Leap.loop({
       }
 
       hoveredItem = getHoveredItem(cursorPosition);
-      isPressing = isPointing && hoveredItem && hoveredItem.isPressable();
+      isPressing =
+        isPointing && hoveredItem && hoveredItem.isPressable() && movingForward;
       var isOpening = hand.grabStrength > 0.5 && hand.screenPosition()[2] > 300;
       var isClosing = hand.grabStrength < 0.5 && hand.screenPosition()[2] < 0;
       if (isOpening) {
