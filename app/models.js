@@ -24,10 +24,14 @@ var View = Backbone.Model.extend({
   removeItem: function (item) {
     let items = this.get("items");
     let index = items.indexOf(item);
-    console.log(item.get("name"), index);
-    items.splice(index, 1);
-    this.set("items", items);
-    console.log(this.get("items"));
+    if (index > -1) {
+      items.splice(index, 1);
+      this.set("items", items);
+      return item;
+    } else {
+      console.log("item not found");
+      return null;
+    }
   },
 
   addItem: function (item) {
@@ -77,11 +81,11 @@ var Conversation = Backbone.Model.extend({
     rendered: false,
     opacity: 0,
     speechOptions: [
-      "( Ask about the MOUSE )",
-      "( Ask about the SECRET )",
-      "( Ask about the SAFE CODE )",
-      "( Ask about something else )",
-      "( Say BYE )",
+      "Why is the mouse so sad?",
+      "Are there any secrets?",
+      "What is the safe code?",
+      "( Try asking about something else!)",
+      "Goodbye!",
     ],
   },
 
