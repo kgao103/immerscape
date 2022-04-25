@@ -24,6 +24,7 @@ var View = Backbone.Model.extend({
   removeItem: function (item) {
     let items = this.get("items");
     let index = items.indexOf(item);
+    console.log(item.get("name"), index);
     items.splice(index, 1);
     this.set("items", items);
     console.log(this.get("items"));

@@ -401,6 +401,28 @@ talkingCapybara = new Item({
   name: "capybara",
 });
 
+yellowHoly = new Item({
+  source: "img/blue_wall_unlit.png",
+  sizeRel: [0.19, 0.3],
+  posRel: [0.81, 0.117],
+  name: "pink wall",
+  isHidden: true,
+});
+
+favNumber = new Item({
+  source: "img/pink_wall_unlit.png",
+  sizeRel: [0.22, 0.22],
+  posRel: [0.57, 0.25],
+  name: "pink wall 2",
+});
+
+capybaraClue = new Item({
+  source: "img/purple_wall_unlit.png",
+  sizeRel: [0.18, 0.55],
+  posRel: [0.82, 0.22],
+  name: "blue wall",
+});
+
 // VIEWS
 
 wall1 = new View({

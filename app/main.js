@@ -43,6 +43,8 @@ var movingDown = false;
 var movingLeft = false;
 var movingRight = false;
 
+var fridgeKeyObtained = false;
+
 var usedItem = null;
 
 var inConversation = false;
@@ -98,7 +100,7 @@ Leap.loop({
         }
       });
 
-      isGrabbing = hand.grabStrength > 0.5;
+      isGrabbing = hand.grabStrength > 0.7;
       if (isGrabbing) {
         tryGrab();
       }
@@ -241,6 +243,9 @@ function tryTurnOffHoveredItem() {
     hoveredItem.set("isOn", false);
     lightOn = false;
     currentRoom.turnOffLight();
+    wall1.addItem(yellowHoly);
+    wall2.addItem(favNumber);
+    wall4.addItem(capybaraClue);
     hoveredItem.set("source", hoveredItem.get("sourceOff"));
     currentRoom.drawView();
   }
@@ -248,10 +253,17 @@ function tryTurnOffHoveredItem() {
 
 function tryTurnOnHoveredItem() {
   if (hoveredItem && hoveredItem.isOnable()) {
+    yellowHoly.hide();
+    favNumber.hide();
+    capybaraClue.hide();
+    wall1.removeItem(yellowHoly);
+    wall2.removeItem(favNumber);
+    wall4.removeItem(capybaraClue);
     hoveredItem.get("onSound").play();
     hoveredItem.set("isOn", true);
     lightOn = true;
     currentRoom.turnOnLight();
+    console.log("turned on");
     hoveredItem.set("source", hoveredItem.get("sourceOn"));
     currentRoom.drawView();
   }
@@ -317,7 +329,7 @@ var processSpeech = function (transcript) {
     [["open"], tryOpenHoveredItem],
     [["close", "clothes"], tryCloseHoveredItem],
     [["on", "I'm", "aunt"], tryTurnOnHoveredItem],
-    [["off", "IHOP", "Off"], tryTurnOffHoveredItem],
+    [["off", "IHOP", "Off", "call"], tryTurnOffHoveredItem],
     [
       [
         "press",
@@ -375,7 +387,11 @@ function tryUseItem() {
 }
 
 function tryPressHoveredItem() {
-  if (hoveredItem && hoveredItem.isPressable() && !hoveredItem.get("isPressed")) {
+  if (
+    hoveredItem &&
+    hoveredItem.isPressable() &&
+    !hoveredItem.get("isPressed")
+  ) {
     registerPress(hoveredItem);
   }
 }
@@ -461,13 +477,14 @@ function getHoveredItem(cursorPosition) {
   }
 }
 
-function useItemHandler(itemName, targetName, handler) {
+function useItemHandler(item_, target_, handler) {
   return function (item, target) {
-    if (item.get("name") === itemName && target.get("name") === targetName) {
-      handler(item, target);
-      return true;
+    if (item == item_ && target == target_) {
+      // handler(item, target);
+      console.log("wtfffff");
+      return [true, handler(item, target)]; // true stands for item could be used but could still be inventory, second argument means if it returns to the inventory, true means don't return to inventory
     } else {
-      return false;
+      return [false, false];
     }
   };
 }
@@ -510,9 +527,10 @@ function useCheeseOnMousehole(object, item) {
     item.set("state", "happy");
     item.setContent("img/mousehole_happy.png");
     mouseHappySound.play();
+    fridgeKeyObtained = true;
     sleep(2000).then(() => {
       generateSpeech(
-        "The mouse ate the cheese and thanks you for the cheese. As a reward, it hands you a small black key."
+        "The mouse ate the cheese and thanks you. As a reward, it hands you a small black key."
       );
     });
     inventory.addItem(fridge_key);
@@ -555,7 +573,7 @@ function useHammerOnWindow(object, item) {
     item.setContent("img/window_broken.png");
     windowBreakingSound.play();
     generateSpeech(
-      "You broke the window. However, the hole you made is too small for you to fit through. Should have gone to less boba events bro. You'll need to find another way to get through."
+      "You broke the window. However, the hole you made is too small for you to fit through. You'll need to find another way to get through."
     );
     currentRoom.drawView();
     return false;
@@ -566,7 +584,7 @@ function useWatermelonOnCapybara(object, item) {
   watermelonEating.play();
   sleep(2000).then(() => {
     generateSpeech(
-      "The capybara ate the watermelon and thanks you. He gives you permission to pet and hold him. You've just made a friend!"
+      "The capybara ate the watermelon and thanks you. He gives you permission to pet and hold him."
     );
   });
   item.set("grabbable", true);
@@ -580,7 +598,7 @@ function useCapybaraOnWindow(object, item) {
     door.setContent("img/door_open.png");
     doorUnlockingSound.play();
     generateSpeech(
-      "The capybara jumped out through the window and opened the door from the outside for you. Congrats on solving the escape room and reuniting the grandma with her grandson!"
+      "The capybara jumped out through the window and opened the door from the outside. Congrats on solving the escape room and reuniting the grandma with her grandson!"
     );
     currentRoom.transition("right");
     return true;
@@ -590,9 +608,18 @@ function useCapybaraOnWindow(object, item) {
 function useCatOnMousehole(object, item) {
   if (item.get("state") !== "dead") {
     mouseCry.play();
-    sleep(2000).then(() => {
-      generateSpeech("The cat eats the mouse with no remorse.");
-    });
+    if (!fridgeKeyObtained) {
+      sleep(2000).then(() => {
+        generateSpeech(
+          "The cat eats the mouse with no remorse. You'll haves to start over",
+          window.location.reload()
+        );
+      });
+    } else {
+      sleep(2000).then(() => {
+        generateSpeech("The cat eats the mouse with no remorse.");
+      });
+    }
     item.set("state", "dead");
     item.setContent("img/mousehole_dead.png");
     currentRoom.drawView();
@@ -608,9 +635,16 @@ function useCatOnMousehole(object, item) {
 function useMashedPotatoesOnMousehole(object, item) {
   if (item.get("state") !== "dead") {
     mouseCry.play();
-    sleep(2000).then(() => {
-      generateSpeech("The mouse ate the mashed potatoes and instantly dies.");
-    });
+    if (!fridgeKeyObtained) {
+      generateSpeech(
+        "The mouse ate the mashed potatoes and dies. You'll have to start over.",
+        window.location.reload()
+      );
+    } else {
+      sleep(2000).then(() => {
+        generateSpeech("The mouse ate the mashed potatoes and instantly dies.");
+      });
+    }
     item.set("state", "dead");
     item.setContent("img/mousehole_dead.png");
     currentRoom.drawView();
@@ -623,32 +657,60 @@ function useMashedPotatoesOnMousehole(object, item) {
   }
 }
 
-// returns true if object was used, false otherwise
+function useFlashlightOnYellowHoly(object, item) {
+  yellowHoly.hide();
+  wall1.removeItem(yellowHoly);
+  currentRoom.drawView();
+  return false;
+}
+
+function useFlashlightOnFavNumber(object, item) {
+  favNumber.hide();
+  wall2.removeItem(favNumber);
+  currentRoom.drawView();
+  return false;
+}
+
+function useFlashlightOnCapybaraClue(object, item) {
+  capybaraClue.hide();
+  wall4.removeItem(capybaraClue);
+  currentRoom.drawView();
+  return false;
+}
+
+// returns true if object was used (doesn't return to inventory), false otherwise
 function useObjectOnItem(object, item) {
   let r = false;
   let itemHandlers = [
-    useItemHandler("key", "door", useKeyOnDoor),
-    useItemHandler("cheese", "mousehole", useCheeseOnMousehole),
-    useItemHandler("fridge key", "fridge lock", useFridgeKeyOnFridgeLock),
-    useItemHandler("hammer", "window", useHammerOnWindow),
-    useItemHandler("watermelon", "capybara", useWatermelonOnCapybara),
-    useItemHandler("capybara", "window", useCapybaraOnWindow),
-    useItemHandler("cat", "mousehole", useCatOnMousehole),
-    useItemHandler(
-      "mashed potatoes",
-      "mousehole",
-      useMashedPotatoesOnMousehole
-    ),
+    useItemHandler(key, door, useKeyOnDoor),
+    useItemHandler(cheese, mousehole, useCheeseOnMousehole),
+    useItemHandler(fridge_key, fridge_lock, useFridgeKeyOnFridgeLock),
+    useItemHandler(hammer, windowLarge, useHammerOnWindow),
+    useItemHandler(watermelon, capybara, useWatermelonOnCapybara),
+    useItemHandler(capybara, windowLarge, useCapybaraOnWindow),
+    useItemHandler(cat, mousehole, useCatOnMousehole),
+    useItemHandler(mashedPotatoes, mousehole, useMashedPotatoesOnMousehole),
+    useItemHandler(flashlight, yellowHoly, useFlashlightOnYellowHoly),
+    useItemHandler(flashlight, favNumber, useFlashlightOnFavNumber),
+    useItemHandler(flashlight, capybaraClue, useFlashlightOnCapybaraClue),
   ];
+  var wasUsed = false;
   for (handler of itemHandlers) {
-    if (handler(object, item)) {
+    result = handler(object, item);
+    if (result[0]) {
+      console.log("hiiii");
+      wasUsed = true;
+    }
+    if (result[1]) {
+      console.log("noooo");
       return true;
     }
   }
-  /*
-  generateSpeech(
-    "You can't use the " + object.get("name") + " on the " + item.get("name")
-  );
-  */
+  if (!wasUsed) {
+    generateSpeech(
+      "Can't use the " + object.get("name") + " on the " + item.get("name")
+    );
+  }
+
   return false;
 }

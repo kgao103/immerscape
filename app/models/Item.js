@@ -68,11 +68,17 @@ var Item = Backbone.Model.extend({
 
   initialize: function () {
     if (this.get("sizeRel")) {
-      this.set("size", [this.get("sizeRel")[0] * window.innerWidth, this.get("sizeRel")[1] * window.innerHeight]);
+      this.set("size", [
+        this.get("sizeRel")[0] * window.innerWidth,
+        this.get("sizeRel")[1] * window.innerHeight,
+      ]);
     }
 
     if (this.get("posRel")) {
-      this.set("position", [this.get("posRel")[0] * window.innerWidth, this.get("posRel")[1] * window.innerHeight]);
+      this.set("position", [
+        this.get("posRel")[0] * window.innerWidth,
+        this.get("posRel")[1] * window.innerHeight,
+      ]);
     }
   },
 

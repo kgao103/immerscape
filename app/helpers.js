@@ -16,6 +16,7 @@ window.speechSynthesis.onvoiceschanged = function () {
 
 var generateSpeech = function (message, callback, voiceIndex = VOICEINDEX) {
   if (voicesReady) {
+    speechSynthesis.cancel();
     var msg = new SpeechSynthesisUtterance();
     msg.voice = window.speechSynthesis.getVoices()[voiceIndex];
     msg.text = message;
