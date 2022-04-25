@@ -269,6 +269,19 @@ function tryTurnOnHoveredItem() {
   }
 }
 
+function showHelpScreen() {
+  currentRoom.getView().addItem(tutorial);
+  currentRoom.drawView();
+}
+
+function closeHelpScreen() {
+  if (currentRoom.getView().get("items").includes(tutorial)) {
+    tutorial.hide();
+    currentRoom.getView().removeItem(tutorial);
+    currentRoom.drawView();
+  }
+}
+
 function transitionLeft() {
   currentRoom.transition("left");
 }
@@ -330,6 +343,16 @@ var processSpeech = function (transcript) {
     [["close", "clothes"], tryCloseHoveredItem],
     [["on", "I'm", "aunt"], tryTurnOnHoveredItem],
     [["off", "IHOP", "Off", "call"], tryTurnOffHoveredItem],
+    [["help"], showHelpScreen],
+    [["back", "exit"], closeHelpScreen],
+
+    [
+      ["restart"],
+      () => {
+        window.location.reload();
+        generateSpeech("game restarted");
+      },
+    ],
     [
       [
         "press",

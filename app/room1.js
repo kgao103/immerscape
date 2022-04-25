@@ -3,8 +3,8 @@
 tutorial = new Item({
   name: "tutorial",
   source: "img/help.png",
-  displayed: false,
-  size: [window.innerHeight * 1.2, window.innerHeight * 0.7],
+  // displayed: false,
+  sizeRel: [0.5, 0.7],
   posRel: [0.2, 0.05],
 });
 
