@@ -49,6 +49,21 @@ var usedItem = null;
 
 var inConversation = false;
 
+var LEFT = ["left", "love", "live", "alive", "lap"];
+
+var PRESS = [
+  "press",
+  "price",
+  "bass",
+  "fast",
+  "harass",
+  "bratz",
+  "fatz",
+  "pratt",
+  "grass",
+  "pass",
+];
+
 // MAIN GAME LOOP
 // Called every time the Leap provides a new frame of data
 Leap.loop({
@@ -306,6 +321,11 @@ function transitionBye() {
   });
 }
 
+function restartGame() {
+  window.location.reload();
+  generateSpeech("game restarted");
+}
+
 // processSpeech(transcript)
 //  Is called anytime speech is recognized by the Web Speech API
 // Input:
@@ -333,7 +353,7 @@ var processSpeech = function (transcript) {
   // console.log("hovered item name: ", hoveredItem.get("name"));
 
   var commands = [
-    [["left", "love", "live", "alive", "lap"], transitionLeft],
+    [LEFT, transitionLeft],
     [["right"], transitionRight],
     [["zoom out", "out"], transitionZoomOut],
     [["bye", "goodbye", "by", "buy"], transitionBye],
@@ -346,29 +366,8 @@ var processSpeech = function (transcript) {
     [["off", "IHOP", "Off", "call"], tryTurnOffHoveredItem],
     [["help"], showHelpScreen],
     [["back", "exit"], closeHelpScreen],
-
-    [
-      ["restart"],
-      () => {
-        window.location.reload();
-        generateSpeech("game restarted");
-      },
-    ],
-    [
-      [
-        "press",
-        "price",
-        "bass",
-        "fast",
-        "harass",
-        "bratz",
-        "fatz",
-        "pratt",
-        "grass",
-        "pass",
-      ],
-      tryPressHoveredItem,
-    ],
+    [["restart"], restartGame],
+    [PRESS, tryPressHoveredItem],
   ];
 
   for (command of commands) {
