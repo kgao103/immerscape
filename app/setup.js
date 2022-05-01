@@ -19,21 +19,6 @@ function drawBackground(imagePath) {
   background.setContent(imagePath);
 }
 
-function drawImage(image, size, position) {
-  var itemView = new ImageSurface({
-    size: size,
-    content: image,
-  });
-
-  var itemTranslateModifier = new Modifier({
-    transform: function () {
-      return Transform.translate(position[0], position[1], 0);
-    },
-  });
-
-  mainContext.add(itemTranslateModifier).add(itemView);
-}
-
 function drawView(view) {
   drawBackground(view.get("background"));
   view.get("items").forEach((item) => {
@@ -183,7 +168,8 @@ var setupUserInterface = function () {
   tooltipContext.setProperties({ "opacity": 0 });
 
   // Draw the cursor
-  var cursorSurface = new Surface({
+  var cursorSurface = new ImageSurface({
+    content: "img/capybara.png",
     size: [CURSORSIZE, CURSORSIZE],
     classes: ["cursor"],
     properties: {

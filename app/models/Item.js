@@ -1,6 +1,7 @@
 function drawItem(item) {
   image = item.get("source");
-  zIndex = item.get("grabbable") ? 60 : 0;
+  zIndex = item.get("zIndex") ||
+            item.get("grabbable") ? 60 : 0;
   var itemView;
   if (image) {
     itemView = new ImageSurface({
@@ -59,6 +60,7 @@ var Item = Backbone.Model.extend({
     pressable: false,
     isHidden: false,
     isLocked: false,
+    zIndex: null,
   },
 
   // useOn: function (item) {

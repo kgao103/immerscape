@@ -67,6 +67,12 @@ var PRESS = [
   "pass",
 ];
 
+DEFAULT_CURSOR = "img/capybara.png";
+GRAB_CURSOR = "img/cheese.png";
+HOVER_CURSOR = "img/cat.png";
+FREEZE_CURSOR = "img/clock.png";
+OPEN_CURSOR = "img/door_open.png";
+
 // MAIN GAME LOOP
 // Called every time the Leap provides a new frame of data
 Leap.loop({
@@ -108,13 +114,21 @@ Leap.loop({
     }
 
     if (gameState.get("state") == "playing") {
-      cursorObject.setProperties({ backgroundColor: "pink" });
+      cursorObject.setContent(DEFAULT_CURSOR);
+      if (cursorFrozen) {
+        cursorObject.setContent(FREEZE_CURSOR);
+      }
+      //cursorObject.setProperties({ backgroundColor: "pink" });
       currentRoom.getItems().forEach((item) => {
         if (item.isHovered(cursorPosition)) {
           if (item.get("grabbable")) {
-            cursorObject.setProperties({ backgroundColor: "#00ffff" });
+            cursorObject.setContent(GRAB_CURSOR);
+            //cursorObject.setProperties({ backgroundColor: "#00ffff" });
+          } else if (item.isOpenable()) {
+            cursorObject.setContent(OPEN_CURSOR);
           } else {
-            cursorObject.setProperties({ backgroundColor: "#66ff33" });
+            cursorObject.setContent(HOVER_CURSOR);
+            //cursorObject.setProperties({ backgroundColor: "#66ff33" });
           }
         }
       });

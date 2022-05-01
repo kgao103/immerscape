@@ -14,6 +14,21 @@ window.speechSynthesis.onvoiceschanged = function () {
   );
 };
 
+function drawImage(image, size, position) {
+  var itemView = new ImageSurface({
+    size: size,
+    content: image,
+  });
+
+  var itemTranslateModifier = new Modifier({
+    transform: function () {
+      return Transform.translate(position[0], position[1], 0);
+    },
+  });
+
+  mainContext.add(itemTranslateModifier).add(itemView);
+}
+
 var generateSpeech = function (message, callback, voiceIndex = VOICEINDEX) {
   if (voicesReady) {
     speechSynthesis.cancel();
