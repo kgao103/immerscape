@@ -81,9 +81,9 @@ var Conversation = Backbone.Model.extend({
     rendered: false,
     opacity: 0,
     speechOptions: [
-      "Why is the mouse so sad?",
-      "Are there any secrets?",
-      "What is the safe code?",
+      "Why is the MOUSE so sad?",
+      "Are there any SECRETS?",
+      "What is the SAFE CODE?",
       "( Try asking about something else!)",
       "Goodbye!",
     ],
@@ -91,10 +91,29 @@ var Conversation = Backbone.Model.extend({
 
   processSpeech(transcript) {
     let speechOptions = this.get("speechOptions");
+    console.log("speechOptions", speechOptions);
     response = null;
-    if (userSaid(transcript, ["mouse", "rat", "mouth", "maps"])) {
+    if (
+      userSaid(transcript, [
+        "mouse",
+        "Mouse",
+        "miles",
+        "now",
+        "rat",
+        "mouth",
+        "maps",
+      ])
+    ) {
       response =
         "Oh my friend STEVE the mouse has been craving some CHEESE to go with his grapes for days. Poor Steve.";
+      this.set("speechOptions", [
+        "Who is STEVE?",
+        "Are there any SECRETS?",
+        "What is the SAFE CODE?",
+        "Oh where can I find some CHEESE?",
+        "Goodbye!",
+      ]);
+      this.updateOptions();
     } else if (userSaid(transcript, ["safe", "code", "save"])) {
       response =
         "I don't remember all of it but I think it starts with the number two. Might be helpful to turn off the light";
@@ -104,17 +123,67 @@ var Conversation = Backbone.Model.extend({
       response = "Hola. I'm Crappy, the capybara. How can I help you?";
     } else if (userSaid(transcript, ["cheese"])) {
       response = "I think you can find some on top of the FRIDGE";
-    } else if (userSaid(transcript, ["fridge"])) {
+    } else if (userSaid(transcript, ["fridge", "fresh", "Fred's"])) {
       response =
         "My friend STEVE might have taken the fridge key the other day";
+      this.set("speechOptions", [
+        "How do I get him to give me the KEY",
+        "Who is STEVE?",
+        "Are there any SECRETS?",
+        "What is the SAFE CODE?",
+        "Goodbye!",
+      ]);
+      this.updateOptions();
+    } else if (userSaid(transcript, ["key"])) {
+      response =
+        "I think STEVE will give it to you if you give him some CHEESE";
+      this.set("speechOptions", [
+        "Who is STEVE?",
+        "Oh where can I find some CHEESE?",
+        "Are there any SECRETS?",
+        "What is the SAFE CODE?",
+        "Goodbye!",
+      ]);
+      this.updateOptions();
     } else if (userSaid(transcript, ["Steve", "steve"])) {
       response = "Oh STEVE is my friend the MOUSE!";
+      this.set("speechOptions", [
+        "Why is the MOUSE so sad?",
+        "Are there any SECRETS?",
+        "What is the SAFE CODE?",
+        "Goodbye!",
+      ]);
+      this.updateOptions();
     } else if (userSaid(transcript, ["hungry", "food"])) {
       response = "I've been craving some WATERMELON. Can you get me some?";
+      this.set("speechOptions", [
+        "Where can I find some WATERMELON?",
+        "Why is the MOUSE so sad?",
+        "Are there any SECRETS?",
+        "What is the SAFE CODE?",
+        "Goodbye!",
+      ]);
+      this.updateOptions();
     } else if (userSaid(transcript, ["watermelon"])) {
       response = "I think there might be some in the FRIDGE actually";
+      this.set("speechOptions", [
+        "How do I open the FRIDGE?",
+        "Why is the MOUSE so sad?",
+        "Are there any SECRETS?",
+        "What is the SAFE CODE?",
+        "Goodbye!",
+      ]);
+      this.updateOptions();
     } else if (userSaid(transcript, ["secret", "secrets", "Secret"])) {
       response = "Try opening some of the paintings";
+      this.set("speechOptions", [
+        "Why is the MOUSE so sad?",
+        "Are there any SECRETS?",
+        "What is the SAFE CODE?",
+        "( Try asking about something else!)",
+        "Goodbye!",
+      ]);
+      this.updateOptions();
     } else if (userSaid(transcript, ["s***", "f***", "b****", "motherfuker"])) {
       response =
         "Pendejo how dare you swear at me you piece of shiitake mushroom. Puta madre!";
@@ -133,7 +202,7 @@ var Conversation = Backbone.Model.extend({
   updateOptions() {
     for (var i = 0; i < this.get("subcontext").length; i++) {
       var subcontext = this.get("subcontext")[i];
-      if (i < speechOptions.length) {
+      if (i < this.get("speechOptions").length) {
         var speechOption = this.get("speechOptions")[i];
         subcontext.set("opacity", 1);
         subcontext.get("context").setContent(speechOption);
@@ -220,7 +289,7 @@ var Conversation = Backbone.Model.extend({
           },
         });
 
-        speechOption.context = speechView;
+        speechOption.set("context", speechView);
         optionsView.add(itemTranslateModifier).add(speechView);
         this.get("subcontext").push(speechOption);
       }

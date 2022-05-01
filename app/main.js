@@ -52,7 +52,7 @@ var usedItem = null;
 
 var inConversation = false;
 
-var LEFT = ["left", "love", "live", "alive", "lap", "laugh"];
+var LEFT = ["left", "love", "live", "alive", "lap", "laugh", "laughed"];
 
 var PRESS = [
   "press",
