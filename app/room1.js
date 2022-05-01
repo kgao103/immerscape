@@ -91,14 +91,16 @@ dresser = new Item({
 
 painting = new Item({
   get source() {
-    return this.isOpen ? "img/painting_opened.png" : "img/painting.png";
+    return this.isOpen
+      ? "img/painting_opened.png"
+      : "img/watermelon_painting.png";
   },
   openable: true,
   isOpen: false,
   sizeRel: [0.17, 0.4],
   name: "painting",
   sourceOpened: "img/painting_opened.png",
-  sourceClosed: "img/painting.png",
+  sourceClosed: "img/watermelon_painting.png",
   posRel: [0.4, 0.25],
   openSound: new Audio("sound/painting_opening.mp3"),
   closingSound: new Audio("sound/drawer_closing.wav"),

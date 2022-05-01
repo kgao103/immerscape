@@ -67,11 +67,13 @@ var PRESS = [
   "pass",
 ];
 
-DEFAULT_CURSOR = "img/capybara.png";
-GRAB_CURSOR = "img/cheese.png";
-HOVER_CURSOR = "img/cat.png";
-FREEZE_CURSOR = "img/clock.png";
-OPEN_CURSOR = "img/door_open.png";
+DEFAULT_CURSOR = "img/translucent.png";
+GRAB_CURSOR = "img/hand_grabbing.png";
+HOVER_CURSOR = "img/translucent.png";
+FREEZE_CURSOR = "img/snowflake.png";
+OPEN_CURSOR = "img/openable_symbol.png";
+SWITCH_CURSOR = "img/onable_cursor.png";
+ZOOMABLE_CURSOR = "img/zoomable.png";
 
 // MAIN GAME LOOP
 // Called every time the Leap provides a new frame of data
@@ -115,10 +117,11 @@ Leap.loop({
 
     if (gameState.get("state") == "playing") {
       cursorObject.setContent(DEFAULT_CURSOR);
+      cursorObject.setProperties({ backgroundColor: "pink" });
       if (cursorFrozen) {
         cursorObject.setContent(FREEZE_CURSOR);
+        cursorObject.setProperties({ backgroundColor: "#00ffff" });
       }
-      //cursorObject.setProperties({ backgroundColor: "pink" });
       currentRoom.getItems().forEach((item) => {
         if (item.isHovered(cursorPosition)) {
           if (item.get("grabbable")) {
@@ -126,9 +129,13 @@ Leap.loop({
             //cursorObject.setProperties({ backgroundColor: "#00ffff" });
           } else if (item.isOpenable()) {
             cursorObject.setContent(OPEN_CURSOR);
+          } else if (item == safe) {
+            cursorObject.setContent(ZOOMABLE_CURSOR);
+          } else if (item.isOnable() || item.isOffable()) {
+            cursorObject.setContent(SWITCH_CURSOR);
           } else {
             cursorObject.setContent(HOVER_CURSOR);
-            //cursorObject.setProperties({ backgroundColor: "#66ff33" });
+            cursorObject.setProperties({ backgroundColor: "#66ff33" });
           }
         }
       });
@@ -381,7 +388,7 @@ var processSpeech = function (transcript) {
     [["right"], transitionRight],
     [["zoom out", "out"], transitionZoomOut],
     [["bye", "goodbye", "by", "buy"], transitionBye],
-    [["stay", "say", "freeze", "breathe"], freezeCursor],
+    [["stay", "say", "freeze", "free", "breathe"], freezeCursor],
     [["move", "unfreeze"], unfreezeCursor],
     [["grab", "grav"], tryGrab],
     [["open", "obit", "Apple"], tryOpenHoveredItem],
