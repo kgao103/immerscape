@@ -23,7 +23,6 @@ var grabbedOffset = [0, 0];
 var isGrabbing = false;
 
 // global variables for our game
-var currentRoom = room;
 
 var isHovering = false; // if hovering over some object
 var hoveringObject = null; // object hovering over
@@ -91,6 +90,13 @@ Leap.loop({
       !hand.fingers[2].extended &&
       !hand.fingers[3].extended &&
       !hand.fingers[4].extended;
+
+    if (isPointing && hoveredItem == tutorialDoor &&
+      tutorialDoor.get("isOpen")) {
+      currentRoom.getView().hide();
+      currentRoom = room;
+      currentRoom.drawView();
+    }
 
     isPinching = hand.pinchStrength > 0.8 && hand.grabStrength < 0.2;
     if (isPinching) {
@@ -205,6 +211,19 @@ function grabItem(item) {
   inventory.addItem(item);
   currentRoom.getView().removeItem(item);
   currentRoom.drawView();
+  if (item == tutorialKey) {
+    tutorialWindow2.setText(
+      `You found the key!
+      Now you can open the door.
+      Move to the left by moving your cursor to
+      the left of the screen.`
+    )
+    tutorialWindow1.setText(
+      `Try using the key on the door.
+      Grab the cursor from your inventory
+      and drag it to the door (then release).`
+    )
+  }
 }
 
 function tryGrab() {
@@ -256,6 +275,18 @@ function tryOpenHoveredItem() {
     ) {
       inventory.addItem(flashlight);
       generateSpeech("You opened the dresser and obtained a flashlight");
+      currentRoom.drawView();
+    } else if (
+      hoveredItem.get("name") == "tutorialDrawer" &&
+      !drawerFlag
+    ) {
+      tutorialWindow2.setText(
+        `Now try grabbing the key.
+        Hover over the key and make a grabbing motion.`);
+      generateSpeech("You opened the drawer and a key fell out!");
+      drawerFlag = true;
+      hoveredItem.open();
+      currentRoom.getView().addItem(tutorialKey);
       currentRoom.drawView();
     }
   }
@@ -559,6 +590,23 @@ function useKeyOnDoor(object, item) {
   }
 }
 
+function useKeyOnTutorialDoor(object, item) {
+  if (item.get("isOpen")) {
+    generateSpeech("The door is already open");
+    return false;
+  } else {
+    item.set("isOpen", true);
+    item.setContent("img/door_open.png");
+    doorUnlockingSound.play();
+    tutorialWindow1.setText(
+      `Congratulations! 
+      You have escaped the tutorial room.
+      Now you're ready to start the game.`);
+    currentRoom.drawView();
+    return true;
+  }
+}
+
 function useCheeseOnMousehole(object, item) {
   if (item.get("state") == "sad") {
     item.set("state", "happy");
@@ -719,6 +767,7 @@ function useFlashlightOnCapybaraClue(object, item) {
 function useObjectOnItem(object, item) {
   let r = false;
   let itemHandlers = [
+    useItemHandler(tutorialKey, tutorialDoor, useKeyOnTutorialDoor),
     useItemHandler(key, door, useKeyOnDoor),
     useItemHandler(cheese, mousehole, useCheeseOnMousehole),
     useItemHandler(fridge_key, fridge_lock, useFridgeKeyOnFridgeLock),

@@ -15,6 +15,11 @@ var mainContext = Engine.createContext();
 
 var inventory = new Inventory();
 
+var currentRoom = 
+  SKIPTUTORIAL ?
+  room :
+  tutorialRoom;
+
 function drawBackground(imagePath) {
   background.setContent(imagePath);
 }
@@ -151,7 +156,8 @@ var setupUserInterface = function () {
   });
 
   mainContext.add(background);
-  room.drawView();
+  //room.drawView();
+  currentRoom.drawView();
   inventory.draw();
   drawToolTip();
   //speechBubble1.draw();

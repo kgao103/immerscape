@@ -110,6 +110,11 @@ var Item = Backbone.Model.extend({
     this.get("context").setContent(source);
   },
 
+  setText: function (text) {
+    this.set("text", text);
+    this.get("context").setContent(text);
+  },
+
   isOpenable: function () {
     return this.get("openable") && !this.get("isOpen");
   },
