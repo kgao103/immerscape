@@ -91,14 +91,16 @@ dresser = new Item({
 
 painting = new Item({
   get source() {
-    return this.isOpen ? "img/painting_opened.png" : "img/painting.png";
+    return this.isOpen
+      ? "img/painting_opened.png"
+      : "img/watermelon_painting.png";
   },
   openable: true,
   isOpen: false,
   sizeRel: [0.17, 0.4],
   name: "painting",
   sourceOpened: "img/painting_opened.png",
-  sourceClosed: "img/painting.png",
+  sourceClosed: "img/watermelon_painting.png",
   posRel: [0.4, 0.25],
   openSound: new Audio("sound/painting_opening.mp3"),
   closingSound: new Audio("sound/drawer_closing.wav"),
@@ -137,7 +139,7 @@ bedtable = new Item({
   sourceOpened: "img/bedtable_opened.png",
   sourceClosed: "img/bedtable.png",
   sizeRel: [0.12, 0.23],
-  name: "bedtable",
+  name: "bed table",
   posRel: [0.3, 0.6],
   openSound: new Audio("sound/cabinet_opening.wav"),
   closingSound: new Audio("sound/cabinet_closing.wav"),
@@ -351,8 +353,8 @@ watermelon = new Item({
 cat = new Item({
   source: "img/cat.png",
   grabbable: true,
-  sizeRel: [0.09, 0.18],
-  posRel: [0.15, 0.8],
+  sizeRel: [0.08, 0.15],
+  posRel: [0.6, 0.55],
   grabbable: true,
   name: "cat",
 });

@@ -13,6 +13,8 @@ var safeBeep = new Audio("sound/safe_beep.mp3");
 var safeIncorrect = new Audio("sound/safe_incorrect.mp3");
 var safeDelete = new Audio("sound/safe_delete.mp3");
 var fridgeUnlockingSound = new Audio("sound/fridge_unlocking.wav");
+var catMeow = new Audio("sound/cat_meow.mp3");
+var error = new Audio("sound/error.mov");
 
 // UI SETUP
 setupUserInterface();
@@ -36,6 +38,7 @@ var cursorPosition = [0, 0];
 var passwordSafe = "";
 
 var movingForward = false;
+var movingForwardFast = false;
 var movingBackward = false;
 var movingUp = false;
 var movingDown = false;
@@ -48,7 +51,7 @@ var usedItem = null;
 
 var inConversation = false;
 
-var LEFT = ["left", "love", "live", "alive", "lap"];
+var LEFT = ["left", "love", "live", "alive", "lap", "laugh", "laughed"];
 
 var PRESS = [
   "press",
@@ -63,11 +66,13 @@ var PRESS = [
   "pass",
 ];
 
-DEFAULT_CURSOR = "img/capybara.png";
-GRAB_CURSOR = "img/cheese.png";
-HOVER_CURSOR = "img/cat.png";
-FREEZE_CURSOR = "img/clock.png";
-OPEN_CURSOR = "img/door_open.png";
+DEFAULT_CURSOR = "img/translucent.png";
+GRAB_CURSOR = "img/hand_grabbing.png";
+HOVER_CURSOR = "img/translucent.png";
+FREEZE_CURSOR = "img/snowflake.png";
+OPEN_CURSOR = "img/openable_symbol.png";
+SWITCH_CURSOR = "img/onable_cursor.png";
+ZOOMABLE_CURSOR = "img/zoomable.png";
 
 // MAIN GAME LOOP
 // Called every time the Leap provides a new frame of data
@@ -80,6 +85,7 @@ Leap.loop({
     movingUp = hand.palmVelocity[1] > 200;
     movingDown = hand.palmVelocity[1] < -200;
     movingForward = hand.palmVelocity[2] > 50;
+    movingForwardFast = hand.palmVelocity[2] > 100;
     movingBackward = hand.palmVelocity[2] < -100;
     //console.log(movingRight, movingLeft, movingUp, movingDown, movingForward, movingBackward);
     // Use the hand data to control the cursor's screen position
@@ -117,10 +123,11 @@ Leap.loop({
 
     if (gameState.get("state") == "playing") {
       cursorObject.setContent(DEFAULT_CURSOR);
+      cursorObject.setProperties({ backgroundColor: "pink" });
       if (cursorFrozen) {
         cursorObject.setContent(FREEZE_CURSOR);
+        cursorObject.setProperties({ backgroundColor: "#00ffff" });
       }
-      //cursorObject.setProperties({ backgroundColor: "pink" });
       currentRoom.getItems().forEach((item) => {
         if (item.isHovered(cursorPosition)) {
           if (item.get("grabbable")) {
@@ -128,9 +135,13 @@ Leap.loop({
             //cursorObject.setProperties({ backgroundColor: "#00ffff" });
           } else if (item.isOpenable()) {
             cursorObject.setContent(OPEN_CURSOR);
+          } else if (item == safe) {
+            cursorObject.setContent(ZOOMABLE_CURSOR);
+          } else if (item.isOnable() || item.isOffable()) {
+            cursorObject.setContent(SWITCH_CURSOR);
           } else {
             cursorObject.setContent(HOVER_CURSOR);
-            //cursorObject.setProperties({ backgroundColor: "#66ff33" });
+            cursorObject.setProperties({ backgroundColor: "#66ff33" });
           }
         }
       });
@@ -164,7 +175,10 @@ Leap.loop({
       isPressing =
         isPointing && hoveredItem && hoveredItem.isPressable() && movingForward;
       var isOpening = hand.grabStrength > 0.5 && hand.screenPosition()[2] > 300;
-      var isClosing = hand.grabStrength < 0.5 && hand.screenPosition()[2] < 0;
+      var isClosing =
+        hand.grabStrength < 0.5 &&
+        hand.screenPosition()[2] < 0 &&
+        movingBackward;
       if (isOpening) {
         tryOpenHoveredItem();
       }
@@ -231,6 +245,9 @@ function tryGrab() {
   if (hoveredItem && hoveredItem.get("grabbable")) {
     grabItem(hoveredItem);
     generateSpeech("You've just obtained the " + hoveredItem.get("name"));
+    if (hoveredItem == cat) {
+      catMeow.play();
+    }
     return true;
   } else {
     return false;
@@ -402,15 +419,15 @@ var processSpeech = function (transcript) {
     [["right"], transitionRight],
     [["zoom out", "out"], transitionZoomOut],
     [["bye", "goodbye", "by", "buy"], transitionBye],
-    [["stay", "say", "freeze", "breathe"], freezeCursor],
+    [["stay", "say", "freeze", "free", "breathe"], freezeCursor],
     [["move", "unfreeze"], unfreezeCursor],
     [["grab", "grav"], tryGrab],
-    [["open"], tryOpenHoveredItem],
+    [["open", "obit", "Apple"], tryOpenHoveredItem],
     [["close", "clothes"], tryCloseHoveredItem],
-    [["on", "I'm", "aunt"], tryTurnOnHoveredItem],
+    [["on", "I'm", "aunt", "I"], tryTurnOnHoveredItem],
     [["off", "IHOP", "Off", "call"], tryTurnOffHoveredItem],
     [["help"], showHelpScreen],
-    [["back", "exit"], closeHelpScreen],
+    [["back", "exit", "quit"], closeHelpScreen],
     [["restart"], restartGame],
     [PRESS, tryPressHoveredItem],
   ];
@@ -696,7 +713,7 @@ function useCatOnMousehole(object, item) {
     if (!fridgeKeyObtained) {
       sleep(2000).then(() => {
         generateSpeech(
-          "The cat eats the mouse with no remorse. You'll haves to start over",
+          "The cat eats the mouse with no remorse. You'll have to start over. Game restarted",
           window.location.reload()
         );
       });
@@ -722,7 +739,7 @@ function useMashedPotatoesOnMousehole(object, item) {
     mouseCry.play();
     if (!fridgeKeyObtained) {
       generateSpeech(
-        "The mouse ate the mashed potatoes and dies. You'll have to start over.",
+        "The mouse ate the mashed potatoes and dies. You'll have to start over. Game restarted",
         window.location.reload()
       );
     } else {
@@ -793,6 +810,7 @@ function useObjectOnItem(object, item) {
     }
   }
   if (!wasUsed) {
+    error.play();
     generateSpeech(
       "Can't use the " + object.get("name") + " on the " + item.get("name")
     );
