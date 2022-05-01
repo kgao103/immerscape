@@ -101,7 +101,7 @@ var Conversation = Backbone.Model.extend({
     } else if (userSaid(transcript, ["bye", "by", "goodbye"])) {
       response = "Goodbye!";
     } else if (userSaid(transcript, ["hello", "hi", "hey"])) {
-      response = "Hola";
+      response = "Hola. I'm Crappy, the capybara. How can I help you?";
     } else if (userSaid(transcript, ["cheese"])) {
       response = "I think you can find some on top of the FRIDGE";
     } else if (userSaid(transcript, ["fridge"])) {
@@ -113,7 +113,7 @@ var Conversation = Backbone.Model.extend({
       response = "I've been craving some WATERMELON. Can you get me some?";
     } else if (userSaid(transcript, ["watermelon"])) {
       response = "I think there might be some in the FRIDGE actually";
-    } else if (userSaid(transcript, ["secret", "secrets"])) {
+    } else if (userSaid(transcript, ["secret", "secrets", "Secret"])) {
       response = "Try opening some of the paintings";
     } else if (userSaid(transcript, ["s***", "f***", "b****", "motherfuker"])) {
       response =
