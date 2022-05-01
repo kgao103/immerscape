@@ -3,15 +3,20 @@ var Room = Backbone.Model.extend({
     currentView: "",
     views: {},
     transitions: {},
+    transitionHandlers: {},
   },
 
   transition: function (type) {
     let transition = this.get("transitions")[type];
     let currentView = this.get("currentView");
-    if (currentView in transition) {
+    let transitionHandler = this.get("transitionHandlers")[type];
+    if (transitionHandler && currentView in transitionHandler) {
+      transitionHandler[currentView]();
+    }
+    if (transition && currentView in transition) {
       this.getView().hide();
-      let new_view = transition[currentView];
-      this.set("currentView", new_view);
+      let nextView = transition[currentView];
+      this.set("currentView", nextView);
       drawView(this.getView());
       return true;
     } else {
