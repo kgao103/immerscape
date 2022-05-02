@@ -15,10 +15,7 @@ var mainContext = Engine.createContext();
 
 var inventory = new Inventory();
 
-var currentRoom = 
-  SKIPTUTORIAL ?
-  room :
-  tutorialRoom;
+var currentRoom = SKIPTUTORIAL ? room : tutorialRoom;
 
 function drawBackground(imagePath) {
   background.setContent(imagePath);
@@ -122,8 +119,8 @@ optionsHeader = new Item({
     zIndex: 95,
     fontSize: "20px",
     padding: window.innerWidth * 0.05 + "px",
-  }
-})
+  },
+});
 
 function drawImageWithText(item) {
   itemView = new Surface({
@@ -171,11 +168,11 @@ var setupUserInterface = function () {
     "I am a capybara. I am a cute little animal.",
   ]);*/
   capybaraSpeechOptions.updateOptions();
-  tooltipContext.setProperties({ "opacity": 0 });
+  tooltipContext.setProperties({ opacity: 0 });
 
   // Draw the cursor
   var cursorSurface = new ImageSurface({
-    content: "img/capybara.png",
+    content: "img/translucent.png",
     size: [CURSORSIZE, CURSORSIZE],
     classes: ["cursor"],
     properties: {
