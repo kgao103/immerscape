@@ -58,7 +58,7 @@ tutorialDrawer = new Item({
 tutorialKey = new Item({
   source: "img/key.png",
   size: [window.innerWidth * 0.05, window.innerWidth * 0.05],
-  posRel: [0.2, 0.8],
+  posRel: [0.25, 0.75],
   grabbable: true,
   name: "key",
 });

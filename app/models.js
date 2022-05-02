@@ -322,7 +322,7 @@ var quokkaConversation = Backbone.Model.extend({
     } else if (userSaid(transcript, ["bye", "by", "goodbye"])) {
       response = "Goodbye!";
     } else if (userSaid(transcript, ["hello", "hi", "hey", "hallo"])) {
-      response = "Hey there! I'm Mocha, the quokka. What's up?";
+      response = "Howdy! I'm Mocha, the quokka. What's up?";
     } else if (userSaid(transcript, ["capitalized", "capitalize"])) {
       response =
         "The capitalized words are keywords that I recognize and have a response for.";
