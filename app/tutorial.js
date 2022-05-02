@@ -24,6 +24,9 @@ function createTextWindow(text) {
   return textWindow;
 }
 
+freezeFlag = false;
+unfreezeFlag = false;
+
 tutorialDoor = new Item({
   isOpen: false,
   get source() {
@@ -66,20 +69,19 @@ tutorialWindow1 = createTextWindow(
 );
 
 tutorialWindow2 = createTextWindow(
-  `Now try OPENING the drawer.
-  Hover over the drawer, make a GRABBING motion, and PULL.`
+  `Now try freezing the cursor by saying FREEZE, this helps you make more complicated gestures like opening a drawer.`
 );
 
 tutorialWindow3 = createTextWindow(
   `Whoops, you shouldn't be here.
-  Remember, you can turn left or right
-  by moving your cursor to the left or right of the screen.`
+  Remember, you can turn LEFT or RIGHT
+  by moving your cursor to the LEFT or RIGHT of the screen.`
 );
 
 tutorialWindow4 = createTextWindow(
   `Whoops, you shouldn't be here.
-  Remember, you can turn left or right
-  by moving your cursor to the left or right of the screen.`
+  Remember, you can turn LEFT or RIGHT
+  by moving your cursor to the LEFT or RIGHT of the screen.`
 );
 
 tutorial1 = new View({

@@ -259,10 +259,26 @@ function tryGrab() {
 
 function freezeCursor() {
   cursorFrozen = true;
+  if (!freezeFlag && currentRoom.getView() == tutorial2) {
+    // only play once
+    // freezeSound.play();
+    freezeFlag = true;
+    tutorialWindow2.setText(
+      "Now try unfreezing the cursor by saying UNFREEZE."
+    );
+  }
 }
 
 function unfreezeCursor() {
   cursorFrozen = false;
+  if (freezeFlag && currentRoom.getView() == tutorial2) {
+    // only play once
+    // unfreezeSound.play();
+    unfreezeFlag = true;
+    tutorialWindow2.setText(
+      "Now try OPENING the drawer. Hover over the drawer and make a GRABBING motion, and PULL."
+    );
+  }
 }
 
 function tryOpenHoveredItem() {
