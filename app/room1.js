@@ -2,7 +2,7 @@
 
 tutorial = new Item({
   name: "tutorial",
-  source: "img/help.png",
+  source: "img/help_screen.png",
   // displayed: false,
   sizeRel: [0.6, 0.7],
   posRel: [0.2, 0.05],

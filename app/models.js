@@ -331,8 +331,7 @@ var quokkaConversation = Backbone.Model.extend({
     ) {
       response = "The speech bubbles on the right are options for you to say!";
     } else if (userSaid(transcript, ["s***", "f***", "b****", "motherfuker"])) {
-      response =
-        "Pendejo how dare you swear at me you piece of shiitake mushroom. Puta madre!";
+      response = "How dare you swear at me you piece of shiitake mushroom.";
     }
     if (response) {
       this.get("npcContext").get("context").setContent(response);
