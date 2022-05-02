@@ -1,7 +1,7 @@
 function createTextWindow(text) {
   let textWindow = new Item({
     text: text,
-    sizeRel: [0.395, 0.17],
+    sizeRel: [0.395, 0.21],
     name: "tutorial_window_1",
     posRel: [0.5, 0.1],
 
@@ -61,11 +61,17 @@ tutorialKey = new Item({
   name: "key",
 });
 
+tutorialQuokka = new Item({
+  source: "img/quokka.png",
+  size: [window.innerWidth * 0.15, window.innerWidth * 0.2],
+  posRel: [0.1, 0.58],
+});
+
 tutorialWindow1 = createTextWindow(
   `Welcome to the tutorial.
   This is a quick guide to get you started.
   First, try turning to the RIGHT
-  by moving your cursor to the RIGHT of the screen.`
+  by moving your cursor to the RIGHT of the screen. Say SKIP to skip this tutorial.`
 );
 
 tutorialWindow2 = createTextWindow(
@@ -91,7 +97,7 @@ tutorial1 = new View({
 
 tutorial2 = new View({
   background: "img/blue_wall.png",
-  items: [tutorialWindow2, tutorialDrawer],
+  items: [tutorialWindow2, tutorialDrawer, tutorialQuokka],
 });
 
 tutorial3 = new View({
@@ -104,6 +110,19 @@ tutorial4 = new View({
   items: [tutorialWindow4],
 });
 
+talkingQuokka = new Item({
+  source: "img/quokka.png",
+  sizeRel: [0.25, 0.6],
+  posRel: [0.02, 0.3],
+  name: "quokka",
+});
+
+quokkaConversation = new View({
+  items: [talkingQuokka],
+  special: [quokkaSpeechOptions],
+  background: "img/quokka_background.png",
+});
+
 tutorialRoom = new Room({
   currentView: "tutorial1",
   views: {
@@ -111,9 +130,16 @@ tutorialRoom = new Room({
     tutorial2: tutorial2,
     tutorial3: tutorial3,
     tutorial4: tutorial4,
+    quokkaConversation: quokkaConversation,
   },
   transitionHandlers: {},
   transitions: {
+    talk: {
+      tutorial2: "quokkaConversation",
+    },
+    bye: {
+      quokkaConversation: "tutorial2",
+    },
     left: {
       tutorial1: "tutorial4",
       tutorial2: "tutorial1",

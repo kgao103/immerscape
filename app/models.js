@@ -53,7 +53,7 @@ var View = Backbone.Model.extend({
 
 speechBubble1 = new Item({
   text: "",
-  position: [window.innerWidth * 0.22, window.innerHeight * 0.05],
+  position: [window.innerWidth * 0.18, window.innerHeight * 0.05],
   size: [window.innerWidth * 0.4, window.innerHeight * 0.55],
   opacity: 1,
   properties: {
@@ -119,7 +119,7 @@ var Conversation = Backbone.Model.extend({
         "I don't remember all of it but I think it starts with the number two. Might be helpful to turn off the light";
     } else if (userSaid(transcript, ["bye", "by", "goodbye"])) {
       response = "Goodbye!";
-    } else if (userSaid(transcript, ["hello", "hi", "hey"])) {
+    } else if (userSaid(transcript, ["hello", "hi", "hey", "hallo"])) {
       response = "Hola. I'm Crappy, the capybara. How can I help you?";
     } else if (userSaid(transcript, ["cheese"])) {
       response = "I think you can find some on top of the FRIDGE";
@@ -226,9 +226,155 @@ var Conversation = Backbone.Model.extend({
       return;
     } else {
       this.set("rendered", true);
-      x = window.innerWidth * 0.68;
+      x = window.innerWidth * 0.65;
       y = window.innerHeight * 0.1;
-      w = window.innerWidth * 0.3;
+      w = window.innerWidth * 0.35;
+      h = window.innerHeight * 0.1;
+      s = window.innerWidth * 0.015;
+
+      optionsView = new ContainerSurface({});
+
+      var optionsTranslateModifier = new Modifier({
+        transform: Transform.translate(x, y, 0),
+        opacity: function () {
+          return this.get("opacity");
+        }.bind(this),
+      });
+
+      mainContext.add(optionsTranslateModifier).add(optionsView);
+      this.set("context", optionsView);
+
+      let speechOptions = this.get("speechOptions");
+      for (let i = 0; i < speechOptions.length; i++) {
+        speechOption = new Item({
+          content: speechOptions[i],
+          position: [0, i * (h + s)],
+          size: [w, h],
+          opacity: 1,
+          properties: {
+            backgroundImage: "url(img/speech_bubble_right.png)",
+            backgroundSize: "100% 100%",
+            fontFamily: "Trebuchet MS",
+            color: "black",
+            zIndex: 95,
+            fontSize: "20px",
+            padding:
+              window.innerWidth * 0.015 +
+              "px " +
+              window.innerWidth * 0.05 +
+              "px " +
+              window.innerWidth * 0.015 +
+              "px " +
+              window.innerWidth * 0.015 +
+              "px ",
+          },
+        });
+
+        let item = speechOption;
+        speechView = new Surface({
+          content: item.get("content"),
+          properties: item.get("properties"),
+        });
+
+        var itemTranslateModifier = new Modifier({
+          transform: function () {
+            let position = item.get("position");
+            return Transform.translate(position[0], position[1], 0);
+          },
+          opacity: function () {
+            return item.get("opacity");
+          },
+          size: function () {
+            return item.get("size");
+          },
+        });
+
+        speechOption.set("context", speechView);
+        optionsView.add(itemTranslateModifier).add(speechView);
+        this.get("subcontext").push(speechOption);
+      }
+    }
+  },
+});
+
+var quokkaConversation = Backbone.Model.extend({
+  defaults: {
+    content: "",
+    context: null,
+    npcContext: speechBubble1,
+    subcontext: [],
+    rendered: false,
+    opacity: 0,
+    speechOptions: [
+      "How do I EXIT the conversation?",
+      "What are the CAPITALIZED words for?",
+      "What're the SPEECH BUBBLES on the right for?",
+      "Goodbye!",
+    ],
+  },
+
+  processSpeech(transcript) {
+    let speechOptions = this.get("speechOptions");
+    console.log("speechOptions", speechOptions);
+    response = null;
+    if (userSaid(transcript, ["exit", "asset"])) {
+      response = "To exit, all you have to say is the word GOODBYE.";
+    } else if (userSaid(transcript, ["bye", "by", "goodbye"])) {
+      response = "Goodbye!";
+    } else if (userSaid(transcript, ["hello", "hi", "hey", "hallo"])) {
+      response = "Hey there! I'm Mocha, the quokka. What's up?";
+    } else if (userSaid(transcript, ["capitalized", "capitalize"])) {
+      response =
+        "The capitalized words are keywords that I recognize and have a response for.";
+    } else if (
+      userSaid(transcript, ["bubble", "speech bubbles", "bubbles", "speech"])
+    ) {
+      response = "The speech bubbles on the right are options for you to say!";
+    } else if (userSaid(transcript, ["s***", "f***", "b****", "motherfuker"])) {
+      response =
+        "Pendejo how dare you swear at me you piece of shiitake mushroom. Puta madre!";
+    }
+    if (response) {
+      this.get("npcContext").get("context").setContent(response);
+      recognitionDisabled = true;
+      recognition.stop();
+      generateSpeech(response, restartRecognition, 10);
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  updateOptions() {
+    for (var i = 0; i < this.get("subcontext").length; i++) {
+      var subcontext = this.get("subcontext")[i];
+      if (i < this.get("speechOptions").length) {
+        var speechOption = this.get("speechOptions")[i];
+        subcontext.set("opacity", 1);
+        subcontext.get("context").setContent(speechOption);
+      } else {
+        subcontext.set("opacity", 0);
+      }
+    }
+  },
+
+  hide() {
+    //this.get("npcContext").set("opacity", 0);
+    this.get("npcContext").hide();
+    this.set("opacity", 0);
+  },
+
+  draw() {
+    //this.get("npcContext").set("opacity", 1);
+    this.get("npcContext").draw();
+    this.set("opacity", 1);
+    if (this.get("rendered")) {
+      return;
+    } else {
+      this.set("rendered", true);
+      x = window.innerWidth * 0.6;
+      y = window.innerHeight * 0.1;
+      w = window.innerWidth * 0.4;
       h = window.innerHeight * 0.1;
       s = window.innerWidth * 0.015;
 
@@ -298,3 +444,5 @@ var Conversation = Backbone.Model.extend({
 });
 
 capybaraSpeechOptions = new Conversation({});
+
+quokkaSpeechOptions = new quokkaConversation({});

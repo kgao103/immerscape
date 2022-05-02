@@ -50,6 +50,7 @@ var fridgeKeyObtained = false;
 var usedItem = null;
 
 var inConversation = false;
+var inQuokkaConversation = false;
 
 var LEFT = ["left", "love", "live", "alive", "lap", "laugh", "laughed"];
 
@@ -73,6 +74,7 @@ FREEZE_CURSOR = "img/snowflake.png";
 OPEN_CURSOR = "img/openable_symbol.png";
 SWITCH_CURSOR = "img/onable_cursor.png";
 ZOOMABLE_CURSOR = "img/zoomable.png";
+TALKABLE_CURSOR = "img/talkable_cursor.png";
 
 // MAIN GAME LOOP
 // Called every time the Leap provides a new frame of data
@@ -142,6 +144,8 @@ Leap.loop({
             cursorObject.setContent(ZOOMABLE_CURSOR);
           } else if (item.isOnable() || item.isOffable()) {
             cursorObject.setContent(SWITCH_CURSOR);
+          } else if (item == capybara || item == tutorialQuokka) {
+            cursorObject.setContent(TALKABLE_CURSOR);
           } else {
             cursorObject.setContent(HOVER_CURSOR);
             cursorObject.setProperties({ backgroundColor: "#66ff33" });
@@ -264,7 +268,7 @@ function freezeCursor() {
     // freezeSound.play();
     freezeFlag = true;
     tutorialWindow2.setText(
-      "Now try unfreezing the cursor by saying UNFREEZE."
+      `Now try unfreezing the cursor by saying UNFREEZE.`
     );
   }
 }
@@ -276,7 +280,7 @@ function unfreezeCursor() {
     // unfreezeSound.play();
     unfreezeFlag = true;
     tutorialWindow2.setText(
-      "Now try OPENING the drawer. Hover over the drawer and make a GRABBING motion, and PULL."
+      "Animals that can talk to you have a speech icon when hovering over. Try talking to the quokka by saying HELLO"
     );
   }
 }
@@ -395,6 +399,7 @@ function transitionZoomIn() {
 
 function transitionBye() {
   inConversation = false;
+  inQuokkaConversation = false;
   sleep(1000).then(() => {
     currentRoom.transition("bye");
   });
@@ -403,6 +408,12 @@ function transitionBye() {
 function restartGame() {
   window.location.reload();
   generateSpeech("game restarted");
+}
+
+function skipTutorial() {
+  currentRoom.getView().hide();
+  currentRoom = room;
+  currentRoom.drawView();
 }
 
 // processSpeech(transcript)
@@ -419,10 +430,23 @@ var processSpeech = function (transcript) {
   if (inConversation) {
     processed = capybaraSpeechOptions.processSpeech(transcript) | processed;
   }
+  if (inQuokkaConversation) {
+    processed = quokkaSpeechOptions.processSpeech(transcript) | processed;
+  }
   if (userSaid(transcript, ["hello", "hi", "hey"])) {
-    if (currentRoom.transition("talk")) {
+    if (currentRoom.getView() !== tutorial2 && currentRoom.transition("talk")) {
       inConversation = true;
+      console.log("HIIIII");
       capybaraSpeechOptions.processSpeech("hello");
+    }
+    if (currentRoom.getView() == tutorial2) {
+      tutorialWindow2.setText(
+        "Now try OPENING the drawer. Hover over the drawer and make a GRABBING motion, and PULL."
+      );
+      console.log("YOOOOO");
+      currentRoom.transition("talk");
+      inQuokkaConversation = true;
+      quokkaSpeechOptions.processSpeech("hello");
     }
     processed = true;
   }
@@ -446,7 +470,8 @@ var processSpeech = function (transcript) {
     [["help"], showHelpScreen],
     [["back", "exit", "quit"], closeHelpScreen],
     [["restart"], restartGame],
-    [PRESS, tryPressHoveredItem],
+    [["skip tutorial", "skip"], skipTutorial],
+    [(PRESS, tryPressHoveredItem)],
   ];
 
   for (command of commands) {
