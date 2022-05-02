@@ -97,8 +97,11 @@ Leap.loop({
       !hand.fingers[3].extended &&
       !hand.fingers[4].extended;
 
-    if (isPointing && hoveredItem == tutorialDoor &&
-      tutorialDoor.get("isOpen")) {
+    if (
+      isPointing &&
+      hoveredItem == tutorialDoor &&
+      tutorialDoor.get("isOpen")
+    ) {
       currentRoom.getView().hide();
       currentRoom = room;
       currentRoom.drawView();
@@ -228,15 +231,15 @@ function grabItem(item) {
   if (item == tutorialKey) {
     tutorialWindow2.setText(
       `You found the key!
-      Now you can open the door.
-      Move to the left by moving your cursor to
-      the left of the screen.`
-    )
+      Now you can OPEN the door.
+      Move to the LEFT by moving your cursor to
+      the LEFT of the screen.`
+    );
     tutorialWindow1.setText(
       `Try using the key on the door.
       Grab the cursor from your inventory
-      and drag it to the door (then release).`
-    )
+      and DRAG it to the door (then RELEASE).`
+    );
   }
 }
 
@@ -293,13 +296,11 @@ function tryOpenHoveredItem() {
       inventory.addItem(flashlight);
       generateSpeech("You opened the dresser and obtained a flashlight");
       currentRoom.drawView();
-    } else if (
-      hoveredItem.get("name") == "tutorialDrawer" &&
-      !drawerFlag
-    ) {
+    } else if (hoveredItem.get("name") == "tutorialDrawer" && !drawerFlag) {
       tutorialWindow2.setText(
         `Now try grabbing the key.
-        Hover over the key and make a grabbing motion.`);
+        Hover over the key and make a GRABBING motion.`
+      );
       generateSpeech("You opened the drawer and a key fell out!");
       drawerFlag = true;
       hoveredItem.open();
@@ -613,12 +614,13 @@ function useKeyOnTutorialDoor(object, item) {
     return false;
   } else {
     item.set("isOpen", true);
-    item.setContent("img/door_open.png");
+    item.setContent("img/door_opened_tutorial.png");
     doorUnlockingSound.play();
     tutorialWindow1.setText(
       `Congratulations! 
       You have escaped the tutorial room.
-      Now you're ready to start the game.`);
+      Now you're ready to start the game. Point your index finger to enter the real escape room.`
+    );
     currentRoom.drawView();
     return true;
   }

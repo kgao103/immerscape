@@ -1,18 +1,22 @@
-
 function createTextWindow(text) {
   let textWindow = new Item({
     text: text,
-    sizeRel: [0.395, 0.29],
+    sizeRel: [0.395, 0.17],
     name: "tutorial_window_1",
-    posRel: [0.42, 0.02],
+    posRel: [0.5, 0.1],
+
     properties: {
-      backgroundColor: "white",
-      border: "1px solid black",
+      backgroundColor: "#660066",
+      fontFamily: "Trebuchet MS",
+      border: "3px solid #ffffcc",
+      borderRadius: "5px",
       //backgroundImage: "url('img/door.png')",
       backgroundSize: "100% 100%",
-      color: "#212b1d",
+      color: "white",
       fontSize: "20px",
+      padding: "10px",
       paddingLeft: "20px",
+
       // paddingBottom: "40px",
       zIndex: 99,
     },
@@ -23,7 +27,7 @@ function createTextWindow(text) {
 tutorialDoor = new Item({
   isOpen: false,
   get source() {
-    return this.isOpen ? "img/door_open.png" : "img/door.png";
+    return this.isOpen ? "img/door_opened_tutorial.png" : "img/door.png";
   },
   size: [0.25 * window.innerHeight, 0.574 * window.innerHeight],
   name: "tutorialDoor",
@@ -48,8 +52,8 @@ tutorialDrawer = new Item({
 
 tutorialKey = new Item({
   source: "img/key.png",
-  size: [window.innerWidth * 0.04, window.innerWidth * 0.07],
-  posRel: [0.45, 0.3],
+  size: [window.innerWidth * 0.05, window.innerWidth * 0.05],
+  posRel: [0.2, 0.8],
   grabbable: true,
   name: "key",
 });
@@ -57,22 +61,26 @@ tutorialKey = new Item({
 tutorialWindow1 = createTextWindow(
   `Welcome to the tutorial.
   This is a quick guide to get you started.
-  First, try turning to the right
-  by moving your cursor to the right of the screen.`);
+  First, try turning to the RIGHT
+  by moving your cursor to the RIGHT of the screen.`
+);
 
 tutorialWindow2 = createTextWindow(
-  `Now try opening the drawer.
-  Hover over the drawer, make a grabbing motion, and pull.`);
+  `Now try OPENING the drawer.
+  Hover over the drawer, make a GRABBING motion, and PULL.`
+);
 
 tutorialWindow3 = createTextWindow(
   `Whoops, you shouldn't be here.
   Remember, you can turn left or right
-  by moving your cursor to the left or right of the screen.`);
+  by moving your cursor to the left or right of the screen.`
+);
 
 tutorialWindow4 = createTextWindow(
   `Whoops, you shouldn't be here.
   Remember, you can turn left or right
-  by moving your cursor to the left or right of the screen.`);
+  by moving your cursor to the left or right of the screen.`
+);
 
 tutorial1 = new View({
   background: "img/purple_wall.png",
@@ -102,9 +110,7 @@ tutorialRoom = new Room({
     tutorial3: tutorial3,
     tutorial4: tutorial4,
   },
-  transitionHandlers: {
-
-  },
+  transitionHandlers: {},
   transitions: {
     left: {
       tutorial1: "tutorial4",

@@ -486,7 +486,7 @@ zoomedSafe = new View({
 // ROOM
 
 room = new Room({
-  currentView: "wall1",
+  currentView: "wall4",
   views: {
     wall1: wall1,
     wall2: wall2,
