@@ -280,7 +280,7 @@ function unfreezeCursor() {
     // unfreezeSound.play();
     unfreezeFlag = true;
     tutorialWindow2.setText(
-      "Animals that can talk to you have a speech icon when hovering over. Try talking to the quokka by saying HELLO"
+      "Now try switching on objects by hovering over the cat night light and saying ON."
     );
   }
 }
@@ -337,33 +337,52 @@ function tryCloseHoveredItem() {
 }
 
 function tryTurnOffHoveredItem() {
-  if (hoveredItem && hoveredItem.isOffable()) {
-    hoveredItem.get("offSound").play();
-    hoveredItem.set("isOn", false);
+  if (
+    hoveredItem &&
+    hoveredItem.isOffable() &&
+    hoveredItem == nightLight &&
+    !turnOffFlag &&
+    turnOnFlag
+  ) {
+    tutorialWindow2.setText(
+      "Animals that can talk to you have a speech icon when hovering over. Try talking to the quokka by saying HELLO"
+    );
+    turnOffFlag = true;
+    currentRoom.drawView();
+    hoveredItem.switchOff();
+  } else if (hoveredItem && hoveredItem.isOffable()) {
+    hoveredItem.switchOff();
     lightOn = false;
     currentRoom.turnOffLight();
     wall1.addItem(yellowHoly);
     wall2.addItem(favNumber);
     wall4.addItem(capybaraClue);
-    hoveredItem.set("source", hoveredItem.get("sourceOff"));
     currentRoom.drawView();
   }
 }
 
 function tryTurnOnHoveredItem() {
-  if (hoveredItem && hoveredItem.isOnable()) {
+  if (
+    hoveredItem &&
+    hoveredItem.isOnable() &&
+    hoveredItem == nightLight &&
+    !turnOffFlag &&
+    !turnOnFlag
+  ) {
+    tutorialWindow2.setText("Now try turning it off by saying OFF.");
+    turnOnFlag = true;
+    hoveredItem.switchOn();
+    currentRoom.drawView();
+  } else if (hoveredItem && hoveredItem.isOnable()) {
     yellowHoly.hide();
     favNumber.hide();
     capybaraClue.hide();
     wall1.removeItem(yellowHoly);
     wall2.removeItem(favNumber);
     wall4.removeItem(capybaraClue);
-    hoveredItem.get("onSound").play();
-    hoveredItem.set("isOn", true);
     lightOn = true;
     currentRoom.turnOnLight();
-    console.log("turned on");
-    hoveredItem.set("source", hoveredItem.get("sourceOn"));
+    hoveredItem.switchOn();
     currentRoom.drawView();
   }
 }

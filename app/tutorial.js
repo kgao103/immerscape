@@ -26,6 +26,8 @@ function createTextWindow(text) {
 
 freezeFlag = false;
 unfreezeFlag = false;
+turnOnFlag = false;
+turnOffFlag = false;
 
 tutorialDoor = new Item({
   isOpen: false,
@@ -90,6 +92,22 @@ tutorialWindow4 = createTextWindow(
   by moving your cursor to the LEFT or RIGHT of the screen.`
 );
 
+nightLight = new Item({
+  isOn: false,
+  get source() {
+    return this.isOn ? "img/night_light_on.png" : "img/night_light.png";
+  },
+  sourceOn: "img/night_light_on.png",
+  sourceOff: "img/night_light.png",
+  sizeRel: [0.09, 0.2],
+  name: "night light",
+  switchedOnable: true,
+  // position: [window.innerWidth * 0.2, window.innerHeight * 0.3],
+  posRel: [0.8, 0.65],
+  onSound: new Audio("sound/lamp_on.mov"), // TODO: change
+  offSound: new Audio("sound/lamp_off.mov"), // TODO: change
+});
+
 tutorial1 = new View({
   background: "img/purple_wall.png",
   items: [tutorialWindow1, tutorialDoor],
@@ -97,7 +115,7 @@ tutorial1 = new View({
 
 tutorial2 = new View({
   background: "img/blue_wall.png",
-  items: [tutorialWindow2, tutorialDrawer, tutorialQuokka],
+  items: [tutorialWindow2, tutorialDrawer, tutorialQuokka, nightLight],
 });
 
 tutorial3 = new View({

@@ -1,7 +1,6 @@
 function drawItem(item) {
   image = item.get("source");
-  zIndex = item.get("zIndex") ||
-            item.get("grabbable") ? 60 : 0;
+  zIndex = item.get("zIndex") || item.get("grabbable") ? 60 : 0;
   var itemView;
   if (image) {
     itemView = new ImageSurface({
@@ -152,7 +151,20 @@ var Item = Backbone.Model.extend({
     }
     this.setContent(this.get("sourceClosed"));
   },
-
+  switchOn: function () {
+    this.set("isOn", true);
+    if (this.get("onSound")) {
+      this.get("onSound").play();
+    }
+    this.setContent(this.get("sourceOn"));
+  },
+  switchOff: function () {
+    this.set("isOn", false);
+    if (this.get("offSound")) {
+      this.get("offSound").play();
+    }
+    this.setContent(this.get("sourceOff"));
+  },
   draw: function () {
     // if (this.get("isHidden")) {
     //   this.set("opacity", 0);
