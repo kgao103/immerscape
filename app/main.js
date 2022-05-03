@@ -180,10 +180,7 @@ Leap.loop({
 
       hoveredItem = getHoveredItem(cursorPosition);
       isPressing =
-        isPointing &&
-        hoveredItem &&
-        hoveredItem.isPressable() &&
-        movingForwardFast;
+        isPointing && hoveredItem && hoveredItem.isPressable() && movingForward;
       var isOpening = hand.grabStrength > 0.5 && hand.screenPosition()[2] > 300;
       var isClosing =
         hand.grabStrength < 0.5 &&
@@ -494,7 +491,7 @@ var processSpeech = function (transcript) {
     [["help"], showHelpScreen],
     [["back", "exit", "quit"], closeHelpScreen],
     [["restart"], restartGame],
-    [["skip tutorial", "skip"], skipTutorial],
+    [["skip tutorial", "skip", "scat", "skit"], skipTutorial],
     [(PRESS, tryPressHoveredItem)],
   ];
 
