@@ -306,11 +306,11 @@ var quokkaConversation = Backbone.Model.extend({
     rendered: false,
     opacity: 0,
     speechOptions: [
-      "How do I EXIT the conversation?",
-      "What are the CAPITALIZED words for?",
       "How do I PRESS a button?",
       "How do I ZOOM in and out?",
       "How do I ask for HELP if I'm stuck?",
+      "What are the CAPITALIZED words for?",
+      "How do I EXIT the conversation?",
       "Goodbye!",
     ],
   },
