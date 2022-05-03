@@ -180,7 +180,10 @@ Leap.loop({
 
       hoveredItem = getHoveredItem(cursorPosition);
       isPressing =
-        isPointing && hoveredItem && hoveredItem.isPressable() && movingForward;
+        isPointing &&
+        hoveredItem &&
+        hoveredItem.isPressable() &&
+        movingForwardFast;
       var isOpening = hand.grabStrength > 0.5 && hand.screenPosition()[2] > 300;
       var isClosing =
         hand.grabStrength < 0.5 &&
