@@ -117,8 +117,8 @@ var Conversation = Backbone.Model.extend({
     } else if (userSaid(transcript, ["safe", "code", "save"])) {
       response =
         "I don't remember all of it but I think it starts with the number two. Might be helpful to turn off the light";
-    } else if (userSaid(transcript, ["bye", "by", "goodbye"])) {
-      response = "Goodbye!";
+    } else if (userSaid(transcript, ["bye", "by", "goodbye", "my"])) {
+      response = "Adios!";
     } else if (userSaid(transcript, ["hello", "hi", "hey", "hallo"])) {
       response = "Hola. I'm Crappy, the capybara. How can I help you?";
     } else if (userSaid(transcript, ["cheese"])) {
@@ -308,7 +308,9 @@ var quokkaConversation = Backbone.Model.extend({
     speechOptions: [
       "How do I EXIT the conversation?",
       "What are the CAPITALIZED words for?",
-      "What're the SPEECH BUBBLES on the right for?",
+      "How do I PRESS a button?",
+      "How do I ZOOM in and out?",
+      "How do I ask for HELP if I'm stuck?",
       "Goodbye!",
     ],
   },
@@ -319,10 +321,10 @@ var quokkaConversation = Backbone.Model.extend({
     response = null;
     if (userSaid(transcript, ["exit", "asset"])) {
       response = "To exit, all you have to say is the word GOODBYE.";
-    } else if (userSaid(transcript, ["bye", "by", "goodbye"])) {
-      response = "Goodbye!";
+    } else if (userSaid(transcript, ["bye", "by", "goodbye", "my"])) {
+      response = "Catch you later, alligator!";
     } else if (userSaid(transcript, ["hello", "hi", "hey", "hallo"])) {
-      response = "Howdy! I'm Mocha, the quokka. What's up?";
+      response = "Howdy mate! I'm Mocha, the quokka. What's up?";
     } else if (userSaid(transcript, ["capitalized", "capitalize"])) {
       response =
         "The capitalized words are keywords that I recognize and have a response for.";
@@ -332,7 +334,17 @@ var quokkaConversation = Backbone.Model.extend({
       response = "The speech bubbles on the right are options for you to say!";
     } else if (userSaid(transcript, ["s***", "f***", "b****", "motherfuker"])) {
       response = "How dare you swear at me you piece of shiitake mushroom.";
+    } else if (userSaid(transcript, ["button", "buttons", "press"])) {
+      response =
+        "You can press buttons by pointing your index finger at them and moving your hand slightly forward and back.";
+    } else if (userSaid(transcript, ["zoom", "zoom in", "zoom out"])) {
+      response =
+        "You can zoom in and out by either pinching your index finger and thumb together or saying the word LOOK. To zoom out, just say the word OUT.";
+    } else if (userSaid(transcript, ["help", "stuck", "help me"])) {
+      response =
+        "If you're stuck or forgot a command, you can ask for help by saying the word HELP and return to the game by saying BACK.";
     }
+
     if (response) {
       this.get("npcContext").get("context").setContent(response);
       recognitionDisabled = true;

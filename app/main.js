@@ -73,7 +73,7 @@ HOVER_CURSOR = "img/translucent.png";
 FREEZE_CURSOR = "img/snowflake.png";
 OPEN_CURSOR = "img/openable_symbol.png";
 SWITCH_CURSOR = "img/onable_cursor.png";
-ZOOMABLE_CURSOR = "img/zoomable.png";
+ZOOMABLE_CURSOR = "img/zoomable.webp";
 TALKABLE_CURSOR = "img/talkable_cursor.png";
 
 // MAIN GAME LOOP
@@ -388,8 +388,10 @@ function tryTurnOnHoveredItem() {
 }
 
 function showHelpScreen() {
-  currentRoom.getView().addItem(tutorial);
-  currentRoom.drawView();
+  if (!inConversation && !inQuokkaConversation) {
+    currentRoom.getView().addItem(tutorial);
+    currentRoom.drawView();
+  }
 }
 
 function closeHelpScreen() {
