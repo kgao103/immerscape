@@ -480,7 +480,7 @@ var processSpeech = function (transcript) {
     [LEFT, transitionLeft],
     [["right"], transitionRight],
     [["zoom out", "out"], transitionZoomOut],
-    [["bye", "goodbye", "by", "buy"], transitionBye],
+    [["bye", "goodbye", "Goodbye", "goodbye.", "by", "buy"], transitionBye],
     [["stay", "say", "freeze", "free", "breathe"], freezeCursor],
     [["move", "unfreeze"], unfreezeCursor],
     [["grab", "grav"], tryGrab],
