@@ -114,7 +114,8 @@ Leap.loop({
       console.log("pinching");
     }
 
-    if (isPinching && !cursorFrozen && hoveredItem) {
+    if (isPinching && !cursorFrozen && hoveredItem 
+      && hoveredItem.get("name") == "safe") {
       transitionZoomIn();
     }
 
