@@ -12,6 +12,8 @@ To launch the app,
 
 3. Connect the leap sensor to the laptop and allow the browser to access your microphone when prompted.
 
+Note that the game functions optimally on a Mac using Google Chrome (with respect to speech synthesis).
+
 If you're on a mac, no additional steps for the voice synthesis. However, if you're on a PC, might have to change the VOICEINDEX in app/config.js to 4. The default is 17, which is the one to use if you're on a mac.
 
 You may also want to increase the msg.rate value of
