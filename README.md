@@ -30,10 +30,13 @@ helpers.js - contains helper functions
 models folder and models.js - relevant models containing logic specific to each type of game object
 
 setupSpeech.js - sets up speech recognition
+
 setup.js - sets up the famo.us rendering engine
 
 tutorial.js - contains Items/Views specific to the tutorial
+
 room1.js - contains Items/Views specific to the main escape room
 
 img folder - stores images related to game
+
 sound folder - stores sounds related to game
